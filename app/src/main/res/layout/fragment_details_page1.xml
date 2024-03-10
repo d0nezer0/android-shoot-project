@@ -1,0 +1,460 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginStart="@dimen/margin_size_12dp"
+    android:layout_marginTop="@dimen/margin_size_12dp"
+    android:layout_marginEnd="@dimen/margin_size_12dp"
+    android:background="@android:color/transparent"
+    app:layout_constraintBottom_toBottomOf="@id/leftTitle"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toEndOf="@id/leftTitle"
+    app:layout_constraintTop_toBottomOf="@id/btnLayout">
+
+    <LinearLayout
+        android:id="@+id/progressLayout"
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="@dimen/margin_mid_size_16dp"
+        android:paddingTop="24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="RtlSymmetry">
+
+        <LinearLayout
+            android:id="@+id/gradeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="@dimen/margin_size_12dp"
+            android:layout_marginBottom="@dimen/size_4dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/margin_size_24dp"
+            android:paddingEnd="@dimen/margin_size_12dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/shootPerson">
+
+
+            <TextView
+                android:id="@+id/grade"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="成绩"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/res_text_size_22sp" />
+
+            <TextView
+                android:id="@+id/grade_count"
+                android:layout_width="@dimen/size_42dp"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical|right"
+                android:text="0"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/res_text_size_22sp"
+                android:textStyle="bold" />
+
+
+        </LinearLayout>
+
+        <ProgressBar
+
+            android:id="@+id/grade_progressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/margin_size_12dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/margin_mid_size_16dp"
+            android:background="@drawable/progress_bg_10"
+            android:indeterminate="false"
+            android:paddingStart="1dp"
+            android:paddingTop="1dp"
+            android:paddingEnd="1dp"
+            android:paddingBottom="1dp"
+            android:progress="0"
+
+            android:progressDrawable="@drawable/round_progress"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/shootPerson"
+            tools:ignore="RtlSymmetry" />
+
+        <LinearLayout
+
+            android:id="@+id/gunLayout"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="@dimen/margin_size_12dp"
+            android:layout_marginBottom="@dimen/size_4dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/margin_size_24dp"
+            android:paddingEnd="@dimen/margin_size_12dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/shootPerson">
+
+
+            <TextView
+                android:id="@+id/gun"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="据枪"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/res_text_size_22sp" />
+
+            <TextView
+                android:id="@+id/gun_count"
+                android:layout_width="@dimen/size_42dp"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical|right"
+                android:text="0"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/res_text_size_22sp"
+                android:textStyle="bold" />
+
+
+        </LinearLayout>
+
+        <ProgressBar
+
+            android:id="@+id/gun_progressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/margin_size_12dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/margin_mid_size_16dp"
+            android:background="@drawable/progress_bg_10"
+            android:indeterminate="false"
+            android:paddingStart="1dp"
+            android:paddingTop="1dp"
+            android:paddingEnd="1dp"
+            android:paddingBottom="1dp"
+            android:progress="82"
+            android:progressDrawable="@drawable/round_progress"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/shootPerson"
+            tools:ignore="RtlSymmetry" />
+
+        <LinearLayout
+
+            android:id="@+id/collimationLayout"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="@dimen/margin_size_12dp"
+            android:layout_marginBottom="@dimen/size_4dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/margin_size_24dp"
+            android:paddingEnd="@dimen/margin_size_12dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/shootPerson">
+
+
+            <TextView
+                android:id="@+id/collimation"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="瞄准"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/res_text_size_22sp" />
+
+            <TextView
+                android:id="@+id/collimation_count"
+                android:layout_width="@dimen/size_42dp"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical|right"
+                android:text="0"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/res_text_size_22sp"
+                android:textStyle="bold" />
+
+
+        </LinearLayout>
+
+        <ProgressBar
+
+            android:id="@+id/collimation_progressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/margin_size_12dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/margin_mid_size_16dp"
+            android:background="@drawable/progress_bg_10"
+            android:indeterminate="false"
+            android:paddingStart="1dp"
+            android:paddingTop="1dp"
+            android:paddingEnd="1dp"
+            android:paddingBottom="1dp"
+            android:progress="0"
+            android:progressDrawable="@drawable/round_progress"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/shootPerson"
+            tools:ignore="RtlSymmetry" />
+
+        <LinearLayout
+
+            android:id="@+id/sendLayout"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="@dimen/margin_size_12dp"
+            android:layout_marginBottom="@dimen/size_4dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/margin_size_24dp"
+            android:paddingEnd="@dimen/margin_size_12dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/shootPerson">
+
+
+            <TextView
+                android:id="@+id/send"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="击发"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/res_text_size_22sp" />
+
+            <TextView
+                android:id="@+id/send_count"
+                android:layout_width="@dimen/size_42dp"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical|right"
+                android:text="0"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/res_text_size_22sp"
+                android:textStyle="bold" />
+
+
+        </LinearLayout>
+
+        <ProgressBar
+
+            android:id="@+id/send_progressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/margin_size_12dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/margin_mid_size_16dp"
+            android:background="@drawable/progress_bg_10"
+            android:indeterminate="false"
+            android:paddingStart="1dp"
+            android:paddingTop="1dp"
+            android:paddingEnd="1dp"
+            android:paddingBottom="1dp"
+            android:progress="0"
+            android:progressDrawable="@drawable/round_progress"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/shootPerson"
+            tools:ignore="RtlSymmetry" />
+
+        <LinearLayout
+
+            android:id="@+id/totalLayout"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="@dimen/margin_size_12dp"
+            android:layout_marginBottom="@dimen/size_4dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/margin_size_24dp"
+            android:paddingEnd="@dimen/margin_size_12dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/shootPerson">
+
+
+            <TextView
+                android:id="@+id/total"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="总体"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/res_text_size_22sp" />
+
+            <TextView
+                android:id="@+id/total_count"
+                android:layout_width="@dimen/size_42dp"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical|right"
+                android:text="0"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/res_text_size_22sp"
+                android:textStyle="bold" />
+
+
+        </LinearLayout>
+
+        <ProgressBar
+
+            android:id="@+id/total_progressBar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/margin_size_12dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/margin_mid_size_16dp"
+            android:background="@drawable/progress_bg_10"
+            android:indeterminate="false"
+            android:paddingStart="1dp"
+            android:paddingTop="1dp"
+            android:paddingEnd="1dp"
+            android:paddingBottom="1dp"
+            android:progress="0"
+            android:progressDrawable="@drawable/round_progress"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/shootPerson"
+            tools:ignore="RtlSymmetry" />
+    </LinearLayout>
+
+    <FrameLayout
+
+        android:id="@+id/viewPager"
+        android:layout_width="0dp"
+        android:layout_height="370dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="48dp"
+        android:background="#40356A4D"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/progressLayout"
+        app:layout_constraintTop_toTopOf="@id/progressLayout" >
+        <FrameLayout
+            android:layout_gravity="center_horizontal"
+            android:id="@+id/shootPerson"
+            android:layout_width="370dp"
+            android:layout_height="370dp"
+            android:background="@android:color/white">
+
+            <View
+                android:foreground="@drawable/shoot_person_bg"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/white"
+                tools:targetApi="m" />
+
+            <org.ggxz.shoot.widget.TargetPointView
+                android:id="@+id/targetView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                android:scaleX="2"
+                android:scaleY="2"
+                android:translationY="33dp" />
+        </FrameLayout>
+    </FrameLayout>
+
+    <TextView
+        android:visibility="invisible"
+        android:drawablePadding="16dp"
+        android:id="@+id/print"
+        android:layout_width="1dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="@dimen/size_32dp"
+        android:layout_marginTop="@dimen/size_48dp"
+        android:background="@drawable/date_bg_second"
+        android:drawableStart="@drawable/print"
+        android:gravity="center"
+        android:paddingStart="12dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="2dp"
+        android:text="打印"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/res_text_size_22sp"
+        app:layout_constraintStart_toStartOf="@id/progressLayout"
+        app:layout_constraintTop_toBottomOf="@id/progressLayout" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="440dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/margin_size_24dp"
+        app:layout_constraintBottom_toBottomOf="@id/print"
+        app:layout_constraintStart_toEndOf="@id/print"
+        app:layout_constraintTop_toTopOf="@id/print"
+        tools:itemCount="10"
+        tools:listitem="@layout/item_listview_tv" />
+
+    <TextView
+        android:visibility="gone"
+        android:layout_marginBottom="2dp"
+        android:layout_marginTop="2dp"
+        android:id="@+id/curNum"
+        android:layout_width="72dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/margin_size_12dp"
+        android:background="@drawable/date_bg_second"
+        android:gravity="center"
+        android:text="1"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/res_text_size_22sp"
+        app:layout_constraintBottom_toBottomOf="@id/recyclerView"
+        app:layout_constraintStart_toEndOf="@id/recyclerView"
+        app:layout_constraintTop_toTopOf="@id/recyclerView" />
+    <TextView
+
+        android:id="@+id/tvUp01"
+        android:layout_width="100dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/margin_size_12dp"
+        android:background="@drawable/date_bg_second"
+        android:gravity="center"
+        android:text="上一发"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/res_text_size_22sp"
+        app:layout_constraintBottom_toBottomOf="@id/recyclerView"
+        app:layout_constraintStart_toEndOf="@id/curNum"
+        app:layout_constraintTop_toTopOf="@id/recyclerView" />
+    <TextView
+        android:id="@+id/tvDown01"
+        android:layout_width="100dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/margin_size_12dp"
+        android:background="@drawable/date_bg_second"
+        android:gravity="center"
+        android:text="下一发"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/res_text_size_22sp"
+        app:layout_constraintBottom_toBottomOf="@id/recyclerView"
+        app:layout_constraintStart_toEndOf="@id/tvUp01"
+        app:layout_constraintTop_toTopOf="@id/recyclerView" />
+    <TextView
+        android:id="@+id/tvUp02"
+        android:layout_width="100dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/margin_size_12dp"
+        android:background="@drawable/date_bg_second"
+        android:gravity="center"
+        android:text="上一局"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/res_text_size_22sp"
+        app:layout_constraintBottom_toBottomOf="@id/recyclerView"
+        app:layout_constraintStart_toEndOf="@id/tvDown01"
+        app:layout_constraintTop_toTopOf="@id/recyclerView" />
+    <TextView
+        android:id="@+id/tvDown02"
+        android:layout_width="100dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/margin_size_12dp"
+        android:background="@drawable/date_bg_second"
+        android:gravity="center"
+        android:text="下一局"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/res_text_size_22sp"
+        app:layout_constraintBottom_toBottomOf="@id/recyclerView"
+        app:layout_constraintStart_toEndOf="@id/tvUp02"
+        app:layout_constraintTop_toTopOf="@id/recyclerView" />
+</androidx.constraintlayout.widget.ConstraintLayout>

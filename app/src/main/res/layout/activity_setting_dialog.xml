@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    tools:context=".mvp.view.activity.SettingDialogActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_shoot_data_fg">
+
+        <TextView
+            android:id="@+id/setting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_size_24dp"
+            android:layout_marginTop="@dimen/margin_mid_size_16dp"
+            android:layout_marginEnd="@dimen/margin_size_24dp"
+            android:layout_marginBottom="@dimen/margin_mid_size_16dp"
+            android:gravity="center"
+            android:text="设   置"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/res_text_size_24sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/close"
+            android:layout_width="@dimen/size_42dp"
+            android:layout_height="@dimen/size_42dp"
+            android:layout_marginTop="@dimen/margin_mid_size_16dp"
+            android:layout_marginEnd="@dimen/margin_size_24dp"
+            android:src="@drawable/close"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/system"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="108dp"
+            android:background="@drawable/bg_setting_left_select"
+            android:gravity="center"
+            android:text="系   统"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/res_text_size_24sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/face"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="220dp"
+            android:background="@drawable/bg_setting_left_unselect"
+            android:gravity="center"
+            android:text="靶   面"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/res_text_size_24sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/print"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="332dp"
+            android:background="@drawable/bg_setting_left_unselect"
+            android:gravity="center"
+            android:text="打   印"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/res_text_size_24sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <FrameLayout
+            android:layout_width="600dp"
+            android:layout_height="400dp"
+            android:layout_marginStart="240dp"
+            android:layout_marginTop="108dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <include
+                android:id="@+id/systemLayout"
+                layout="@layout/item_setting_system"
+                android:visibility="visible" />
+
+            <include
+                android:id="@+id/faceLayout"
+
+                layout="@layout/item_setting_face"
+                android:visibility="gone" />
+
+            <include
+                android:id="@+id/printLayout"
+                layout="@layout/item_setting_print"
+                android:visibility="gone" />
+        </FrameLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

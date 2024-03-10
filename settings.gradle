@@ -1,0 +1,2 @@
+include ':app', ':net_module', ':common_module', ':connect_module'
+rootProject.name='Shoot'

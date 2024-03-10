@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="58dp"
+    android:orientation="horizontal">
+
+
+    <RelativeLayout
+        android:layout_width="150dp"
+        android:layout_height="match_parent">
+        <ImageView
+            android:layout_centerInParent="true"
+            android:id="@+id/topImg"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:textColor="@android:color/white" />
+    </RelativeLayout>
+
+    <View
+        android:visibility="gone"
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="@color/main_style_blue" />
+
+    <TextView
+        android:id="@+id/dayTv"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="张三"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/res_text_size_22sp" />
+
+    <View
+        android:visibility="gone"
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="@color/main_style_blue" />
+
+    <TextView
+        android:id="@+id/weekTv"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="张三"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/res_text_size_22sp" />
+
+    <View
+        android:visibility="gone"
+
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="@color/main_style_blue" />
+
+    <TextView
+        android:id="@+id/monthTv"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="张三"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/res_text_size_22sp" />
+
+    <View
+        android:visibility="gone"
+
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="@color/main_style_blue" />
+
+    <TextView
+        android:id="@+id/yearTv"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="张三"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/res_text_size_22sp" />
+</LinearLayout>

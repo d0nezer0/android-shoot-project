@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">common_module</string>
+    <string name="no_available_network">网络未连接，请点击重试</string>
+
+</resources>

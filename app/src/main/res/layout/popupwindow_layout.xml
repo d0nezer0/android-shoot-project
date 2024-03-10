@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/shootNum_100"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@drawable/button_round_0"
+        android:gravity="center"
+        android:paddingStart="70dp"
+        android:paddingEnd="96dp"
+        android:text="1 0 0 米 胸 环 靶"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/res_text_size_22sp" />
+
+    <TextView
+        android:id="@+id/shootNum_50"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@drawable/button_round_0"
+        android:gravity="center"
+        android:paddingStart="70dp"
+        android:paddingEnd="96dp"
+        android:text="  5 0 米 胸 环 靶"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/res_text_size_22sp" />
+
+    <TextView
+        android:id="@+id/shootNum_25"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@drawable/button_round_0"
+        android:gravity="center"
+        android:paddingStart="70dp"
+        android:paddingEnd="96dp"
+        android:text="  2 5 米 胸 环 靶"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/res_text_size_22sp" />
+</LinearLayout>

@@ -1,0 +1,1059 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/main_background"
+    android:fitsSystemWindows="true"
+    tools:context=".mvp.view.activity.MainActivity">
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/tab_height_72"
+        android:background="@drawable/tab_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/main_time"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="36dp"
+            android:gravity="center_vertical"
+            android:text="2023-05-15 15:39:43"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/res_text_size_24sp"
+            android:textStyle="bold" />
+
+        <ImageView
+
+            android:visibility="invisible"
+            android:id="@+id/main_wifi"
+            android:layout_width="@dimen/img_size_24dp"
+            android:layout_height="@dimen/img_size_24dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="@dimen/margin_size_24dp"
+            android:src="@drawable/main_wifi" />
+
+        <ImageView
+            android:visibility="invisible"
+            android:id="@+id/main_battery"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="24dp"
+            android:src="@drawable/main_battery" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/jumpHistoryTv"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/margin_mid_size_16dp"
+            android:layout_marginBottom="@dimen/margin_mid_size_16dp"
+            android:background="@drawable/button_round_4"
+            android:drawableStart="@drawable/main_history"
+            android:drawablePadding="6dp"
+            android:gravity="center"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:text="历史记录"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/res_text_size_24sp" />
+
+        <TextView
+            android:id="@+id/setting"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/margin_size_24dp"
+            android:layout_marginTop="@dimen/margin_mid_size_16dp"
+            android:layout_marginEnd="@dimen/margin_size_24dp"
+            android:layout_marginBottom="@dimen/margin_mid_size_16dp"
+            android:background="@drawable/button_round_4"
+            android:drawableStart="@drawable/main_setting_icon"
+            android:drawablePadding="6dp"
+            android:gravity="center"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:text="设        置"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/res_text_size_24sp" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/main_title"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/tab_height_72"
+        android:gravity="center_vertical"
+        android:text="模 拟 训 练 系 统"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/res_text_size_28sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/topLayout"
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_size_24dp"
+        android:layout_marginTop="@dimen/margin_size_12dp"
+        android:background="@color/second_background"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/margin_size_12dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/main_title">
+
+        <TextView
+            android:id="@+id/topTitleBtn"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginStart="@dimen/margin_little_size_12dp"
+            android:layout_marginTop="@dimen/margin_little_size_12dp"
+            android:layout_marginEnd="@dimen/margin_little_size_12dp"
+            android:layout_marginBottom="@dimen/margin_little_size_12dp"
+            android:background="@drawable/button_round_4"
+            android:drawablePadding="6dp"
+            android:gravity="center"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:text="TOP 榜单"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/res_text_size_22sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="140dp"
+                android:layout_height="45dp"
+                android:layout_marginStart="@dimen/margin_little_size_12dp"
+                android:layout_marginEnd="@dimen/margin_little_size_12dp"
+                android:layout_marginBottom="8dp"
+                android:drawablePadding="6dp"
+                android:gravity="start|center_vertical"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:text="年度榜单"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/res_text_size_22sp" />
+            <TextView
+                android:id="@+id/top_year"
+                android:layout_width="wrap_content"
+                android:layout_height="45dp"
+                android:layout_marginStart="@dimen/margin_little_size_12dp"
+                android:layout_marginEnd="@dimen/margin_little_size_12dp"
+                android:layout_marginBottom="8dp"
+                android:drawablePadding="6dp"
+                android:gravity="start|center_vertical"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:text="李四"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/res_text_size_22sp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginStart="@dimen/margin_little_size_12dp"
+            android:layout_marginEnd="@dimen/margin_little_size_12dp"
+            android:background="@color/main_style_blue" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+
+                android:layout_width="140dp"
+                android:layout_height="45dp"
+                android:layout_marginStart="@dimen/margin_little_size_12dp"
+                android:layout_marginEnd="@dimen/margin_little_size_12dp"
+                android:layout_marginBottom="8dp"
+                android:drawablePadding="6dp"
+                android:gravity="start|center_vertical"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:text="月榜"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/res_text_size_22sp" />
+            <TextView
+                android:id="@+id/top_month"
+                android:layout_width="wrap_content"
+                android:layout_height="45dp"
+                android:layout_marginStart="@dimen/margin_little_size_12dp"
+                android:layout_marginEnd="@dimen/margin_little_size_12dp"
+                android:layout_marginBottom="8dp"
+                android:drawablePadding="6dp"
+                android:gravity="start|center_vertical"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:text="王东旭"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/res_text_size_22sp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginStart="@dimen/margin_little_size_12dp"
+            android:layout_marginEnd="@dimen/margin_little_size_12dp"
+            android:background="@color/main_style_blue" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="140dp"
+                android:layout_height="45dp"
+                android:layout_marginStart="@dimen/margin_little_size_12dp"
+                android:layout_marginEnd="@dimen/margin_little_size_12dp"
+                android:layout_marginBottom="8dp"
+                android:drawablePadding="6dp"
+                android:gravity="start|center_vertical"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:text="周榜"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/res_text_size_22sp" />
+            <TextView
+                android:id="@+id/top_week"
+
+                android:layout_width="wrap_content"
+                android:layout_height="45dp"
+                android:layout_marginStart="@dimen/margin_little_size_12dp"
+                android:layout_marginEnd="@dimen/margin_little_size_12dp"
+                android:layout_marginBottom="8dp"
+                android:drawablePadding="6dp"
+                android:gravity="start|center_vertical"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:text="王芳"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/res_text_size_22sp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginStart="@dimen/margin_little_size_12dp"
+            android:layout_marginEnd="@dimen/margin_little_size_12dp"
+            android:background="@color/main_style_blue" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="140dp"
+                android:layout_height="45dp"
+                android:layout_marginStart="@dimen/margin_little_size_12dp"
+                android:layout_marginEnd="@dimen/margin_little_size_12dp"
+                android:layout_marginBottom="8dp"
+                android:drawablePadding="6dp"
+                android:gravity="start|center_vertical"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:text="日榜"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/res_text_size_22sp" />
+            <TextView
+                android:id="@+id/top_day"
+                android:layout_width="wrap_content"
+                android:layout_height="45dp"
+                android:layout_marginStart="@dimen/margin_little_size_12dp"
+                android:layout_marginEnd="@dimen/margin_little_size_12dp"
+                android:layout_marginBottom="8dp"
+                android:drawablePadding="6dp"
+                android:gravity="start|center_vertical"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:text="张三"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/res_text_size_22sp" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/person_info"
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_size_24dp"
+        android:layout_marginTop="@dimen/margin_size_24dp"
+        android:background="@color/second_background"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/margin_size_24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/topLayout">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginBottom="@dimen/margin_mid_size_16dp"
+            android:background="@drawable/button_round_stroke_0"
+            android:drawablePadding="6dp"
+            android:gravity="center"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:text="用 户 信 息"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/res_text_size_22sp" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="140dp"
+                android:layout_height="45dp"
+                android:layout_marginStart="@dimen/margin_little_size_12dp"
+                android:layout_marginEnd="@dimen/margin_little_size_12dp"
+                android:drawablePadding="6dp"
+                android:gravity="start|center_vertical"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:text="名字"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/res_text_size_22sp" />
+
+            <TextView
+                android:id="@+id/userName"
+                android:text="张三"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/margin_little_size_12dp"
+                android:layout_marginEnd="@dimen/margin_little_size_12dp"
+                android:background="@drawable/button_round_4"
+                android:drawablePadding="6dp"
+                android:gravity="center"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/res_text_size_22sp" />
+        </LinearLayout>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginStart="@dimen/margin_little_size_12dp"
+            android:layout_marginEnd="@dimen/margin_little_size_12dp"
+            android:background="@color/main_style_blue" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="140dp"
+                android:layout_height="45dp"
+                android:layout_marginStart="@dimen/margin_little_size_12dp"
+                android:layout_marginEnd="@dimen/margin_little_size_12dp"
+                android:drawablePadding="6dp"
+                android:gravity="start|center_vertical"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:text="局ID"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/res_text_size_22sp" />
+
+            <TextView
+                android:id="@+id/userCurBout"
+                android:text="2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/margin_little_size_12dp"
+                android:layout_marginEnd="@dimen/margin_little_size_12dp"
+                android:drawablePadding="6dp"
+                android:gravity="center"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/res_text_size_22sp" />
+        </LinearLayout>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginStart="@dimen/margin_little_size_12dp"
+            android:layout_marginEnd="@dimen/margin_little_size_12dp"
+            android:background="@color/main_style_blue" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="140dp"
+                android:layout_height="45dp"
+                android:layout_marginStart="@dimen/margin_little_size_12dp"
+                android:layout_marginEnd="@dimen/margin_little_size_12dp"
+                android:drawablePadding="6dp"
+                android:gravity="start|center_vertical"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:text="当前发序"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/res_text_size_22sp" />
+
+            <TextView
+                android:id="@+id/tvCurFaxu"
+                android:text="6"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/margin_little_size_12dp"
+                android:layout_marginEnd="@dimen/margin_little_size_12dp"
+                android:drawablePadding="6dp"
+                android:gravity="center"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/res_text_size_22sp" />
+        </LinearLayout>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginStart="@dimen/margin_little_size_12dp"
+            android:layout_marginEnd="@dimen/margin_little_size_12dp"
+            android:background="@color/main_style_blue" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="140dp"
+                android:layout_height="45dp"
+                android:layout_marginStart="@dimen/margin_little_size_12dp"
+                android:layout_marginEnd="@dimen/margin_little_size_12dp"
+                android:drawablePadding="6dp"
+                android:gravity="start|center_vertical"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:text="当前环数"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/res_text_size_22sp" />
+
+            <TextView
+                android:id="@+id/tvCurRing"
+                android:text="9.8"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/margin_little_size_12dp"
+                android:layout_marginEnd="@dimen/margin_little_size_12dp"
+                android:drawablePadding="6dp"
+                android:gravity="center"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/res_text_size_22sp" />
+        </LinearLayout>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginStart="@dimen/margin_little_size_12dp"
+            android:layout_marginEnd="@dimen/margin_little_size_12dp"
+            android:background="@color/main_style_blue" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="140dp"
+                android:layout_height="45dp"
+                android:layout_marginStart="@dimen/margin_little_size_12dp"
+                android:layout_marginEnd="@dimen/margin_little_size_12dp"
+                android:drawablePadding="6dp"
+                android:gravity="start|center_vertical"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:text="总环数"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/res_text_size_22sp" />
+
+            <TextView
+                android:id="@+id/tvTotalRing"
+                android:text="40.2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/margin_little_size_12dp"
+                android:layout_marginEnd="@dimen/margin_little_size_12dp"
+                android:drawablePadding="6dp"
+                android:gravity="center"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/res_text_size_22sp" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/shootLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/margin_size_24dp"
+        android:background="@color/second_background"
+        android:padding="@dimen/margin_little_size_12dp"
+        app:layout_constraintBottom_toBottomOf="@id/person_info"
+        app:layout_constraintStart_toEndOf="@id/topLayout"
+        app:layout_constraintTop_toTopOf="@id/topLayout">
+
+        <!--android:drawableEnd="@drawable/arrow_down"-->
+        <TextView
+            android:id="@+id/shootNum"
+            android:layout_width="0dp"
+            android:layout_height="56dp"
+            android:background="@drawable/button_round_0"
+            android:drawablePadding="4dp"
+            android:gravity="center"
+            android:paddingStart="70dp"
+            android:paddingEnd="70dp"
+            android:text="胸 环 靶"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/res_text_size_22sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <FrameLayout
+            android:id="@+id/shootPerson"
+            android:layout_width="400dp"
+            android:layout_height="400dp"
+            android:layout_marginTop="@dimen/margin_little_size_12dp"
+            android:background="@android:color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/shootNum">
+
+
+            <View
+                android:foreground="@drawable/shoot_person_bg"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/white"
+                tools:targetApi="m" />
+
+            <org.ggxz.shoot.widget.TargetPointView
+                android:id="@+id/targetView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                android:scaleX="2"
+                android:scaleY="2"
+                android:translationY="40dp" />
+            <TextView
+                android:id="@+id/tvShootNum"
+                android:layout_marginTop="@dimen/margin_size_12dp"
+                android:layout_marginStart="@dimen/margin_size_24dp"
+                android:textColor="@color/main_style_blue"
+                android:textStyle="bold"
+                android:text="1"
+                android:textSize="60sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/gradeLayout"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/margin_size_24dp"
+            android:paddingEnd="@dimen/margin_size_24dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/shootPerson">
+
+
+            <TextView
+
+                android:id="@+id/grade"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="成绩"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="@dimen/res_text_size_18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/grade_count"
+                android:layout_width="@dimen/size_42dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/margin_mid_size_16dp"
+                android:layout_marginEnd="@dimen/margin_mid_size_16dp"
+                android:layout_marginBottom="4dp"
+                android:gravity="center_vertical|right"
+                android:text="0"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/res_text_size_24sp"
+                android:textStyle="bold" />
+
+            <ProgressBar
+                android:id="@+id/grade_progressBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="0dp"
+                android:layout_height="12dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/margin_mid_size_16dp"
+                android:layout_weight="1"
+                android:background="@drawable/progress_bg_10"
+                android:indeterminate="false"
+                android:paddingStart="1dp"
+                android:paddingTop="1dp"
+                android:paddingBottom="1dp"
+                android:progress="0"
+                android:progressDrawable="@drawable/round_progress"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/shootPerson"
+                tools:ignore="RtlSymmetry" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/gunLayout"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/margin_size_24dp"
+            android:paddingEnd="@dimen/margin_size_24dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/gradeLayout">
+
+
+            <TextView
+                android:id="@+id/gun"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="据枪"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="@dimen/res_text_size_18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/gun_count"
+                android:layout_width="@dimen/size_42dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_mid_size_16dp"
+                android:layout_marginEnd="@dimen/margin_mid_size_16dp"
+                android:layout_marginBottom="4dp"
+                android:gravity="center_vertical|right"
+                android:text="0"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/res_text_size_24sp"
+                android:textStyle="bold" />
+
+            <ProgressBar
+                android:id="@+id/gun_progressBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="0dp"
+                android:layout_height="12dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/margin_mid_size_16dp"
+                android:layout_weight="1"
+                android:background="@drawable/progress_bg_10"
+                android:indeterminate="false"
+                android:paddingStart="1dp"
+                android:paddingTop="1dp"
+                android:paddingBottom="1dp"
+                android:progress="0"
+                android:progressDrawable="@drawable/round_progress"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:ignore="RtlSymmetry" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/collimationLayout"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/margin_size_24dp"
+            android:paddingEnd="@dimen/margin_size_24dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/gunLayout">
+
+
+            <TextView
+                android:id="@+id/collimation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="瞄准"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="@dimen/res_text_size_18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/collimation_count"
+                android:layout_width="@dimen/size_42dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_mid_size_16dp"
+                android:layout_marginEnd="@dimen/margin_mid_size_16dp"
+                android:layout_marginBottom="4dp"
+                android:gravity="center_vertical|right"
+                android:text="0"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/res_text_size_24sp"
+                android:textStyle="bold" />
+
+            <ProgressBar
+                android:id="@+id/collimation_progressBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="0dp"
+                android:layout_height="12dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/margin_mid_size_16dp"
+                android:layout_weight="1"
+                android:background="@drawable/progress_bg_10"
+                android:indeterminate="false"
+                android:paddingStart="1dp"
+                android:paddingTop="1dp"
+                android:paddingBottom="1dp"
+                android:progress="0"
+                android:progressDrawable="@drawable/round_progress"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:ignore="RtlSymmetry" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/sendLayout"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/margin_size_24dp"
+            android:paddingEnd="@dimen/margin_size_24dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/collimationLayout">
+
+
+            <TextView
+                android:id="@+id/send"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="击发"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="@dimen/res_text_size_18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/send_count"
+                android:layout_width="@dimen/size_42dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_mid_size_16dp"
+                android:layout_marginEnd="@dimen/margin_mid_size_16dp"
+                android:layout_marginBottom="4dp"
+                android:gravity="center_vertical|right"
+                android:text="0"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/res_text_size_24sp"
+                android:textStyle="bold" />
+
+            <ProgressBar
+                android:id="@+id/send_progressBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="0dp"
+                android:layout_height="12dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/margin_mid_size_16dp"
+                android:layout_weight="1"
+                android:background="@drawable/progress_bg_10"
+                android:indeterminate="false"
+                android:paddingStart="1dp"
+                android:paddingTop="1dp"
+                android:paddingBottom="1dp"
+                android:progress="0"
+                android:progressDrawable="@drawable/round_progress"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/collimationLayout"
+                tools:ignore="RtlSymmetry" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/totalLayout"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/margin_size_24dp"
+            android:paddingEnd="@dimen/margin_size_24dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/sendLayout">
+
+
+            <TextView
+                android:id="@+id/total"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="总体"
+                android:textColor="@android:color/darker_gray"
+                android:textSize="@dimen/res_text_size_18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/total_count"
+                android:layout_width="@dimen/size_42dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_mid_size_16dp"
+                android:layout_marginEnd="@dimen/margin_mid_size_16dp"
+                android:layout_marginBottom="4dp"
+                android:gravity="center_vertical|right"
+                android:text="0"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/res_text_size_24sp"
+                android:textStyle="bold" />
+
+            <ProgressBar
+                android:id="@+id/total_progressBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="0dp"
+                android:layout_height="12dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/margin_mid_size_16dp"
+                android:layout_weight="1"
+                android:background="@drawable/progress_bg_10"
+                android:indeterminate="false"
+                android:paddingStart="1dp"
+                android:paddingTop="1dp"
+                android:paddingBottom="1dp"
+                android:progress="0"
+                android:progressDrawable="@drawable/round_progress"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:ignore="RtlSymmetry" />
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="@dimen/margin_size_24dp"
+        android:layout_marginEnd="@dimen/margin_size_24dp"
+        app:layout_constraintBottom_toBottomOf="@id/shootLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/shootLayout"
+        app:layout_constraintTop_toTopOf="@id/shootLayout">
+
+        <TextView
+            android:id="@+id/shootDataTitle"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginBottom="@dimen/margin_mid_size_16dp"
+            android:background="@drawable/button_round_stroke_0"
+            android:drawablePadding="6dp"
+            android:gravity="center"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:text="射 击 数 据"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/res_text_size_22sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/recyclerLayout"
+            android:layout_width="match_parent"
+            android:layout_height="316dp"
+            android:background="@color/second_background"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/shootDataTitle">
+
+            <LinearLayout
+                android:layout_marginBottom="4dp"
+                android:layout_width="72dp"
+                android:layout_height="match_parent"
+                android:layout_marginTop="4dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/height_size_60dp"
+                    android:gravity="end|center_vertical"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:text="发序"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/res_text_size_22sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/height_size_60dp"
+                    android:gravity="end|center_vertical"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:text="环数"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/res_text_size_22sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/height_size_60dp"
+                    android:gravity="end|center_vertical"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:text="方向"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/res_text_size_22sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/height_size_60dp"
+                    android:gravity="end|center_vertical"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:text="用时"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/res_text_size_22sp" />
+
+                <TextView
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/height_size_60dp"
+                    android:gravity="end|center_vertical"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:text="时间"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/res_text_size_22sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/height_size_60dp"
+                    android:gravity="end|center_vertical"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:text="查看"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/res_text_size_22sp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="4dp"
+                android:layout_marginBottom="16dp"
+                android:background="@android:color/white" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:overScrollMode="never"
+                tools:itemCount="10"
+                tools:listitem="@layout/item_shoot_data" />
+
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/margin_mid_size_16dp"
+            android:background="@color/second_background"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/recyclerLayout"
+            app:layout_constraintStart_toStartOf="@id/recyclerLayout"
+            app:layout_constraintTop_toBottomOf="@id/recyclerLayout" />
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/main_chart"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="@dimen/margin_size_24dp"
+            android:layout_marginTop="@dimen/size_32dp"
+            android:layout_marginEnd="@dimen/size_32dp"
+            android:layout_marginBottom="@dimen/size_32dp"
+            android:paddingBottom="@dimen/margin_mid_size_16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/recyclerLayout"
+            app:layout_constraintStart_toStartOf="@id/recyclerLayout"
+            app:layout_constraintTop_toBottomOf="@id/recyclerLayout" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/size_20dp"
+            android:layout_marginEnd="@dimen/margin_size_12dp"
+            android:text="瞄 准 折 线 图"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/res_text_size_16sp"
+            app:layout_constraintEnd_toEndOf="@id/main_chart"
+            app:layout_constraintTop_toBottomOf="@id/recyclerLayout" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/size_8dp"
+            android:layout_marginTop="@dimen/size_20dp"
+            android:layout_marginEnd="@dimen/margin_big_size_36dp"
+            android:text="环"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/res_text_size_16sp"
+            app:layout_constraintStart_toStartOf="@id/main_chart"
+            app:layout_constraintTop_toBottomOf="@id/recyclerLayout" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_size_24dp"
+            android:layout_marginEnd="@dimen/margin_big_size_36dp"
+            android:layout_marginBottom="@dimen/size_8dp"
+            android:text="秒"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/res_text_size_16sp"
+            app:layout_constraintBottom_toBottomOf="@id/main_chart"
+            app:layout_constraintStart_toEndOf="@id/main_chart" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

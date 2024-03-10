@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView android:id="@+id/tvNum"
+    android:layout_width="56dp"
+    android:layout_marginStart="@dimen/margin_size_12dp"
+    android:layout_marginEnd="@dimen/margin_size_12dp"
+    android:layout_height="45dp"
+    android:gravity="center"
+    android:textColor="@android:color/white"
+    android:textSize="@dimen/res_text_size_22sp"
+    xmlns:android="http://schemas.android.com/apk/res/android" />

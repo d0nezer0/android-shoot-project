@@ -1,0 +1,35 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="res_text_size_16sp">16sp</dimen>
+    <dimen name="res_text_size_18sp">18sp</dimen>
+    <dimen name="res_text_size_24sp">24sp</dimen>
+    <dimen name="res_text_size_20sp">20sp</dimen>
+    <dimen name="res_text_size_22sp">22sp</dimen>
+    <dimen name="res_text_size_28sp">28sp</dimen>
+    <dimen name="res_text_size_13sp">13sp</dimen>
+
+    <dimen name="tab_height_76">76dp</dimen>
+    <dimen name="tab_height_72">72dp</dimen>
+    <dimen name="tab_height_64">64dp</dimen>
+    <dimen name="img_size_24dp">24dp</dimen>
+    <dimen name="margin_size_24dp">24dp</dimen>
+    <dimen name="margin_size_12dp">12dp</dimen>
+    <dimen name="margin_big_size_36dp">36dp</dimen>
+    <dimen name="margin_little_size_12dp">12dp</dimen>
+    <dimen name="margin_mid_size_16dp">16dp</dimen>
+    <dimen name="height_size_60dp">60dp</dimen>
+    <dimen name="size_40dp">40dp</dimen>
+    <dimen name="size_42dp">42dp</dimen>
+    <dimen name="size_36dp">36dp</dimen>
+    <dimen name="size_46dp">46dp</dimen>
+    <dimen name="size_8dp">8dp</dimen>
+    <dimen name="size_4dp">4dp</dimen>
+    <dimen name="size_32dp">32dp</dimen>
+    <dimen name="size_48dp">48dp</dimen>
+    <dimen name="size_20dp">20dp</dimen>
+
+
+    <dimen name="tab_column_height">46dp</dimen>
+
+
+</resources>
