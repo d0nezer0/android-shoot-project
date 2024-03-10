@@ -641,7 +641,7 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
 
             // note 1. 成绩  根据板子的逻辑成绩不可能少于3.6环  所以评分少于3.6等于0分
             int grade = isMiss ? (Math.round(model.getRing() * 10F)) : 0;
-            gradeProgressBar.setProgress(grade < 36 ? 0 : (grade - 10));
+            gradeProgressBar.setProgress(grade < 36 ? 0 : grade);
             gradeCount.setText(String.valueOf(grade < 36 ? 0 : (grade - 10)));
             curRing = (grade == 0 ? 0 : grade / 10F);
 
