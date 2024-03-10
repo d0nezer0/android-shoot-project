@@ -66,6 +66,9 @@ import tp.xmaihh.serialport.SerialHelper;
 import tp.xmaihh.serialport.bean.ComBean;
 import tp.xmaihh.serialport.utils.ByteUtil;
 
+/**
+ * 本地启动的时候需要注释下面的一些初始化方法。
+ */
 public class ConfigActivity extends AppCompatActivity {
     ArrayAdapter<Integer> arrayAdapter;
     private Integer[] spinnerArray = new Integer[]{5, 10, 15, 20, 25, 30}; //发数数组
@@ -238,6 +241,9 @@ public class ConfigActivity extends AppCompatActivity {
         }
     };
 
+    /*
+    系统上的几种射击方式选择；
+     */
     private void dealMsg(Message msg) {
         ComBean comBean = (ComBean) msg.obj;
         String rxText = ByteUtil.ByteArrToHex(comBean.bRec);

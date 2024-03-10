@@ -18,6 +18,9 @@ public class InitHelper {
 
     public static void init(final NetCallBack<InitModeData> callBack) {
         RemoteService service = Network.remote();
+        // 设备 ID 打印；
+        System.out.println(android.os.Build.SERIAL);
+        Log.e("InitHelper", "设备 id = " + android.os.Build.SERIAL);
         Call<InitModeData> call = service.init(android.os.Build.SERIAL);
         call.enqueue(new Callback<InitModeData>() {
             @Override
