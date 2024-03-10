@@ -8,20 +8,46 @@
     android:orientation="vertical"
     tools:context=".mvp.view.activity.ConfigActivity">
 
-
+    <LinearLayout
+        android:id="@+id/status"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@drawable/bg_shoot_data_fg"
+        android:orientation="horizontal">
+        <TextClock
+            android:id="@+id/timeText"
+            android:visibility="visible"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="10dp"
+            android:gravity="center"
+            android:text="2023-05-15 15:39:43"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/res_text_size_24sp"
+            android:textStyle="bold"
+            android:format12Hour="yyyy-MM-dd HH:mm:ss"
+            android:format24Hour="yyyy-MM-dd HH:mm:ss" />
+        <ImageView
+            android:visibility="gone"
+            android:id="@+id/config_battery"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="10dp"
+            android:src="@drawable/dianliang4" />
+    </LinearLayout>
    <ScrollView
        android:fillViewport="true"
        android:layout_width="match_parent"
        android:layout_height="match_parent">
-       <LinearLayout
 
+       <LinearLayout
            android:id="@+id/container"
            android:layout_width="match_parent"
            android:layout_height="wrap_content"
            android:background="@drawable/bg_shoot_data_fg"
            android:gravity="center"
            android:orientation="vertical">
-
            <TextView
                android:layout_width="match_parent"
                android:layout_height="wrap_content"
@@ -101,14 +127,14 @@
                    android:textSize="@dimen/res_text_size_22sp" />
 
                <EditText
-                   android:inputType="number"
                    android:id="@+id/numEt"
                    android:layout_width="200dp"
                    android:layout_height="@dimen/size_42dp"
                    android:layout_marginStart="@dimen/margin_size_24dp"
                    android:background="@drawable/date_bg"
                    android:gravity="start|center_vertical"
-                   android:hint=""
+                   android:hint="1-99"
+                   android:inputType="number"
                    android:paddingStart="@dimen/margin_size_12dp"
                    android:textColor="@android:color/white"
                    android:textColorHint="@android:color/darker_gray"
@@ -145,7 +171,9 @@
                        android:background="@drawable/date_bg"
                        android:gravity="start|center_vertical"
                        android:hint=""
+                       android:maxLength="7"
                        android:paddingStart="@dimen/margin_size_12dp"
+                       android:singleLine="true"
                        android:textColor="@android:color/white"
                        android:textColorHint="@android:color/darker_gray"
                        android:textSize="@dimen/res_text_size_22sp" />
@@ -173,7 +201,7 @@
                        android:layout_marginStart="@dimen/margin_size_24dp"
                        android:background="@drawable/date_bg"
                        android:gravity="start|center_vertical"
-                       android:hint=""
+                       android:hint="1-100"
                        android:paddingStart="@dimen/margin_size_12dp"
                        android:textColor="@android:color/white"
                        android:textColorHint="@android:color/darker_gray"
@@ -194,19 +222,14 @@
                        android:textColor="@android:color/white"
                        android:textSize="@dimen/res_text_size_22sp" />
 
-                   <EditText
-                       android:inputType="number"
-                       android:id="@+id/shootNumEt"
+                   <Spinner
+                       android:id="@+id/spinner_shootNumber"
                        android:layout_width="200dp"
                        android:layout_height="@dimen/size_42dp"
                        android:layout_marginStart="@dimen/margin_size_24dp"
                        android:background="@drawable/date_bg"
-                       android:gravity="start|center_vertical"
-                       android:hint=""
-                       android:paddingStart="@dimen/margin_size_12dp"
-                       android:textColor="@android:color/white"
-                       android:textColorHint="@android:color/darker_gray"
-                       android:textSize="@dimen/res_text_size_22sp" />
+                       android:gravity="left" />
+
                </LinearLayout>
            </LinearLayout>
 
@@ -234,6 +257,7 @@
                    android:background="@drawable/date_bg"
                    android:gravity="start|center_vertical"
                    android:hint=""
+                   android:text="192.168.1.48"
                    android:paddingStart="@dimen/margin_size_12dp"
                    android:textColor="@android:color/white"
                    android:textColorHint="@android:color/darker_gray"
@@ -254,6 +278,8 @@
                android:text="开  始  射  击"
                android:textColor="@android:color/white"
                android:textSize="@dimen/res_text_size_22sp" />
+
+
        </LinearLayout>
    </ScrollView>
 </LinearLayout>

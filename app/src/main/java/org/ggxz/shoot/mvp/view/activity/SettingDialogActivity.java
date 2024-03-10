@@ -1,11 +1,19 @@
 package org.ggxz.shoot.mvp.view.activity;
 
 
+import static org.ggxz.shoot.mvp.view.activity.ConfigActivity.isGunInit;
+import static org.ggxz.shoot.mvp.view.activity.ConfigActivity.isInitSerialPort;
+import static org.ggxz.shoot.mvp.view.activity.ConfigActivity.mPrinter;
+import static org.ggxz.shoot.mvp.view.activity.ConfigActivity.serialHelper;
+import static org.ggxz.shoot.mvp.view.activity.MainActivity.isInitTargetSurface;
+
 import android.graphics.Color;
 import android.os.Build;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,7 +24,9 @@ import com.example.common_module.base.mvp.BaseMvpActivity;
 import com.example.common_module.common.Constant;
 import com.example.common_module.db.mode.UserModel;
 import com.example.common_module.utils.SPUtils;
+import com.example.common_module.utils.ToastUtils;
 import com.example.common_module.utils.UIUtils;
+import com.printsdk.PrintSerializable;
 
 import org.ggxz.shoot.R;
 import org.ggxz.shoot.mvp.presenter.SettingPresenter;
@@ -28,6 +38,8 @@ import butterknife.BindView;
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class SettingDialogActivity extends BaseMvpActivity<SettingPresenter> implements SettingView<UserModel> {
 
+    @BindView((R.id.check_auto_print))
+    CheckBox checkBoxAutoPrint;
     @BindView(R.id.face)
     TextView face;
     @BindView(R.id.system)
@@ -52,6 +64,15 @@ public class SettingDialogActivity extends BaseMvpActivity<SettingPresenter> imp
     ImageView close;
     private boolean switchGunFg = false;
     private boolean switchScreenFg = true;
+
+    @BindView(R.id.serialPort)
+    TextView serialPort;
+    @BindView(R.id.gunStatus)
+    TextView gunStatus;
+    @BindView(R.id.printStatus)
+    TextView printStatus;
+    @BindView(R.id.targetStatus)
+    TextView targetStatus;
 
     @Override
     protected void initLayout() {
@@ -157,5 +178,42 @@ public class SettingDialogActivity extends BaseMvpActivity<SettingPresenter> imp
             shootType2.setBackgroundColor(Color.TRANSPARENT);
 
         }
+        //串口
+
+        if (isInitSerialPort) {
+            serialPort.setText("串口打开成功");
+        } else {
+            serialPort.setText("串口打开失败");
+        }
+
+        //配置成功
+        if (isGunInit) {
+            gunStatus.setText("枪配网成功");
+        } else {
+            gunStatus.setText("枪配网失败");
+        }
+
+        //打印机状态
+        if (mPrinter != null && mPrinter.getState() == PrintSerializable.CONN_SUCCESS) {
+            printStatus.setText("打印机初始化成功");
+        } else {
+            printStatus.setText("打印机初始化失败");
+        }
+        //靶面
+        if (isInitTargetSurface) {
+            targetStatus.setText("靶面配网成功");
+        } else {
+            targetStatus.setText("靶面配网失败");
+        }
+
+        //是否自动打印checkbox
+        checkBoxAutoPrint.setChecked(SPUtils.getInstance(getApplication()).getBoolean("auto_print",false));
+        checkBoxAutoPrint.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SPUtils.getInstance(getApplication()).put("auto_print", isChecked);
+            }
+        });
+
     }
 }

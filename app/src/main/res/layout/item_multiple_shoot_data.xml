@@ -5,29 +5,27 @@
     android:layout_height="60dp"
     android:gravity="center"
     android:orientation="horizontal"
-    tools:background="@color/black"
-    android:paddingRight="@dimen/size_8dp">
+    android:paddingRight="@dimen/size_8dp"
+    tools:background="@color/black">
 
     <TextView
-        android:layout_marginStart="@dimen/size_8dp"
-        android:background="@drawable/button_round_trans_8"
-        tools:visibility="visible"
         android:id="@+id/title_name"
         android:layout_width="@dimen/tab_height_72"
         android:layout_height="48dp"
+        android:layout_gravity="center"
+        android:layout_marginStart="12dp"
+        android:background="@drawable/button_round_trans_8"
         android:gravity="center"
         android:paddingStart="12dp"
         android:paddingEnd="12dp"
-        android:layout_gravity="center"
-
         android:text="枪1"
+
         android:textColor="@android:color/white"
         android:textSize="@dimen/res_text_size_22sp"
-        android:visibility="gone" />
+        android:visibility="gone"
+        tools:visibility="visible" />
 
     <View
-        tools:visibility="visible"
-        android:visibility="gone"
         android:id="@+id/title_line"
         android:layout_width="1dp"
         android:layout_height="match_parent"
@@ -35,20 +33,46 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="16dp"
-        android:background="@android:color/white" />
+        android:background="@android:color/white"
+        android:visibility="gone"
+        tools:visibility="visible" />
 
-    <TextView
-        android:layout_marginStart="@dimen/size_8dp"
-        android:id="@+id/ring_num"
-        android:layout_width="86dp"
-        android:layout_height="@dimen/size_48dp"
-        android:layout_weight="1"
-        android:background="@drawable/button_round_trans_8"
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
         android:gravity="center"
-        android:text="10"
-        android:textColor="@android:color/white"
-        android:textSize="@dimen/res_text_size_22sp"
-        android:visibility="visible" />
+        android:orientation="vertical"
+        android:paddingRight="8dp"
+        tools:background="@color/black">
+
+        <TextView
+            android:id="@+id/fa_xu"
+            android:layout_width="73dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:background="@drawable/button_round_trans_8"
+            android:gravity="center"
+            android:text="1"
+            android:textColor="@android:color/white"
+            android:textSize="22sp"
+            android:visibility="visible" />
+
+        <TextView
+            android:id="@+id/ring_num"
+            android:layout_width="73dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:background="@drawable/button_round_trans_8"
+            android:gravity="center"
+            android:text="10"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/res_text_size_22sp"
+            android:visibility="visible" />
+    </LinearLayout>
 </LinearLayout>
 
 

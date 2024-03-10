@@ -1,10 +1,18 @@
 package org.ggxz.shoot.mvp.view.activity;
 
 
+import static org.ggxz.shoot.R2.drawable.dianliang0;
+import static org.ggxz.shoot.R2.drawable.dianliang4;
+import static org.ggxz.shoot.R2.drawable.main_wifi;
+import static org.ggxz.shoot.mvp.view.activity.ConfigActivity.mPrinter;
+
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Parcelable;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -15,11 +23,15 @@ import com.example.common_module.base.mvp.BasePresenterImpl;
 import com.example.common_module.common.Constant;
 import com.example.common_module.db.DbDownUtil;
 import com.example.common_module.db.mode.ShootDataModel;
+import com.example.common_module.db.mode.SingleShootDataModel;
 import com.example.common_module.utils.SPUtils;
+import com.example.common_module.utils.ToastUtils;
 import com.example.common_module.view.NoScrollerViewPager;
 import com.example.net_module.mode.InitMode;
+import com.printsdk.PrintSerializable;
 
 import org.ggxz.shoot.R;
+import org.ggxz.shoot.R2;
 import org.ggxz.shoot.adapter.DetailsFragmentAdapter;
 import org.ggxz.shoot.mvp.presenter.impl.DetailsPresenterImpl;
 import org.ggxz.shoot.mvp.view.activity_view.DetailsView;
@@ -42,8 +54,12 @@ public class DetailsActivity extends BaseMvpActivity<BasePresenterImpl> implemen
     private DetailsPage2Fragment page2Fragment;
     private DetailsPage3Fragment page3Fragment;
     private DetailsFragmentAdapter fragmentAdapter;
+    @BindView(R.id.qr_code)
+    ImageView qRCodeImage;
     @BindView(R.id.viewPager)
     NoScrollerViewPager viewPager;
+    @BindView(R.id.tvBtn00)
+    TextView tvBtn00;
     @BindView(R.id.tvBtn01)
     TextView tvBtn01;
     @BindView(R.id.tvBtn02)
@@ -62,6 +78,7 @@ public class DetailsActivity extends BaseMvpActivity<BasePresenterImpl> implemen
     @BindView(R.id.totalRing)
     TextView totalRing;
     DecimalFormat df = new DecimalFormat("#.#");
+
 
 
     //1是Main  2是History
@@ -91,15 +108,22 @@ public class DetailsActivity extends BaseMvpActivity<BasePresenterImpl> implemen
         fragments.add(page3Fragment);
         fragmentAdapter = new DetailsFragmentAdapter(getSupportFragmentManager(), fragments);
         viewPager.setAdapter(fragmentAdapter);
+
+        tvBtn00.setOnClickListener(v -> {
+            page1Fragment.print();
+        });
         tvBtn01.setOnClickListener(v -> {
             viewPager.setCurrentItem(0, false);
             page1Fragment.initView();
             clickChangeBg(0, true);
         });
         tvBtn02.setOnClickListener(v -> {
-            viewPager.setCurrentItem(1, false);
-            page2Fragment.initView();
-            clickChangeBg(1, true);
+
+                viewPager.setCurrentItem(1, false);
+                page2Fragment.initView();
+                clickChangeBg(1, true);
+
+
         });
         tvBtn03.setOnClickListener(v -> {
             viewPager.setCurrentItem(2, false);
@@ -184,5 +208,8 @@ public class DetailsActivity extends BaseMvpActivity<BasePresenterImpl> implemen
         }
     }
 
+     public void changeImage(Bitmap bitmap){
+            qRCodeImage.setImageBitmap(bitmap);
+     }
 
 }

@@ -24,17 +24,19 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@+id/main_time"
+            <TextClock
+                android:id="@+id/detail_time"
+                android:visibility="visible"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginStart="36dp"
-                android:gravity="center_vertical"
+                android:layout_marginStart="10dp"
+                android:gravity="center"
                 android:text="2023-05-15 15:39:43"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/res_text_size_24sp"
                 android:textStyle="bold"
-                android:visibility="invisible" />
+                android:format12Hour="yyyy-MM-dd HH:mm:ss"
+                android:format24Hour="yyyy-MM-dd HH:mm:ss" />
 
             <ImageView
 
@@ -219,6 +221,13 @@
                 android:layout_marginStart="@dimen/margin_size_12dp"
                 android:layout_marginEnd="@dimen/margin_size_12dp"
                 android:background="@color/main_style_blue" />
+
+            <ImageView
+                android:id="@+id/qr_code"
+                android:layout_width="160dp"
+                android:layout_height="160dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp" />
         </LinearLayout>
 
         <FrameLayout
@@ -229,11 +238,25 @@
             app:layout_constraintTop_toTopOf="@id/leftTitle">
 
             <TextView
+                android:id="@+id/tvBtn00"
+                android:layout_width="120dp"
+                android:layout_height="60dp"
+                android:layout_gravity="right|center_vertical"
+                android:layout_marginEnd="338dp"
+                android:background="@drawable/left_check_bg"
+                android:drawablePadding="12dp"
+                android:gravity="center"
+                android:text="打 印"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/res_text_size_22sp"
+                tools:ignore="RtlHardcoded,RtlSymmetry" />
+
+            <TextView
                 android:id="@+id/tvBtn01"
                 android:layout_width="120dp"
                 android:layout_height="60dp"
                 android:layout_gravity="right|center_vertical"
-                android:layout_marginEnd="230dp"
+                android:layout_marginEnd="229dp"
                 android:background="@drawable/left_check_bg"
                 android:drawablePadding="6dp"
                 android:gravity="center"

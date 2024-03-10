@@ -17,17 +17,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/main_time"
+        <TextClock
+            android:id="@+id/multiple_time"
+            android:visibility="visible"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginStart="36dp"
-            android:gravity="center_vertical"
+            android:layout_marginStart="10dp"
+            android:gravity="center"
             android:text="2023-05-15 15:39:43"
             android:textColor="@android:color/white"
             android:textSize="@dimen/res_text_size_24sp"
             android:textStyle="bold"
-            android:visibility="gone" />
+            android:format12Hour="yyyy-MM-dd HH:mm:ss"
+            android:format24Hour="yyyy-MM-dd HH:mm:ss" />
 
         <ImageView
 

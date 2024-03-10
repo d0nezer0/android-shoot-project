@@ -380,9 +380,11 @@
             android:textSize="@dimen/res_text_size_16sp"
             app:layout_constraintBottom_toBottomOf="@id/main_chart"
             app:layout_constraintStart_toEndOf="@id/main_chart" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <TextView
+        android:visibility="invisible"
         android:drawablePadding="16dp"
         android:id="@+id/print"
         android:layout_width="120dp"
@@ -481,4 +483,5 @@
         app:layout_constraintBottom_toBottomOf="@id/recyclerView"
         app:layout_constraintStart_toEndOf="@id/tvUp02"
         app:layout_constraintTop_toTopOf="@id/recyclerView" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,7 +4,7 @@ public class Constant {
     public static final float RADIUS = 160.0F;
 
     //串口 波特率
-    public static final String SPORT_NAME = "/dev/ttyS3";
+    public static final String SPORT_NAME = "/dev/ttyS3";//dev/ttyS3
     public static final int BAUD_RATE = 9600;
 
     /**

@@ -58,6 +58,162 @@
     </LinearLayout>
 
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:drawablePadding="6dp"
+            android:gravity="start|center_vertical"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:text="串口状态："
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/res_text_size_20sp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/button_round_stroke_0"
+            android:orientation="horizontal"
+            android:padding="4dp">
+
+            <TextView
+                android:id="@+id/serialPort"
+                android:layout_width="320dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/button_round_0"
+                android:drawablePadding="6dp"
+                android:gravity="center"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:text="未知状态"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/res_text_size_20sp" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:drawablePadding="6dp"
+            android:gravity="start|center_vertical"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:text="枪  状  态："
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/res_text_size_20sp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/button_round_stroke_0"
+            android:orientation="horizontal"
+            android:padding="4dp">
+
+            <TextView
+                android:id="@+id/gunStatus"
+                android:layout_width="320dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/button_round_0"
+                android:drawablePadding="6dp"
+                android:gravity="center"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:text="未知状态"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/res_text_size_20sp" />
+
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:drawablePadding="6dp"
+            android:gravity="start|center_vertical"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:text="打  印  机："
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/res_text_size_20sp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/button_round_stroke_0"
+            android:orientation="horizontal"
+            android:padding="4dp">
+
+            <TextView
+                android:id="@+id/printStatus"
+                android:layout_width="320dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/button_round_0"
+                android:drawablePadding="6dp"
+                android:gravity="center"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:text="未知状态"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/res_text_size_20sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:drawablePadding="6dp"
+            android:gravity="start|center_vertical"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:text="靶        面："
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/res_text_size_20sp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/button_round_stroke_0"
+            android:orientation="horizontal"
+            android:padding="4dp">
+
+            <TextView
+                android:id="@+id/targetStatus"
+                android:layout_width="320dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/button_round_0"
+                android:drawablePadding="6dp"
+                android:gravity="center"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:text="未知状态"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/res_text_size_20sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
         android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="48dp"
@@ -116,4 +272,24 @@
         android:text="自适应屏幕"
         android:textColor="@android:color/white"
         android:textSize="@dimen/res_text_size_24sp" />
+   <!-- <TextView
+        android:layout_width="300dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="72dp"
+        android:layout_marginTop="52dp"
+        android:background="@drawable/bg_setting_tv"
+        android:gravity="center"
+        android:text="自适应屏幕"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/res_text_size_24sp" />
+    <TextView
+        android:layout_width="300dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="72dp"
+        android:layout_marginTop="52dp"
+        android:background="@drawable/bg_setting_tv"
+        android:gravity="center"
+        android:text="自适应屏幕"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/res_text_size_24sp" />-->
 </LinearLayout>

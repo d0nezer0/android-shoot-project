@@ -2,12 +2,11 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.jakewharton.butterknife'
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion "28.0.3"
+    compileSdkVersion 32
     defaultConfig {
         applicationId "org.ggxz.shoot"
         minSdkVersion 19
-        targetSdkVersion 28
+        targetSdkVersion 32
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -16,6 +15,18 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    //指定so库的位置，加载so库
+    sourceSets {
+        main {
+            // 1. 配置在根目录libs下可以加载第三方so库, (最好不要创建jniLibs, 在众多的开源库中可能会引起冲突,还没发现)
+            // 2. 运行时会自动将libs目录下的so库拷贝到指定目录
+            // 3. 如果自己创建的so不需要重新编译,可以将(app/build/intermediates/transforms)生成的so拷贝到这个目录
+            jniLibs.srcDirs = ['libs']
+            // 如果是单个文件夹 可以直接这样如下配置
+            // jniLibs.srcDir 'libs'
         }
     }
 
@@ -33,7 +44,7 @@ android {
                 keyAlias 'key0'
                 keyPassword 'gg199402'
             } catch (ex) {
-                throw new InvalidUserDataException("gradle.properties中未添加")
+                throw new Exception("gradle.properties中未添加")
             }
         }
         release {
@@ -43,7 +54,7 @@ android {
                 keyAlias 'key0'
                 keyPassword 'gg199402'
             } catch (ex) {
-                throw new InvalidUserDataException("gradle.properties中未添加")
+                throw new Exception("gradle.properties中未添加")
             }
         }
     }
@@ -73,5 +84,14 @@ dependencies {
 
     //串口通信工具类
     implementation 'tp.xmaihh:serialport:2.1'
+
+    //生成二维码
+    implementation 'com.google.zxing:core:3.4.1'
+
+    //打印依赖
+    implementation files('libs/printsdk.jar')
+
+    // android导出Excel使用什么库
+    implementation 'net.sourceforge.jexcelapi:jxl:2.6.12'
 
 }

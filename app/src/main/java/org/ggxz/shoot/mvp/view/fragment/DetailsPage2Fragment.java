@@ -133,36 +133,36 @@ public class DetailsPage2Fragment extends Fragment {
     }
 
     public void initView() {
-        activity = ((DetailsActivity) Objects.requireNonNull(getActivity()));
-        helper = new MainAvtivityHelper();
+            activity = ((DetailsActivity) Objects.requireNonNull(getActivity()));
+            helper = new MainAvtivityHelper();
 
-        models = DbDownUtil.getInstance().searchListBout(ids);
-        if (type == 1)
-            activity.curBout = spUtils.getInt(Constant.CUR_BOUT);
+            models = DbDownUtil.getInstance().searchListBout(ids);
+            if (type == 1)
+                activity.curBout = spUtils.getInt(Constant.CUR_BOUT);
 //        else
 //            activity.curBout = models.size();
 
 
-        curShoot = models.get(activity.curBout - 1);
-        List<SingleShootDataModel> singleShootDataModels = curShoot.getData();
-        curSingle = singleShootDataModels.get(pos);
-        adapter = new DetailsRVAdapter(requireContext(), curShoot.getData());
-        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
-        recyclerView.setAdapter(adapter);
-        adapter.setOnItemClickListener((parent, view, position, id) -> {
-            List<SingleShootDataModel> data = curShoot.getData();
-            curSingle = data.get(position);
-            adapter.setPos(position);
-            pos = position;
-            setChartData(curSingle.getCheck());
-            targetView(curSingle);
+            curShoot = models.get(activity.curBout - 1);
+            List<SingleShootDataModel> singleShootDataModels = curShoot.getData();
+            curSingle = singleShootDataModels.get(pos);
+            adapter = new DetailsRVAdapter(requireContext(), curShoot.getData());
+            recyclerView.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false));
+            recyclerView.setAdapter(adapter);
+            adapter.setOnItemClickListener((parent, view, position, id) -> {
+                List<SingleShootDataModel> data = curShoot.getData();
+                curSingle = data.get(position);
+                adapter.setPos(position);
+                pos = position;
+                setChartData(curSingle.getCheck());
+                targetView(curSingle);
 
-        });
-        adapter.setPos(pos);
-        recyclerView.scrollToPosition(pos);
+            });
+            adapter.setPos(pos);
+            recyclerView.scrollToPosition(pos);
 
-        initChart();
-        initClick();
+            initChart();
+            initClick();
     }
 
     private void initData() {

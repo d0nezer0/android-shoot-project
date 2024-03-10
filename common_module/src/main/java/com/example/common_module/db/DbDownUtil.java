@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.example.common_module.App;
+import com.example.common_module.db.mode.ConfigDataModel;
+import com.example.common_module.db.mode.ConfigDataModelDao;
 import com.example.common_module.db.mode.DaoMaster;
 import com.example.common_module.db.mode.DaoSession;
 import com.example.common_module.db.mode.EntryModel;
@@ -153,6 +155,16 @@ public class DbDownUtil {
         List<UserModel> list = daoSession.queryRaw(UserModel.class, "where USER_ID = ?", String.valueOf(userId));
         return list.isEmpty() ? null : list.get(0);
     }
+    public void deleteUser(long userId) {
+        DaoSession daoSession = getReadDaoSession();
+        UserModelDao dao = daoSession.getUserModelDao();
+        dao.deleteByKey(userId);
+    }
+    public void deleteShootData(long id) {
+        DaoSession daoSession = getReadDaoSession();
+        ShootDataModelDao dao = daoSession.getShootDataModelDao();
+        dao.deleteByKey(id);
+    }
 
     public List<UserModel> findAllUser() {
         DaoSession daoSession = getReadDaoSession();
@@ -179,6 +191,27 @@ public class DbDownUtil {
                 .where(UserModelDao.Properties.CreateTime.between(start_time, end_time))
                 .orderDesc(UserModelDao.Properties.CreateTime)
                 .list();
+    }
+    public List<ShootDataModel> findAllShootDataModelByTime(long start_time, long end_time) {
+        DaoSession daoSession = getReadDaoSession();
+        ShootDataModelDao dao = daoSession.getShootDataModelDao();
+        return dao.queryBuilder()
+                .where(ShootDataModelDao.Properties.CreateTime.between(start_time, end_time))
+                .orderDesc(ShootDataModelDao.Properties.CreateTime)
+                .list();
+    }
+
+    public long insertConfigDataModel(ConfigDataModel configDataModel) {
+        DaoMaster daoMaster = new DaoMaster(getWritableDatabase());
+        DaoSession daoSession = daoMaster.newSession();
+        ConfigDataModelDao dao = daoSession.getConfigDataModelDao();
+        return dao.insertOrReplace(configDataModel);
+    }
+
+    public List<ConfigDataModel> findAllConfigData() {
+        DaoSession daoSession = getReadDaoSession();
+        ConfigDataModelDao dao = daoSession.getConfigDataModelDao();
+        return dao.queryBuilder().orderDesc(ConfigDataModelDao.Properties.CreateTime).list();
     }
 
     public List<ShootDataModel> searchListBout(List<Integer> ids) {

@@ -7,6 +7,8 @@ import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -18,7 +20,10 @@ import com.example.common_module.db.mode.ShootDataModel;
 
 import org.ggxz.shoot.R;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 
@@ -27,6 +32,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
 
     private ItemClickListener<HistoryAdapter.ViewHolder> listener;
     private List<ShootDataModel> data;
+    private Map<Long, Boolean> mCheckMap=new HashMap<>();
+    private List<CheckBox> checkboxList=new ArrayList<>();
 
     public HistoryAdapter(Context context) {
         this.context = context;
@@ -43,6 +50,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+
         ShootDataModel model = data.get(position);
         holder.tvNum.setText(position + 1 + "");
         holder.tvTime.setText(TimeUtils.millis2String(model.getCreateTime()));
@@ -52,6 +60,15 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         holder.collimation.setText(String.valueOf(model.getTotalCollimation()));
         holder.send.setText(String.valueOf(model.getTotalSend()));
         holder.total.setText(String.valueOf(model.getTotalAll()));
+        holder.checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                mCheckMap.put(model.getId(), true);
+            } else {
+                mCheckMap.put(model.getId(), false);
+            }
+            //notifyDataSetChanged();
+        });
+        //checkboxList.add(holder.checkBox);
         if (position % 2 == 0) {
             holder.itemView.setBackground(context.getDrawable(R.drawable.bg_item_history_rv));
         } else {
@@ -65,7 +82,17 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
 
     public void setData(List<ShootDataModel> list) {
         data = list;
+        for(CheckBox checkbox : checkboxList){
+            checkbox.setChecked(false);
+        }
         notifyDataSetChanged();
+    }
+
+    public Map<Long, Boolean> getCheckMap(){
+        return mCheckMap;
+    }
+    public void  removeCheckMap(){
+         mCheckMap.clear();
     }
 
     public void setOnItemClickListener(ItemClickListener<HistoryAdapter.ViewHolder> listener) {
@@ -89,6 +116,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         TextView total;
         TextView check;
         View itemView;
+        CheckBox checkBox;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -103,6 +131,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
             gun = itemView.findViewById(R.id.gun);
             total = itemView.findViewById(R.id.total);
             check = itemView.findViewById(R.id.check);
+            checkBox=itemView.findViewById(R.id.checkBox);
 
         }
     }

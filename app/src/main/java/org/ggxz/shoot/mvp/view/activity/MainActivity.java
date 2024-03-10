@@ -1,5 +1,10 @@
 package org.ggxz.shoot.mvp.view.activity;
 
+import static org.ggxz.shoot.mvp.view.activity.ConfigActivity.mPrinter;
+
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
@@ -21,6 +26,7 @@ import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.blankj.utilcode.utils.TimeUtils;
 import com.example.common_module.base.mvp.BaseMvpActivity;
 import com.example.common_module.common.Constant;
 import com.example.common_module.db.DbDownUtil;
@@ -29,21 +35,20 @@ import com.example.common_module.db.mode.EntryModel;
 import com.example.common_module.db.mode.ShootDataModel;
 import com.example.common_module.db.mode.SingleShootDataModel;
 import com.example.common_module.db.mode.UserModel;
-import com.example.common_module.utils.AssetFileReader;
+import com.example.common_module.db.mode.UserShootReportData;
 import com.example.common_module.utils.PopWindowUtil;
 import com.example.common_module.utils.SPUtils;
 import com.example.common_module.utils.ToastUtils;
 import com.example.common_module.utils.player.AudioPlayerHelper;
-import com.example.net_module.callback.NetCallBack;
 import com.example.net_module.helper.InitHelper;
 import com.example.net_module.mode.InitMode;
 import com.example.net_module.mode.InitModeData;
-import com.example.net_module.mode.TopUser;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.printsdk.PrintSerializable;
 
 import org.ggxz.shoot.R;
 import org.ggxz.shoot.adapter.MainAdapter;
@@ -51,15 +56,24 @@ import org.ggxz.shoot.adapter.OnItemClickListener;
 import org.ggxz.shoot.bean.MainBean;
 import org.ggxz.shoot.mvp.presenter.impl.MainPresenterImpl;
 import org.ggxz.shoot.mvp.view.activity_view.MainView;
+import org.ggxz.shoot.utils.RestartAPPTool;
 import org.ggxz.shoot.widget.TargetPointView;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import butterknife.BindView;
@@ -82,6 +96,9 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
     TextView top_month;
     @BindView(R.id.top_year)
     TextView top_year;
+
+    @BindView((R.id.jumpConfigTv))
+    TextView jumpConfigTv;
 
     @BindView(R.id.targetView)
     TargetPointView targetView;
@@ -170,16 +187,37 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
     AudioPlayerHelper audioPlayerHelper;
     private ComBean comBean;
     private boolean isGun92 = true;
+    public static boolean isInitTargetSurface=false;
+    private String lastHeartTime;
+
+//    Timer timer = new Timer();
+//    TimerTask task = new TimerTask() {
+//        @Override
+//        public void run() {
+//            try {
+//                if (lastHeartTime != null ){
+//               isInitTargetSurface = !isTimeOut(lastHeartTime);
+//                }
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    };
+
     private Handler handler = new Handler(Looper.getMainLooper()) {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             if (msg.what == PORT_TYPE) {//串口通信相关
                 comBean = (ComBean) msg.obj;
-
                 String t = comBean.sRecTime;
                 String rxText = ByteUtil.ByteArrToHex(comBean.bRec);
                 String text = "Rx-> " + t + ": " + rxText + "\r" + "\n";
+                if (rxText.contains("A504")){
+                    lastHeartTime = t.substring(3,8);  //MM:ss
+                    if (!isInitTargetSurface) ToastUtils.showToast("靶面连接成功！");
+                    isInitTargetSurface = true;
+                }
                 Log.e(TAG, text);
 
                 //state 表示当前 res[11]中已经存储到的字节有集合 note 这里的问题在于：读到新Head 后面A5不会再读 直到获取完整数据 或 检验失败清空之前存储的数据
@@ -359,6 +397,13 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
             startActivity(intent);
         });
         jumpHistoryTv.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, HistoryActivity.class)));
+        //jumpConfigTv.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, ConfigActivity.class)));
+        jumpConfigTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RestartAPPTool.restartAPP(getApplicationContext(),100);
+            }
+        });
         adapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(RecyclerView.ViewHolder holder, int position) {
@@ -400,6 +445,9 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
         targetView.setYAxisRange(-10f, 10f);
         targetView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
 
+        //初始化打印机
+        //mPrinter = new PrintSerializable();
+        //mPrinter.open(EXTRA_SERIAL_NAME,EXTRA_SERIAL_PORT);
 
     }
 
@@ -440,32 +488,143 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
             handler.sendMessageDelayed(message, (i + 1) * 100);
         }*/
 
+        top_year.setText(getUserName("year"));
+        top_month.setText(getUserName("month"));
+        top_week.setText(getUserName("week"));
+        top_day.setText(getUserName("day"));
 
-        InitHelper.getTopTypeList(new NetCallBack<TopUser>() {
-            @Override
-            public void onResponseData(TopUser topUser) {
-                if (!topUser.day.isEmpty()) {
-                    top_day.setText(topUser.day.get(0).user_name);
-                }
+//        InitHelper.getTopTypeList(new NetCallBack<TopUser>() {
+//            @Override
+//            public void onResponseData(TopUser topUser) {
+//                if (!topUser.day.isEmpty()) {
+//                    top_day.setText(topUser.day.get(0).user_name);
+//                }
+//
+//                if (!topUser.week.isEmpty()) {
+//                    top_week.setText(topUser.week.get(0).user_name);
+//                }
+//
+//                if (!topUser.month.isEmpty()) {
+//                    top_month.setText(topUser.month.get(0).user_name);
+//                }
+//
+//                if (!topUser.year.isEmpty()) {
+//                    top_year.setText(topUser.year.get(0).user_name);
+//                }
+//            }
+//
+//            @Override
+//            public void onError(String msg) {
+//            }
+//        });
 
-                if (!topUser.week.isEmpty()) {
-                    top_week.setText(topUser.week.get(0).user_name);
-                }
+    }
 
-                if (!topUser.month.isEmpty()) {
-                    top_month.setText(topUser.month.get(0).user_name);
-                }
+    private String getUserName(String dateType) {
+        try {
+            Date date = new Date();
+            String dateStr = TimeUtils.date2String(date, "yyyy-MM-dd");
+            long startMillions = 0;
+            long endMillions = 0;
+            //年时间计算
+            if ("year".equals(dateType)) {
+                String yearPrefix = dateStr.substring(0, dateStr.indexOf("-"));
+                String yearStartDate = yearPrefix + "-01-01 00:00:00";
+                String yearEndDate = yearPrefix + "-12-31 23:59:59";
+                startMillions = TimeUtils.string2Millis(yearStartDate);
+                endMillions = TimeUtils.string2Millis(yearEndDate);
+            } else if ("month".equals(dateType)) {
+                String mothPrefix = dateStr.substring(0, dateStr.lastIndexOf("-"));
+                String mothStartDate = mothPrefix + "-01 00:00:00";
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(TimeUtils.string2Date(mothStartDate));
+                calendar.add(Calendar.MONTH, 1);
+                startMillions = TimeUtils.string2Millis(mothStartDate);
+                endMillions = calendar.getTimeInMillis();
+            } else if ("day".equals(dateType)) {
+                String dayPrefix = dateStr;
+                String dayStartDate = dayPrefix + " 00:00:00";
+                String dayEndDate = dayPrefix + " 23:59:59";
+                startMillions = TimeUtils.string2Millis(dayStartDate);
+                endMillions = TimeUtils.string2Millis(dayEndDate);
+            } else if ("week".equals(dateType)) {
+                String dayPrefix = dateStr;
+                String dayStartDate = dayPrefix + " 00:00:00";
+                Date mondayDate = TimeUtils.string2Date(dayStartDate);
+                // 获取指定日期所在周的第一天(周一)
+                Calendar calendar = Calendar.getInstance();
+                // 设置周一是第一天, getFirstDayOfWeek获取的默认是周日
+                calendar.setFirstDayOfWeek(Calendar.MONDAY);
+                // 设置指定日期
+                calendar.setTime(mondayDate);
+                calendar.set(Calendar.DAY_OF_WEEK, calendar.getFirstDayOfWeek());
+                Date date1 = calendar.getTime();
+                startMillions = date1.getTime();
+                String dayEndDate = dayPrefix + " 23:59:59";
+                endMillions = TimeUtils.string2Millis(dayEndDate);
+            }
+            //List<UserModel> userModelList = DbDownUtil.getInstance().findAllUserByTime(startMillions, endMillions);
+            //List<UserShootReportData> userShootReportDataList = new ArrayList<>();
+            List<ShootDataModel> shootDataModelList = DbDownUtil.getInstance().findAllShootDataModelByTime(startMillions, endMillions);
+            Map<String, UserShootReportData> hashMap = new HashMap();
+            for (int i = 0; i < shootDataModelList.size(); i++) {
+                UserShootReportData userShootReportData = new UserShootReportData();
 
-                if (!topUser.year.isEmpty()) {
-                    top_year.setText(topUser.year.get(0).user_name);
+                //List<ShootDataModel> shootData = userModelList.get(i).getShootData();
+                //long userId=userModelList.get(i).getUserId();
+                ShootDataModel shootDataModel = shootDataModelList.get(i);
+                String userName = shootDataModel.getUserName();
+                if (hashMap.containsKey(userName)) {
+                    userShootReportData = hashMap.get(userName);
+                    Integer totalGrade;
+                    Integer boutNum;
+                    totalGrade = userShootReportData.getTotalGrade();
+                    boutNum = userShootReportData.getTotalBout();
+                    userShootReportData.setTotalBout(boutNum + 1);
+                    //userShootReportData.setTotalGrade(totalGrade + shootDataModel.getTotalGrade());
+                    userShootReportData.setTotalGrade(totalGrade + getTotalGradeEachShoot(shootDataModel));  //总体成绩累加，by ned
+                    userShootReportData.setUserName(shootDataModel.getUserName());
+                    userShootReportData.setUserId(shootDataModel.getUserId());
+                    //userShootReportDataList.add(userShootReportData);
+
+                } else {
+                    Integer boutNum = 0;
+                    //ToastUtils.showToast("####userId：" + shootDataModel.getUserId() + "名字：" + shootDataModel.getUserName() + "局数：" + boutNum);
+                    userShootReportData.setTotalBout(boutNum + 1);
+                    //userShootReportData.setTotalGrade(shootDataModel.getTotalGrade());
+                    userShootReportData.setTotalGrade(getTotalGradeEachShoot(shootDataModel));
+                    userShootReportData.setUserName(shootDataModel.getUserName());
+                    userShootReportData.setUserId(shootDataModel.getUserId());
+                    hashMap.put(userName, userShootReportData);
                 }
             }
+            //ToastUtils.showToast("名字："+userModel.getName()+"--局数："+boutNum);
 
-            @Override
-            public void onError(String msg) {
+            float averageGrade = 0;
+            String userName = "未知用户";
+            for (Map.Entry<String, UserShootReportData> entry : hashMap.entrySet()) {
+                System.out.println("key=" + entry.getKey() + "  value=" + entry.getValue());
+                UserShootReportData userShootReportData = entry.getValue();
+                //ToastUtils.showToast("####userId：" + userShootReportData.getUserId() + "名字：" + userShootReportData.getUserName() + "局数：" + userShootReportData.getTotalBout());
+                float nowAverageGrade = userShootReportData.getTotalBout() == 0 ? 0 : userShootReportData.getTotalGrade() / userShootReportData.getTotalBout();
+                if (nowAverageGrade > averageGrade) {
+                    averageGrade = nowAverageGrade;
+                    userName = userShootReportData.getUserName();
+                }
             }
-        });
-
+//
+//            for (UserShootReportData userShootReportData : userShootReportDataList) {
+//                float nowAverageGrade = userShootReportData.getTotalBout() == 0 ? 0 : userShootReportData.getTotalGrade() / userShootReportData.getTotalBout();
+//                if (nowAverageGrade > averageGrade) {
+//                    averageGrade = nowAverageGrade;
+//                    userName = userShootReportData.getUserName();
+//                }
+//            }
+            return userName;
+        } catch (Exception e) {
+            ToastUtils.showToast(e.toString());
+        }
+        return null;
     }
 
     private void targetView(EntryModel model) {
@@ -531,13 +690,15 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
                 sendProgressBar.setProgress(collimation < 0 ? 0 : collimation);
                 sendCount.setText(String.valueOf(collimation < 0 ? 0 : collimation));
                 //5.note  总分 所有的评分 应在上面都结算后计算 所以放在这里
-                float total = (gradeProgressBar.getProgress() + gunProgressBar.getProgress()
-                        + collimationProgressBar.getProgress() + sendProgressBar.getProgress()) / 4F;
+                //float total = (gradeProgressBar.getProgress() + gunProgressBar.getProgress()
+                        //+ collimationProgressBar.getProgress() + sendProgressBar.getProgress()) / 4F;
+                float total = (float) (gradeProgressBar.getProgress() * 0.6 + gunProgressBar.getProgress() * 0.1
+                                        + collimationProgressBar.getProgress() * 0.15+ sendProgressBar.getProgress() * 0.15);
                 int avgTotal = isMiss ? Math.round(total) : 0;
                 totalProgressBar.setProgress(avgTotal);
                 totalCount.setText(String.valueOf(avgTotal));
 
-
+                if (faxu == 1) adapter.setData(new ArrayList<>()); //第一发则清空recycleview
                 /*构建当前发序*/
                 SingleShootDataModel shootDataModel = curFaxu;
                 shootDataModel.setShootPreface(faxu++);
@@ -557,6 +718,7 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
                 //更新射击列表
                 List<SingleShootDataModel> data = adapter.getData();
                 data.add(shootDataModel);
+
                 adapter.setData(data);
                 recyclerView.scrollToPosition(data.size() - 1);
                 //创建下一个发序
@@ -576,7 +738,7 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
 
                 if (faxu > totalFaxu) {//发序相等说明下一局 开始 没有下一局 则关闭接受数据
                     if (curBout < totalBout) {//如果还存在下一局
-                        adapter.setData(new ArrayList<>());
+                        //adapter.setData(new ArrayList<>());
                         curBout += 1;
                         InitMode mode = initModes.get(curBout - 1);
                         curBoutId = mode.bout_id;
@@ -599,10 +761,14 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
                         totalRing = 0.0F;
                         tvTotalRing.setText(df.format(totalRing));
                         finishCurBout();
+                        print(boutMode);
                     } else {//显示结束按钮 回到初始页面
                         handler.removeCallbacksAndMessages(null);
                         //射击结束
+                        jumpConfigTv.setVisibility(View.VISIBLE);
                         ToastUtils.showToast("射击结束");
+                        print(boutMode);
+                        initData();
                         if (serialHelper != null) {
                             serialHelper.close();
                             serialHelper = null;
@@ -641,7 +807,7 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
 
             // note 1. 成绩  根据板子的逻辑成绩不可能少于3.6环  所以评分少于3.6等于0分
             int grade = isMiss ? (Math.round(model.getRing() * 10F)) : 0;
-            gradeProgressBar.setProgress(grade < 36 ? 0 : (grade - 10));
+            gradeProgressBar.setProgress(grade < 36 ? 0 : grade - 10);
             gradeCount.setText(String.valueOf(grade < 36 ? 0 : (grade - 10)));
             curRing = (grade == 0 ? 0 : grade / 10F);
 
@@ -649,7 +815,7 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
             tvCurRing.setText(String.valueOf(curRing));
             tvTotalRing.setText(df.format(totalRing));
             shootCount = 0;
-            curFaxu.setGrade(grade < 36 ? 0 : grade);
+            curFaxu.setGrade(grade < 36 ? 0 : grade -10 );
             //note 3.瞄准 确保向前找第五个点不会越界
             if (!targetData.isEmpty()) {
                 int count = 0;
@@ -896,6 +1062,12 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+       // if (timer != null ) timer.schedule(task,0,40000);
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         audioPlayerHelper = new AudioPlayerHelper(this);
@@ -905,6 +1077,7 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
     @Override
     protected void onStop() {
         super.onStop();
+       // if (timer != null) timer.cancel();
         if (audioPlayerHelper != null)
             audioPlayerHelper.release();
     }
@@ -934,5 +1107,149 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
             targetView(targetData.get(targetData.size() - 1));
             handler.removeCallbacks(this);
         }
+    }
+
+    //打印每局,每局中每发的数
+    public void print(ShootDataModel model) {
+        if (!spUtils.getBoolean("auto_print", false)) return;
+        if (mPrinter.getState() != PrintSerializable.CONN_SUCCESS) {
+            ToastUtils.showToast("打印机状态有问题，请重新初始化");
+            return;
+        }
+        mPrinter.init();
+        // 设置字体
+        // mWidth       -- 字体宽度    0-7
+        // mHeight      -- 字体高度    0-7
+        // mBold        -- 是否粗体    0,1
+        // mUnderline   -- 是否下划线  0,1
+//        Bitmap bitmap1 = null;
+//        try
+//        {
+//            //从资源中打开图片 android.png。公司商标
+//            bitmap1 = BitmapFactory.decodeStream(this.getResources().getAssets().open("android.png"));
+//        } catch (IOException e)
+//        {
+//            e.printStackTrace();
+//            return;
+//        }
+        if (model != null) {
+            List<SingleShootDataModel> singleShootDataModels = model.getData();
+            Integer shootNum = 0;
+            Integer notShootNum = 0;
+            Integer shootTotalNum = 0;
+            float timeSeconds = 0;
+            int totalAllGrade = 0;
+            if (singleShootDataModels.size() > 0) {
+                shootTotalNum = singleShootDataModels.size();
+            }
+            for (SingleShootDataModel singleShootDataModel : singleShootDataModels) {
+                //mPrinter.printText("  "+singleShootDataModel.getShootPreface() + "          " + singleShootDataModel.getRing() + "         " + singleShootDataModel.getTimeSecond());
+                if (singleShootDataModel.getRing() > 0) {
+                    shootNum++;
+                } else {
+                    notShootNum++;
+                }
+                timeSeconds = timeSeconds + singleShootDataModel.getTimeSecond();
+                totalAllGrade = totalAllGrade + singleShootDataModel.getAllGrade();
+            }
+
+            mPrinter.setFont(0, 0, 1, 0);
+            //mPrinter.printImage(bitmap1);              //打印图片
+            mPrinter.setAlign(PrintSerializable.ALIGN_CENTER);
+            mPrinter.printText("晟  达");
+            mPrinter.wrapLines(1);
+            mPrinter.setFont(0, 0, 1, 0);
+            mPrinter.setAlign(PrintSerializable.ALIGN_CENTER);
+            mPrinter.printText("S H E N G D A");
+            mPrinter.wrapLines(1);
+            mPrinter.wrapLines(1);
+            mPrinter.setFont(0, 0, 0, 0);
+            mPrinter.setAlign(PrintSerializable.ALIGN_CENTER);
+            mPrinter.printText("模拟射击系统成绩单");
+            mPrinter.wrapLines(1);
+            mPrinter.setAlign(PrintSerializable.ALIGN_CENTER);
+            mPrinter.printText("------------------------");
+            mPrinter.wrapLines(1);
+            mPrinter.setAlign(PrintSerializable.ALIGN_LEFT);
+            mPrinter.printText("姓名：" + model.getUserName());
+            mPrinter.wrapLines(1);
+            mPrinter.printText("靶型：胸环靶");
+            mPrinter.wrapLines(1);
+            mPrinter.setAlign(PrintSerializable.ALIGN_LEFT);
+            mPrinter.printText("打印时间：" + TimeUtils.millis2String(System.currentTimeMillis()));
+            mPrinter.wrapLines(1);
+            mPrinter.setAlign(PrintSerializable.ALIGN_LEFT);
+            mPrinter.printText("总发数：" + shootTotalNum);
+            mPrinter.wrapLines(1);
+            mPrinter.printText("中靶数：" + shootNum);
+            mPrinter.wrapLines(1);
+            mPrinter.printText("脱靶数：" + notShootNum);
+            mPrinter.wrapLines(1);
+            mPrinter.printText("总环数：" + df.format(model.getTotalRing()));
+            mPrinter.wrapLines(1);
+            mPrinter.printText("均环数：" + df.format(model.getTotalRing() / shootTotalNum));
+            mPrinter.wrapLines(1);
+            mPrinter.printText("总用时：" + getTimeStr(timeSeconds));
+            mPrinter.wrapLines(1);
+            mPrinter.printText("平均分：" + Math.round(totalAllGrade / (float)shootTotalNum));
+            mPrinter.wrapLines(1);
+            mPrinter.printText("-------------------------------");
+            mPrinter.wrapLines(1);
+            mPrinter.printText("签字区：");
+            mPrinter.wrapLines(2);
+            mPrinter.printText("-------------------------------");
+            mPrinter.wrapLines(1);
+            mPrinter.setAlign(PrintSerializable.ALIGN_CENTER);
+            mPrinter.printText(" 感谢您的使用！");
+            mPrinter.wrapLines(1);
+            mPrinter.setAlign(PrintSerializable.ALIGN_CENTER);
+            mPrinter.printText("晟达启航-提供技术支持");
+            mPrinter.wrapLines(3);
+            mPrinter.printText("");
+        } else {
+            ToastUtils.showToast("打印没有射击数据");
+        }
+    }
+
+    private String getTimeStr(float timeSecond) {
+        String timeStr;
+        long hours = TimeUnit.SECONDS.toHours((long) timeSecond);
+        long minutes = TimeUnit.SECONDS.toMinutes((long) timeSecond) % 60;
+        long remainingSeconds = (long) (timeSecond % 60);
+        timeStr = (hours < 10 ? "0" + hours : hours) + ":" + (minutes < 10 ? "0" + minutes : minutes) + ":" + (remainingSeconds < 10 ? "0" + remainingSeconds : remainingSeconds);
+        return timeStr;
+    }
+
+    private boolean isTimeOut(String lastHeartCheck){
+        try{
+            DateFormat dateFormat = new SimpleDateFormat("2024-01-01 00:mm:ss");
+            String sNow  = dateFormat.format(new Date());
+            Date mNow = dateFormat.parse(sNow);
+            String yesterday = "2024-01-01 00:"+ lastHeartCheck;  //串口返回12小时格式，所以只取分和秒
+            Date yesterdayDate = dateFormat.parse(yesterday);
+            long yesterdayDateTime = yesterdayDate.getTime();
+            long nowDateTime = mNow.getTime();//当前时间戳
+            int result = (int) (nowDateTime - yesterdayDateTime);//毫秒
+            int diffSecond = result / 1000; //1000毫秒等于1秒
+            if(isInitTargetSurface && diffSecond>30 ) ToastUtils.showToast("靶面断开！");
+            //ToastUtils.showToast(sNow+"-"+yesterday+"-"+String.valueOf(diffSecond)+"&&&&&&&&&&"+String.valueOf(nowDateTime)+"-"+String.valueOf(yesterdayDateTime));
+            return diffSecond > 30;
+        }catch (Exception e){
+            return false;
+        }
+    }
+
+    private int getTotalGradeEachShoot(ShootDataModel shootDataModel){
+        int totalShootAllGarde = 0;
+        List<SingleShootDataModel> singleShootDataModelList = shootDataModel.getData();
+        if (singleShootDataModelList!= null && singleShootDataModelList.size()>0){
+            for(SingleShootDataModel singleShootDataModel: singleShootDataModelList){
+                totalShootAllGarde = totalShootAllGarde + singleShootDataModel.getAllGrade();
+            }
+            return  Math.round(totalShootAllGarde / (float)singleShootDataModelList.size());
+        } else {
+            return totalShootAllGarde;
+        }
+
     }
 }

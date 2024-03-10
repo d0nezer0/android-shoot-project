@@ -1,5 +1,6 @@
 package org.ggxz.shoot.mvp.view.fragment;
 
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -32,11 +34,19 @@ import org.ggxz.shoot.mvp.view.activity.DetailsActivity;
 import org.ggxz.shoot.mvp.view.activity.MainAvtivityHelper;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
 
 public class DetailsPage3Fragment extends Fragment {
@@ -93,6 +103,8 @@ public class DetailsPage3Fragment extends Fragment {
     private MainAvtivityHelper helper;//主要辅助定义UI Chart
     private ArrayList<Entry> values = new ArrayList<>();//chart数据
     private DetailsActivity activity;
+    private HashMap hashMap; //用hasmap放置二维码的参数
+    private Bitmap bitmap;//声明一个bitmap对象用于放置图片;
 
 
     public DetailsPage3Fragment() {

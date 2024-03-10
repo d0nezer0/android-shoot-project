@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -59,6 +60,7 @@ public class MultipleActivity extends BaseMvpActivity<MultiplePresenterImpl> imp
     private int state;
     private byte[] res = new byte[11];//数据拼接
     private boolean isGun92 = true;
+    private long shootNumber = 0L;  //发序
 
 
     private Map<Integer, List<EntryModel>> map = new HashMap<>();//key 枪号 value 没个枪 存储的开抢的数据
@@ -259,7 +261,8 @@ public class MultipleActivity extends BaseMvpActivity<MultiplePresenterImpl> imp
                                 if (list == null) {
                                     list = new ArrayList<>();
                                 }
-                                list.add(model);
+                                model.setUserId(list.size()+1); //把list大小作为发序放入userId当中，应为entrymodle没有发序属性，借用
+                                list.add(0,model); //向前插入，显示时最新一发始终排在第一位
                                 map.put(gunId, list);
                                 Adapter adapter = views.get(gunId);
                                 if (adapter == null) {
@@ -267,11 +270,11 @@ public class MultipleActivity extends BaseMvpActivity<MultiplePresenterImpl> imp
                                     recyclerLayout.addView(recyclerView);
                                     adapter = new Adapter();
                                     recyclerView.setAdapter(adapter);
-//                                    recyclerView.addItemDecoration(new StickHeaderDecoration(recyclerView));
                                     adapter.setData(list);
                                 } else {
                                     adapter.setData(list);
                                 }
+
                                 views.put(gunId, adapter);
                                 targetView.setValues(list);
 
@@ -331,6 +334,7 @@ public class MultipleActivity extends BaseMvpActivity<MultiplePresenterImpl> imp
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             EntryModel model = data.get(position);
+           // model.setUserId(position+1);  //用userid来保存发序
             if (position == 0) {
                 holder.title_name.setVisibility(View.VISIBLE);
                 holder.title_line.setVisibility(View.VISIBLE);
@@ -344,7 +348,8 @@ public class MultipleActivity extends BaseMvpActivity<MultiplePresenterImpl> imp
                 holder.title_name.setVisibility(View.GONE);
                 holder.title_line.setVisibility(View.GONE);
             }
-            holder.ring_num.setText(model.getRing() == 11F ? "10.10" : df.format(model.getRing()));
+            holder.ring_num.setText(model.getRing() - position == 11F ? "10.10" : df.format(model.getRing()));
+            holder.fa_xu.setText(String.valueOf(model.getUserId()));
         }
 
         @Override
@@ -374,12 +379,14 @@ public class MultipleActivity extends BaseMvpActivity<MultiplePresenterImpl> imp
         TextView title_name;
         View title_line;
         TextView ring_num;
+        TextView fa_xu;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             title_name = itemView.findViewById(R.id.title_name);
             title_line = itemView.findViewById(R.id.title_line);
             ring_num = itemView.findViewById(R.id.ring_num);
+            fa_xu = itemView.findViewById(R.id.fa_xu);
         }
     }
 }

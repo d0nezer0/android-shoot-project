@@ -5,15 +5,18 @@ buildscript {
         maven { url 'https://jitpack.io' }
         jcenter()
         mavenCentral()
+        //maven {
+         //   allowInsecureProtocol = true
+         //   url "http://maven.aliyun.com/nexus/content/groups/public/"
+        //}
         google()
 
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.2'
         classpath 'com.jakewharton:butterknife-gradle-plugin:10.2.3'
-        classpath 'org.greenrobot:greendao-gradle-plugin:3.3.0' // add plugin
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'//chart
-
+        classpath 'org.greenrobot:greendao-gradle-plugin:3.3.0' // add plugin…
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
+        classpath 'com.android.tools.build:gradle:4.2.2'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }

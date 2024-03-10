@@ -5,22 +5,36 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.BatteryManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.telephony.PhoneStateListener;
+import android.telephony.SignalStrength;
+import android.telephony.TelephonyManager;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.common_module.common.Constant;
 import com.example.common_module.db.DbDownUtil;
+import com.example.common_module.db.mode.ConfigDataModel;
+import com.example.common_module.db.mode.ConfigDataModelDao;
 import com.example.common_module.db.mode.UserModel;
 import com.example.common_module.utils.AssetFileReader;
 import com.example.common_module.utils.SPUtils;
@@ -33,26 +47,39 @@ import com.example.net_module.mode.InitMode;
 import com.example.net_module.mode.InitModeData;
 import com.example.net_module.mode.TopUser;
 import com.google.gson.Gson;
+import com.printsdk.PrintSerializable;
 
 import org.ggxz.shoot.R;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
+import butterknife.BindView;
 import tp.xmaihh.serialport.SerialHelper;
 import tp.xmaihh.serialport.bean.ComBean;
 import tp.xmaihh.serialport.utils.ByteUtil;
 
 public class ConfigActivity extends AppCompatActivity {
+    ArrayAdapter<Integer> arrayAdapter;
+    private Integer[] spinnerArray = new Integer[]{5, 10, 15, 20, 25, 30}; //发数数组
+    TextView test;
+    ImageView vBattery;
+    ImageView vMainBattery;
 
+    Spinner spinner; //发数下拉控件
     TextView start;
     EditText ip;
     EditText userNameEt;
     EditText num;
+    EditText numEt;
     EditText bootNumEt;//局数
-    EditText shootNumEt;//发序
     LinearLayout ll_system;
     LinearLayout ll_single;
     LinearLayout ll_free;
@@ -62,7 +89,7 @@ public class ConfigActivity extends AppCompatActivity {
     TextView start_system;
     TextView start_single;
     SPUtils utils;
-    private SerialHelper serialHelper;
+    public static SerialHelper serialHelper;
 
     private String sendData;
 
@@ -71,15 +98,76 @@ public class ConfigActivity extends AppCompatActivity {
 
 
     private int shootType = 1;//1 单人模式 2 系统模式 3自由模式  1-2 进相同页面
+    //打印机
+    public static PrintSerializable mPrinter;
+    public static String EXTRA_SERIAL_PORT = "9600";
+    public static String EXTRA_SERIAL_NAME = "/dev/ttyS2";
+    public static boolean isGunInit=false;
+    public static boolean isInitSerialPort=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().getAttributes().systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE;
         setContentView(R.layout.activity_config);
-
     }
 
+
+
+    /**
+     * 刷新状态栏电量控件
+     */
+//    private void refreshStatus(){
+//        BatteryManager batteryManager=(BatteryManager)getSystemService(BATTERY_SERVICE); //获取电量百分比
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) { //判断安卓版本
+//            int batteryCapacity = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
+//            //Random rand = new Random();
+//            //int batteryCapacity = rand.nextInt(100) + 1;
+//            if (batteryCapacity>75)  {
+//                vBattery.setImageResource(R.drawable.dianliang4);
+//                vMainBattery.setImageResource(R.drawable.dianliang4);
+//            }
+//            if (batteryCapacity>50 && batteryCapacity<= 75)  {
+//                vBattery.setImageResource(R.drawable.dianliang3);
+//                vMainBattery.setImageResource(R.drawable.dianliang3);
+//            }
+//            if (batteryCapacity>25 && batteryCapacity<= 50)  {
+//                vBattery.setImageResource(R.drawable.dianliang2);
+//                vMainBattery.setImageResource(R.drawable.dianliang2);
+//            }
+//            if (batteryCapacity>3 && batteryCapacity<=25)  {
+//                vBattery.setImageResource(R.drawable.dianliang1);
+//                vMainBattery.setImageResource(R.drawable.dianliang1);
+//            }
+//            if (batteryCapacity<=3)  {
+//                vBattery.setImageResource(R.drawable.dianliang0);
+//                vMainBattery.setImageResource(R.drawable.dianliang0);
+//            }
+//        }
+//    }
+    /**
+     * 从数据库读取上一次配置
+     */
+    private void initConfigData(){
+        numEt = findViewById(R.id.numEt); //组号
+        userNameEt = findViewById(R.id.userNameEt); //用户名
+        bootNumEt = findViewById(R.id.bootNumEt); //局数
+        spinner = findViewById(R.id.spinner_shootNumber); //发数
+        arrayAdapter = new ArrayAdapter<Integer>(this, R.layout.custom_spinner_item, spinnerArray);
+        arrayAdapter.setDropDownViewResource(R.layout.spinner_dropdown_stytle);
+        spinner.setAdapter(arrayAdapter);
+
+        List<ConfigDataModel> configDataModelList = new ArrayList<>();
+        configDataModelList = DbDownUtil.getInstance().findAllConfigData();
+        if (configDataModelList != null && configDataModelList.size()>0){
+            numEt.setText(configDataModelList.get(0).getGroup());
+            userNameEt.setText(configDataModelList.get(0).getName());
+            bootNumEt.setText(configDataModelList.get(0).getTotalBout());
+            spinner.setSelection(getIndex(spinnerArray,Integer.parseInt(configDataModelList.get(0).getShootNum())),true);
+        }else {
+            spinner.setSelection(1, true);
+        }
+    }
     private void initPermission() {
         //手动申请权限,视频音频权限为同一个
         if (ContextCompat.checkSelfPermission(ConfigActivity.this, Manifest.permission.
@@ -105,8 +193,10 @@ public class ConfigActivity extends AppCompatActivity {
         if (!serialHelper.isOpen()) {
             try {
                 serialHelper.open();
+                isInitSerialPort=true;
                 Toast.makeText(this, "串口打开成功", Toast.LENGTH_SHORT).show();
             } catch (IOException e) {
+                isInitSerialPort=false;
                 e.printStackTrace();
                 Toast.makeText(this, "串口打开异常", Toast.LENGTH_SHORT).show();
 
@@ -114,6 +204,31 @@ public class ConfigActivity extends AppCompatActivity {
         }
 
     }
+
+    private void initPrinter(){
+        mPrinter = new PrintSerializable();
+        mPrinter.open(EXTRA_SERIAL_NAME, EXTRA_SERIAL_PORT);
+        mHandler.obtainMessage(mPrinter.getState()).sendToTarget();
+    }
+
+    //用于接受连接状态消息的 Handler
+    private Handler mHandler = new Handler(Looper.getMainLooper()) {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case PrintSerializable.CONN_SUCCESS:
+                    ToastUtils.showToast("打印机连接成功");
+                    break;
+                case PrintSerializable.CONN_FAILED:
+                    ToastUtils.showToast("打印机连接失败");
+                    break;
+                case PrintSerializable.CONN_CLOSED:
+                    ToastUtils.showToast("打印机设备关闭");
+                default:
+                    break;
+            }
+        }
+    };
 
     private Handler handler = new Handler(Looper.getMainLooper()) {
         @Override
@@ -132,6 +247,7 @@ public class ConfigActivity extends AppCompatActivity {
         String text = "Rx-> " + t + ": " + a + "\r" + "\n";
         Log.e("TAG", text);
         if (type.equalsIgnoreCase("7F")) {
+            isGunInit=true;
             ToastUtils.showToast("枪配网成功");
             if (shootType == 2) {
                 ToastUtils.showToast("系统射击");
@@ -194,6 +310,8 @@ public class ConfigActivity extends AppCompatActivity {
             }
 
 
+        }else{
+            isGunInit=false;
         }
     }
 
@@ -205,8 +323,8 @@ public class ConfigActivity extends AppCompatActivity {
             serialHelper = null;
         }
         handler.removeCallbacksAndMessages(null);
-
     }
+
 
     /**
      * 依旧是申请权限
@@ -282,11 +400,50 @@ public class ConfigActivity extends AppCompatActivity {
 
     }
 
+    private void generateConfigData(String numEdit, Integer shootType, String userName, String bootNum, String shootNum) {
+        ConfigDataModel configDataModel = new ConfigDataModel();
+        configDataModel.setGroup(numEdit);
+        //单人模式
+        if (shootType == 1) {
+            configDataModel.setShootType(shootType);
+            configDataModel.setName(userName);
+            configDataModel.setCreateTime(new Date().getTime());
+            configDataModel.setShootNum(shootNum);
+            configDataModel.setTotalBout(bootNum);
+            //系统模式
+        } else if (shootType == 2) {
+            //自由模式
+        } else if (shootType == 3) {
+
+        }
+        long id = DbDownUtil.getInstance().insertConfigDataModel(configDataModel);
+
+    }
+
+
     @Override
     protected void onResume() {
         super.onResume();
         initPermission();
         initSerial();
+        initConfigData();
+        initPrinter();
+
+
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                spinner.setSelection(position, true);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
         start = findViewById(R.id.start);
         start_free = findViewById(R.id.start_free);
         start_system = findViewById(R.id.start_system);
@@ -295,8 +452,10 @@ public class ConfigActivity extends AppCompatActivity {
         ip = findViewById(R.id.ipEt);
         num = findViewById(R.id.numEt);
         bootNumEt = findViewById(R.id.bootNumEt);
-        shootNumEt = findViewById(R.id.shootNumEt);
+        bootNumEt.setFilters(new InputFilter[]{new number100Filter()});
         userNameEt = findViewById(R.id.userNameEt);
+        numEt = findViewById(R.id.numEt);
+        numEt.setFilters(new InputFilter[]{new number99Filter()});
 
         ll_single = findViewById(R.id.ll_single);
         ll_system = findViewById(R.id.ll_system);
@@ -354,20 +513,21 @@ public class ConfigActivity extends AppCompatActivity {
                     ToastUtils.showToast("局数不能为空");
                     return;
                 }
-                String shootNum = shootNumEt.getText().toString();
+                String shootNum = spinner.getSelectedItem().toString();
                 if (shootNum.isEmpty()) {
-                    ToastUtils.showToast("发序不能为空");
+                    ToastUtils.showToast("发数不能为空");
                     return;
                 }
                 generateFakeData(userName, bootNum, shootNum);
+                generateConfigData(numEdit, shootType, userName, bootNum, shootNum); //参数写入库
             } else if (shootType == 2) {
                 ipEdit = this.ip.getText().toString().trim();
                 if (ipEdit.isEmpty()) {
                     ToastUtils.showToast("ip不能为空");
                     return;
                 }
+                generateConfigData(numEdit, shootType, null, null, null);//参数写入库
             }
-
 
             if (!ipEdit.isEmpty())
                 Common.API_URL = "http://" + ipEdit + ":" + 9999 + "/api/";
@@ -497,5 +657,146 @@ public class ConfigActivity extends AppCompatActivity {
         });
     }
 
+    public class number99Filter implements InputFilter {
+        /**
+         * @param source 新输入的字符串
+         * @param start  新输入的字符串起始下标，一般为0
+         * @param end    新输入的字符串终点下标，一般为source长度-1
+         * @param dest   输入之前文本框内容
+         * @param dstart 新输入的字符在原字符串中的位置
+         * @param dend   原内容终点坐标，
+         * @return 输入内容
+         */
+        @Override
+        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+            String sourceText = source.toString();
+            String destText = dest.toString();
+            if (dstart == 0 && "0".equals(source)) {
+                //如果输入是0 且位置在第一位，取消输入
+                return "";
+            }
+
+            StringBuilder totalText = new StringBuilder();
+            totalText.append(destText.substring(0, dstart))
+                    .append(sourceText)
+                    .append(destText.substring(dstart, destText.length()));
+
+
+            try {
+                if (Integer.parseInt(totalText.toString()) > 99) {
+                    return "";
+                } else if (Integer.parseInt(totalText.toString()) == 0) {
+                    //如果输入是0，取消输入
+                    return "";
+                }
+            } catch (Exception e) {
+                return "";
+            }
+
+            if ("".equals(source.toString())) {
+                return "";
+            }
+            return "" + Integer.parseInt(source.toString());
+        }
+    }
+
+    public class number100Filter implements InputFilter {
+        /**
+         * @param source 新输入的字符串
+         * @param start  新输入的字符串起始下标，一般为0
+         * @param end    新输入的字符串终点下标，一般为source长度-1
+         * @param dest   输入之前文本框内容
+         * @param dstart 新输入的字符在原字符串中的位置
+         * @param dend   原内容终点坐标，
+         * @return 输入内容
+         */
+        @Override
+        public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+            String sourceText = source.toString();
+            String destText = dest.toString();
+            if (dstart == 0 && "0".equals(source)) {
+                //如果输入是0 且位置在第一位，取消输入
+                return "";
+            }
+
+            StringBuilder totalText = new StringBuilder();
+            totalText.append(destText.substring(0, dstart))
+                    .append(sourceText)
+                    .append(destText.substring(dstart, destText.length()));
+
+
+            try {
+                if (Integer.parseInt(totalText.toString()) > 100) {
+                    return "";
+                } else if (Integer.parseInt(totalText.toString()) == 0) {
+                    //如果输入是0，取消输入
+                    return "";
+                }
+            } catch (Exception e) {
+                return "";
+            }
+
+            if ("".equals(source.toString())) {
+                return "";
+            }
+            return "" + Integer.parseInt(source.toString());
+        }
+    }
+
+    /**
+     * 获取数组下标
+    */
+    public static int getIndex(Integer[] array,int value){
+        for(int i = 0;i<array.length;i++){
+            if(array[i]==value){
+                return i;
+            }
+        }
+        return -1;//当if条件不成立时，默认返回一个负数值-1
+    }
+
+    /**
+     * 判断是否包含SIM卡
+     *
+     * @return 状态
+     */
+    public static boolean hasSimCard(Context context) {
+        TelephonyManager telMgr = (TelephonyManager)
+                context.getSystemService(Context.TELEPHONY_SERVICE);
+        int simState = telMgr.getSimState();
+        boolean result = true;
+        switch (simState) {
+            case TelephonyManager.SIM_STATE_ABSENT:
+            case TelephonyManager.SIM_STATE_UNKNOWN:
+                result = false; // 没有SIM卡
+                break;
+        }
+        return result;
+    }
+    /**
+     * 获取信号强度
+     */
+    private void getMobileNetworkSignal() { //没有sim卡功能以后再添加
+        if (hasSimCard(getApplicationContext())) {
+            ToastUtils.showToast("getMobileNetworkSignal: no sim card");
+            return;
+        }
+        TelephonyManager mTelephonyManager = (TelephonyManager) getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE);
+        if (mTelephonyManager != null) {
+            mTelephonyManager.listen(new PhoneStateListener() {
+
+                @Override
+                public void onSignalStrengthsChanged(SignalStrength signalStrength) {
+                    super.onSignalStrengthsChanged(signalStrength);
+                    int asu = signalStrength.getGsmSignalStrength();
+                    int lastSignal = -113 + 2 * asu;
+                    if (lastSignal > 0) {
+                        String mobileNetworkSignal = lastSignal + "dBm";
+                    }
+                    ToastUtils.showToast("Current mobileNetworkSignal：" + lastSignal + " dBm");
+                }
+            }, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
+        }
+    }
 
 }
