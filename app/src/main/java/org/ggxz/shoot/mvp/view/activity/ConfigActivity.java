@@ -8,8 +8,6 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.BatteryManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -21,7 +19,6 @@ import android.text.InputFilter;
 import android.text.Spanned;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -34,35 +31,26 @@ import android.widget.Toast;
 import com.example.common_module.common.Constant;
 import com.example.common_module.db.DbDownUtil;
 import com.example.common_module.db.mode.ConfigDataModel;
-import com.example.common_module.db.mode.ConfigDataModelDao;
 import com.example.common_module.db.mode.UserModel;
-import com.example.common_module.utils.AssetFileReader;
 import com.example.common_module.utils.SPUtils;
 import com.example.common_module.utils.ToastUtils;
-import com.example.common_module.utils.player.AudioPlayerHelper;
 import com.example.net_module.Common;
 import com.example.net_module.callback.NetCallBack;
 import com.example.net_module.helper.InitHelper;
 import com.example.net_module.mode.InitMode;
 import com.example.net_module.mode.InitModeData;
-import com.example.net_module.mode.TopUser;
 import com.google.gson.Gson;
 import com.printsdk.PrintSerializable;
 
 import org.ggxz.shoot.R;
+import org.ggxz.shoot.handler.CrashHandler;
 import org.ggxz.shoot.utils.LogUtils;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
 
-import butterknife.BindView;
 import tp.xmaihh.serialport.SerialHelper;
 import tp.xmaihh.serialport.bean.ComBean;
 import tp.xmaihh.serialport.utils.ByteUtil;
@@ -114,6 +102,7 @@ public class ConfigActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getWindow().getAttributes().systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE;
         setContentView(R.layout.activity_config);
+        CrashHandler.getInstance().init(this);
     }
 
 
@@ -433,8 +422,9 @@ public class ConfigActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        LogUtils.i("init ", "msg");
-        LogUtils.e("init ", "msg");
+        LogUtils.i("init ", "onResume");
+        // 保留最近 30天日志；
+        LogUtils.delFile();
         super.onResume();
         initPermission();
         initSerial();
