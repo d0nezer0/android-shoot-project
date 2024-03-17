@@ -56,6 +56,7 @@ import org.ggxz.shoot.adapter.OnItemClickListener;
 import org.ggxz.shoot.bean.MainBean;
 import org.ggxz.shoot.mvp.presenter.impl.MainPresenterImpl;
 import org.ggxz.shoot.mvp.view.activity_view.MainView;
+import org.ggxz.shoot.utils.LogUtils;
 import org.ggxz.shoot.utils.RestartAPPTool;
 import org.ggxz.shoot.widget.TargetPointView;
 
@@ -219,6 +220,7 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
                     isInitTargetSurface = true;
                 }
                 Log.e(TAG, text);
+                LogUtils.e(TAG, text);
 
                 //state 表示当前 res[11]中已经存储到的字节有集合 note 这里的问题在于：读到新Head 后面A5不会再读 直到获取完整数据 或 检验失败清空之前存储的数据
                 //  A5 A5 0B 7E 01 01 01 FF 9C 01 9A 67  / A5 0B 7E 03 A5 A5 0B 7E 01 01 01 FF 9C 01 9A 67 A5 0B 7E 01 01 01 FF 9C 01 9A 67-> A5 0B 7E 03 01 01 FF 9C 01 9A 67 正确吗？
@@ -347,6 +349,7 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
                                 setChartData(chartData);
                                 index.incrementAndGet();
                                 Log.e(TAG, "Re-> success-点");
+                                LogUtils.e(TAG, "Re-> success-点");
                             } else {
                                 Arrays.fill(res, (byte) 0);
                             }
@@ -455,6 +458,7 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
         initModes = spUtils.getStringList(Constant.INIT_MODE_DATA, InitMode.class);
 
         Log.e("------", initModes.toString());
+        LogUtils.e("------", initModes.toString());
         totalBout = spUtils.getInt(Constant.TOTAL_BOUT);
         curBout = spUtils.getInt(Constant.CUR_BOUT);
         curBoutId = initModes.get(curBout - 1).bout_id;
@@ -958,6 +962,7 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
                 lastTime[0] = now;
                 if (paramComBean.bRec.length == 11)
                     Log.e("Time ->", interval + "");
+                    LogUtils.e("Time ->", interval + "");
 //                String t = paramComBean.sRecTime;
 //                String rxText = ByteUtil.ByteArrToHex(paramComBean.bRec);
 //                String text = "Rx-> " + t + ": " + rxText + "\r" + "\n";
