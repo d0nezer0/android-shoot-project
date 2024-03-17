@@ -50,6 +50,7 @@ import com.google.gson.Gson;
 import com.printsdk.PrintSerializable;
 
 import org.ggxz.shoot.R;
+import org.ggxz.shoot.utils.LogUtils;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -252,6 +253,7 @@ public class ConfigActivity extends AppCompatActivity {
         String a = ByteUtil.ByteArrToHex(comBean.bRec);
         String text = "Rx-> " + t + ": " + a + "\r" + "\n";
         Log.e("TAG", text);
+        LogUtils.e("TAG", text);
         if (type.equalsIgnoreCase("7F")) {
             isGunInit=true;
             ToastUtils.showToast("枪配网成功");
@@ -261,6 +263,7 @@ public class ConfigActivity extends AppCompatActivity {
                     @Override
                     public void onResponseData(InitModeData data) {
                         Log.e("TAG", new Gson().toJson(data.toString()));
+                        LogUtils.e("TAG", new Gson().toJson(data.toString()));
 
                         if (data.single_rounds.size() == 0)
                             return;
@@ -301,6 +304,7 @@ public class ConfigActivity extends AppCompatActivity {
                     @Override
                     public void onError(String msg) {
                         Log.e("TAG", msg);
+                        LogUtils.e("TAG", msg);
                         ToastUtils.showToast("输入错误：" + msg);
 //                        startActivity(new Intent(ConfigActivity.this, MultipleActivity.class));
 //                        finish();
@@ -429,6 +433,8 @@ public class ConfigActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
+        LogUtils.i("init ", "msg");
+        LogUtils.e("init ", "msg");
         super.onResume();
         initPermission();
         initSerial();
@@ -560,6 +566,7 @@ public class ConfigActivity extends AppCompatActivity {
 
 
             Log.e("TAG", sendData);
+            LogUtils.e("TAG", sendData);
             serialHelper.sendHex(sendData);
 
             //todo 本地测试数据
