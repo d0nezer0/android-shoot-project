@@ -33,11 +33,11 @@ public class CrashHandler implements UncaughtExceptionHandler {
     /**
      * 异常日志 存储位置为根目录下的 Crash文件夹
      */
-    private static final String PATH = "/storage/emulated/0/crashlogs";// 日志文件在sdcard中的路径;
+    private static final String PATH = "/storage/emulated/0/";// 日志文件在sdcard中的路径;
     /**
      * 文件名后缀
      */
-    private static final String FILE_NAME_SUFFIX = ".trace";
+    private static final String FILE_NAME_SUFFIX = ".txt";
 
     private static CrashHandler sInstance = new CrashHandler();
     private UncaughtExceptionHandler mDefaultCrashHandler;
@@ -116,7 +116,7 @@ public class CrashHandler implements UncaughtExceptionHandler {
         long current = System.currentTimeMillis();
         String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(current));
         //在定义的Crash文件夹下创建文件
-        File file = new File(PATH + FILE_NAME + time + FILE_NAME_SUFFIX);
+        File file = new File(PATH + time + FILE_NAME + FILE_NAME_SUFFIX);
 
         try{
             PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(file)));
