@@ -1109,7 +1109,14 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
 //            message.what = PORT_TYPE;
 //            handler.sendMessage(message);
             shootCount = 4;
-            targetView(targetData.get(targetData.size() - 1));
+            try {
+                targetView(targetData.get(targetData.size() - 1));
+            } catch (Exception e){
+                targetView(targetData.get(targetData.size()));
+                LogUtils.e("TimeOutRunnable 出错：", e.getMessage());
+                LogUtils.e("targetData：", targetData);
+                LogUtils.e("targetData size：", targetData.size());
+            }
             handler.removeCallbacks(this);
         }
     }
