@@ -108,7 +108,7 @@ public class AppActivityManager {
             activityMgr.restartPackage(context.getPackageName());
             System.exit(0);
         } catch (Exception e) {
-            Log.e("AppActivityManager",""+e);
+            Log.e("AppActivityManager"," AppExit " +e);
         }
     }
 }

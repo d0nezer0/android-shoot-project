@@ -31,6 +31,7 @@ import org.ggxz.shoot.R;
 import org.ggxz.shoot.adapter.decoration.StickHeaderDecoration;
 import org.ggxz.shoot.mvp.presenter.impl.MultiplePresenterImpl;
 import org.ggxz.shoot.mvp.view.activity_view.MultipleView;
+import org.ggxz.shoot.utils.LogUtils;
 import org.ggxz.shoot.widget.TargetPointViewMultiple;
 
 import java.io.IOException;
@@ -125,7 +126,7 @@ public class MultipleActivity extends BaseMvpActivity<MultiplePresenterImpl> imp
                 long interval = now - lastTime[0];
                 Message message = handler.obtainMessage();
                 lastTime[0] = now;
-                Log.e("Time ->", interval + "");
+                LogUtils.i("Time ->", interval + "");
                 message.obj = paramComBean;
                 message.what = PORT_TYPE;
                 handler.sendMessage(message);
@@ -170,7 +171,7 @@ public class MultipleActivity extends BaseMvpActivity<MultiplePresenterImpl> imp
                 String t = comBean.sRecTime;
                 String rxText = ByteUtil.ByteArrToHex(comBean.bRec);
                 String text = "Rx-> " + t + ": " + rxText + "\r" + "\n";
-                Log.e(TAG, text);
+                LogUtils.i(TAG, text);
 
                 //state 表示当前 res[11]中已经存储到的字节有集合 note 这里的问题在于：读到新Head 后面A5不会再读 直到获取完整数据 或 检验失败清空之前存储的数据
                 //  A5 A5 0B 7E 01 01 01 FF 9C 01 9A 67  / A5 0B 7E 03 A5 A5 0B 7E 01 01 01 FF 9C 01 9A 67 A5 0B 7E 01 01 01 FF 9C 01 9A 67-> A5 0B 7E 03 01 01 FF 9C 01 9A 67 正确吗？
@@ -278,7 +279,7 @@ public class MultipleActivity extends BaseMvpActivity<MultiplePresenterImpl> imp
                                 views.put(gunId, adapter);
                                 targetView.setValues(list);
 
-                                Log.e(TAG, "Re-> success-点");
+                                LogUtils.i(TAG, "Re-> success-点");
                             } else {
                                 Arrays.fill(res, (byte) 0);
                             }

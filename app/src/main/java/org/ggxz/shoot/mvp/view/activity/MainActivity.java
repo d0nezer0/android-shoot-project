@@ -219,8 +219,7 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
                     if (!isInitTargetSurface) ToastUtils.showToast("靶面连接成功！");
                     isInitTargetSurface = true;
                 }
-                Log.e(TAG, text);
-                LogUtils.e(TAG, text);
+                LogUtils.i(TAG, text);
 
                 //state 表示当前 res[11]中已经存储到的字节有集合 note 这里的问题在于：读到新Head 后面A5不会再读 直到获取完整数据 或 检验失败清空之前存储的数据
                 //  A5 A5 0B 7E 01 01 01 FF 9C 01 9A 67  / A5 0B 7E 03 A5 A5 0B 7E 01 01 01 FF 9C 01 9A 67 A5 0B 7E 01 01 01 FF 9C 01 9A 67-> A5 0B 7E 03 01 01 FF 9C 01 9A 67 正确吗？
@@ -290,7 +289,7 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
                                     model.setSingleShootId(curFaxuId);
                                     DbDownUtil.getInstance().saveEntry(model);
                                     targetView(model);
-                                    Log.e(TAG, "Re-> success-开抢");
+                                    LogUtils.e(TAG, "Re-> success-开抢");
                                 } else {
                                     //校验失败 那么我该删除前面的数据嘛？
                                     Arrays.fill(res, (byte) 0);// 清空缓存数据 or 不用清空 state重置数据会覆盖掉
@@ -314,7 +313,7 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
                             state = 10;
                             res[9] = b;
                             break;
-                        case 10://走到这一定是 坐标数据
+                        case 10:// 走到这一定是 坐标数据
                             byte sum = 0;
                             for (byte re : res) {
                                 sum += re;
@@ -348,8 +347,7 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
                                 chartData.add(new Entry(index.get(), Math.round(model.getRing() * 10F) / 10F));
                                 setChartData(chartData);
                                 index.incrementAndGet();
-                                Log.e(TAG, "Re-> success-点");
-                                LogUtils.e(TAG, "Re-> success-点");
+                                LogUtils.i(TAG, "走到这一定是 坐标数据 Re-> success-点");
                             } else {
                                 Arrays.fill(res, (byte) 0);
                             }
@@ -457,8 +455,7 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
     private void shootInit() {
         initModes = spUtils.getStringList(Constant.INIT_MODE_DATA, InitMode.class);
 
-        Log.e("------", initModes.toString());
-        LogUtils.e("------", initModes.toString());
+        LogUtils.i("------", initModes.toString());
         totalBout = spUtils.getInt(Constant.TOTAL_BOUT);
         curBout = spUtils.getInt(Constant.CUR_BOUT);
         curBoutId = initModes.get(curBout - 1).bout_id;
@@ -961,12 +958,11 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
                 long interval = now - lastTime[0];
                 lastTime[0] = now;
                 if (paramComBean.bRec.length == 11)
-                    Log.e("Time ->", interval + "");
-                    LogUtils.e("Time ->", interval + "");
+                    LogUtils.i("paramComBean.bRec.length, Time ->", interval + "");
 //                String t = paramComBean.sRecTime;
 //                String rxText = ByteUtil.ByteArrToHex(paramComBean.bRec);
 //                String text = "Rx-> " + t + ": " + rxText + "\r" + "\n";
-//                Log.e(TAG, text);
+//                LogUtils.e(TAG, text);
                 Message message = handler.obtainMessage();
                 message.obj = paramComBean;
                 message.what = PORT_TYPE;
@@ -1101,7 +1097,7 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
 //            }
 //            res[10] = (byte) sum;
 //
-//            Log.e("--->", ByteUtil.ByteArrToHex(res));
+//            LogUtils.e("--->", ByteUtil.ByteArrToHex(res));
 //            ComBean bean = new ComBean(serialHelper.getPort(), res, res.length);
 //
 //            Message message = handler.obtainMessage();

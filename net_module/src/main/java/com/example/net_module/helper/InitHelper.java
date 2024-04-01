@@ -3,6 +3,7 @@ package com.example.net_module.helper;
 
 import android.util.Log;
 
+import com.blankj.utilcode.utils.LogUtils;
 import com.example.common_module.db.mode.SingleShootDataModel;
 import com.example.net_module.callback.NetCallBack;
 import com.example.net_module.mode.InitModeData;
@@ -20,7 +21,7 @@ public class InitHelper {
         RemoteService service = Network.remote();
         // 设备 ID 打印；
         System.out.println(android.os.Build.SERIAL);
-        Log.e("InitHelper", "设备 id = " + android.os.Build.SERIAL);
+        LogUtils.i("InitHelper", "设备 id = " + android.os.Build.SERIAL);
         Call<InitModeData> call = service.init(android.os.Build.SERIAL);
         call.enqueue(new Callback<InitModeData>() {
             @Override
@@ -43,12 +44,12 @@ public class InitHelper {
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
-                Log.e("Net", "upload success");
+                LogUtils.i("postShootData ", "upload success");
             }
 
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-                Log.e("Net", "upload error " + t.getMessage());
+                LogUtils.e("postShootData ", "upload error " + t.getMessage());
 
             }
         });
@@ -65,7 +66,7 @@ public class InitHelper {
 
             @Override
             public void onFailure(Call<TopUser> call, Throwable t) {
-            Log.e("Net", "getTopTypeList error " + t.getMessage());
+            LogUtils.e("getTopTypeList", "getTopTypeList error " + t.getMessage());
             }
         });
     }

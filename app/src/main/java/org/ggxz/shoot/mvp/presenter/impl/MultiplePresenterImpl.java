@@ -1,6 +1,5 @@
 package org.ggxz.shoot.mvp.presenter.impl;
 
-import android.util.Log;
 
 import com.example.common_module.base.mvp.BasePresenterImpl;
 import com.example.common_module.common.Constant;
@@ -10,6 +9,7 @@ import com.github.mikephil.charting.data.Entry;
 
 import org.ggxz.shoot.mvp.presenter.MultiplePresenter;
 import org.ggxz.shoot.mvp.view.activity_view.MultipleView;
+import org.ggxz.shoot.utils.LogUtils;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -50,9 +50,8 @@ public class MultiplePresenterImpl extends BasePresenterImpl<MultipleView> imple
 //                    model.setY(getMockValue(toIntY / Constant.RADIUS));
                     model.setX(toIntX / Constant.RADIUS);
                     model.setY(toIntY / Constant.RADIUS);
-                    Log.e("XXXXX = ", String.valueOf(model.getX()));
-                    Log.e("YYYYY = ", String.valueOf(model.getY()));
-
+                    LogUtils.i("MultiplePresenterImplXXXXX = ", String.valueOf(model.getX()));
+                    LogUtils.i("MultiplePresenterImplYYYYY = ", String.valueOf(model.getY()));
 
                     double sumOfSquares = Math.pow(toIntX, 2) + Math.pow(toIntY, 2);
                     float radius = (float) (11F - Math.sqrt(sumOfSquares) / Constant.RADIUS);

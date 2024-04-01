@@ -1,24 +1,16 @@
 package org.ggxz.shoot.mvp.presenter.impl;
 
-import android.util.Log;
-
-import com.example.common_module.App;
 import com.example.common_module.base.mvp.BasePresenterImpl;
 import com.example.common_module.common.Constant;
 import com.example.common_module.db.mode.EntryModel;
 import com.example.common_module.utils.BinaryUtils;
-import com.example.common_module.utils.FileUtils;
-import com.example.net_module.callback.NetCallBack;
-import com.example.net_module.helper.InitHelper;
-import com.example.net_module.mode.InitModeData;
 import com.github.mikephil.charting.data.Entry;
-import com.google.gson.Gson;
 
 import org.ggxz.shoot.mvp.presenter.MainPresenter;
 import org.ggxz.shoot.mvp.view.activity_view.MainView;
+import org.ggxz.shoot.utils.LogUtils;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Random;
 
 
@@ -91,8 +83,8 @@ public class MainPresenterImpl extends BasePresenterImpl<MainView> implements Ma
 //                    model.setY(getMockValue(toIntY / Constant.RADIUS));
                     model.setX(toIntX / Constant.RADIUS);
                     model.setY(toIntY / Constant.RADIUS);
-                    Log.e("XXXXX = ", String.valueOf(model.getX()));
-                    Log.e("YYYYY = ", String.valueOf(model.getY()));
+                    LogUtils.i("XXXXX = ", String.valueOf(model.getX()));
+                    LogUtils.i("YYYYY = ", String.valueOf(model.getY()));
 
 
                     double sumOfSquares = Math.pow(toIntX, 2) + Math.pow(toIntY, 2);

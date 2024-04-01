@@ -14,15 +14,14 @@ import android.graphics.Path;
 import android.graphics.PathEffect;
 import android.graphics.Rect;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 
-import com.example.common_module.db.EnterInfo;
 import com.example.common_module.db.mode.EntryModel;
 
 import org.ggxz.shoot.R;
+import org.ggxz.shoot.utils.LogUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -268,7 +267,7 @@ public class TargetPointViewMultiple extends View {
             if (!set.contains(cur)) {
                 // 更新点的位置
                 changeEntries.add(entries.get(cur));
-                Log.e("TAG----", animation.getAnimatedValue() + "");
+                LogUtils.i("TAG----", animation.getAnimatedValue() + "");
 
                 invalidate();
                 set.add(cur);

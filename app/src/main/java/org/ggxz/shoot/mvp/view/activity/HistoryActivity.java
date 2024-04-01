@@ -3,11 +3,8 @@ package org.ggxz.shoot.mvp.view.activity;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.SparseBooleanArray;
-import android.view.View;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -23,20 +20,16 @@ import com.example.common_module.db.DbDownUtil;
 import com.example.common_module.db.mode.ShootDataModel;
 import com.example.common_module.db.mode.UserModel;
 import com.example.common_module.utils.ToastUtils;
-import com.example.net_module.mode.InitMode;
-import com.google.gson.Gson;
 
 import org.ggxz.shoot.R;
 import org.ggxz.shoot.adapter.HistoryAdapter;
-import org.ggxz.shoot.adapter.ItemClickListener;
-import org.ggxz.shoot.adapter.TopAdapter;
 import org.ggxz.shoot.bean.UserHistoryBean;
 import org.ggxz.shoot.mvp.presenter.impl.HistoryPresenterImpl;
 import org.ggxz.shoot.mvp.view.activity_view.HistoryView;
 import org.ggxz.shoot.utils.ExcelUtil;
+import org.ggxz.shoot.utils.LogUtils;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -196,7 +189,7 @@ public class HistoryActivity extends BaseMvpActivity<HistoryPresenterImpl> imple
             String sheetName = "射击成绩";
             String excelFileName = System.currentTimeMillis()+".xls";
             String filePath = "/storage/emulated/0/Download/"+excelFileName;//文件的路径
-            Log.e("111111>>Excel", filePath);
+            LogUtils.i("111111>>Excel", filePath);
 
             ExcelUtil.initExcel(filePath, sheetName, title);
             List<UserHistoryBean> list=new ArrayList<>();

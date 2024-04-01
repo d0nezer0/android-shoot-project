@@ -241,8 +241,7 @@ public class ConfigActivity extends AppCompatActivity {
         String t = comBean.sRecTime;
         String a = ByteUtil.ByteArrToHex(comBean.bRec);
         String text = "Rx-> " + t + ": " + a + "\r" + "\n";
-        Log.e("TAG", text);
-        LogUtils.e("TAG", text);
+        LogUtils.i("TAG", text);
         if (type.equalsIgnoreCase("7F")) {
             isGunInit=true;
             ToastUtils.showToast("枪配网成功");
@@ -251,8 +250,7 @@ public class ConfigActivity extends AppCompatActivity {
                 InitHelper.init(new NetCallBack<InitModeData>() {
                     @Override
                     public void onResponseData(InitModeData data) {
-                        Log.e("TAG", new Gson().toJson(data.toString()));
-                        LogUtils.e("TAG", new Gson().toJson(data.toString()));
+                        LogUtils.i("TAG", new Gson().toJson(data.toString()));
 
                         if (data.single_rounds.size() == 0)
                             return;
@@ -282,18 +280,19 @@ public class ConfigActivity extends AppCompatActivity {
                         utils.put(Constant.IS_NEED_WAY, false);
 
                         //todo 模拟 自由和单枪  记得还原
-                        if (data.mode == 1)
+                        if (data.mode == 1) {
                             startActivity(new Intent(ConfigActivity.this, MainActivity.class));
-                        else
+                        } else {
+                            // 一枪多靶
                             startActivity(new Intent(ConfigActivity.this, MultipleActivity.class));
-
+                        }
+                        LogUtils.i("dealMsg", "shootType == 2 主动抛异常！！！" + "finish()");
                         finish();
                     }
 
                     @Override
                     public void onError(String msg) {
-                        Log.e("TAG", msg);
-                        LogUtils.e("TAG", msg);
+                        LogUtils.e("dealMsg onError", msg);
                         ToastUtils.showToast("输入错误：" + msg);
 //                        startActivity(new Intent(ConfigActivity.this, MultipleActivity.class));
 //                        finish();
@@ -302,9 +301,11 @@ public class ConfigActivity extends AppCompatActivity {
 
             } else if (shootType == 3) {
                 startActivity(new Intent(ConfigActivity.this, MultipleActivity.class));
+                LogUtils.i("dealMsg", "shootType == 3 主动抛异常！！！" + "finish()");
                 finish();
             } else if (shootType == 1) {
                 startActivity(new Intent(ConfigActivity.this, MainActivity.class));
+                LogUtils.i("dealMsg", "shootType == 1 主动抛异常！！！" + "finish()");
                 finish();
             }
 
@@ -555,8 +556,7 @@ public class ConfigActivity extends AppCompatActivity {
             }
 
 
-            Log.e("TAG", sendData);
-            LogUtils.e("TAG", sendData);
+            LogUtils.i("TAG", sendData);
             serialHelper.sendHex(sendData);
 
             //todo 本地测试数据
