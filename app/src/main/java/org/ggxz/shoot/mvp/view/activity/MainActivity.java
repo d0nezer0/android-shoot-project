@@ -835,6 +835,15 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
                 collimationProgressBar.setProgress(collimation < 0 ? 0 : collimation);
                 collimationCount.setText(String.valueOf(collimation < 0 ? 0 : collimation));
                 curFaxu.setCollimation(collimation < 0 ? 0 : collimation);
+//            } else {
+//                // TODO 无点的时候 处理 置为脱靶；
+//                int collimation = 0;
+//                EntryModel entryModel = new EntryModel();
+//                DbDownUtil.getInstance().updateEntry(entryModel);
+//                DbDownUtil.getInstance().updateEntry(model);
+//                collimationProgressBar.setProgress(0);
+//                collimationCount.setText(String.valueOf(0));
+//                curFaxu.setCollimation(collimation);
             }
 
             curFaxu.setDirection(model.getRing() != 0 ? mPresenter.getEightWay(model.getX(), model.getY()) : "脱靶");
@@ -1118,10 +1127,9 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
                     LogUtils.e("targetData：", targetData);
                     LogUtils.e("targetData size：", targetData.size());
                     LogUtils.e("targetView(null) ", "targetView(null)");
-                    targetView(null);
+                    // TODO 分析原因， 写入真实射击信息；
+                    // targetView(new EntryModel());
                 }
-            } finally {
-                LogUtils.e("TimeOutRunnable finally：", targetData);
             }
             handler.removeCallbacks(this);
         }
