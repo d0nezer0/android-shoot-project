@@ -126,7 +126,7 @@ public class MultipleActivity extends BaseMvpActivity<MultiplePresenterImpl> imp
                 long interval = now - lastTime[0];
                 Message message = handler.obtainMessage();
                 lastTime[0] = now;
-                LogUtils.i("Time ->", interval + "");
+                LogUtils.i("MultipleActivity Time ->", interval + "");
                 message.obj = paramComBean;
                 message.what = PORT_TYPE;
                 handler.sendMessage(message);
@@ -170,7 +170,7 @@ public class MultipleActivity extends BaseMvpActivity<MultiplePresenterImpl> imp
                 ComBean comBean = (ComBean) msg.obj;
                 String t = comBean.sRecTime;
                 String rxText = ByteUtil.ByteArrToHex(comBean.bRec);
-                String text = "Rx-> " + t + ": " + rxText + "\r" + "\n";
+                String text = "MultipleActivity Rx-> " + t + ": " + rxText + "\r" + "\n";
                 LogUtils.i(TAG, text);
 
                 //state 表示当前 res[11]中已经存储到的字节有集合 note 这里的问题在于：读到新Head 后面A5不会再读 直到获取完整数据 或 检验失败清空之前存储的数据
@@ -279,7 +279,7 @@ public class MultipleActivity extends BaseMvpActivity<MultiplePresenterImpl> imp
                                 views.put(gunId, adapter);
                                 targetView.setValues(list);
 
-                                LogUtils.i(TAG, "Re-> success-点");
+                                LogUtils.i(TAG, "MultipleActivity Re-> success-点");
                             } else {
                                 Arrays.fill(res, (byte) 0);
                             }
