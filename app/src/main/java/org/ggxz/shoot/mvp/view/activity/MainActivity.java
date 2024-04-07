@@ -1120,6 +1120,8 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
                     LogUtils.e("targetView(null) ", "targetView(null)");
                     targetView(null);
                 }
+            } finally {
+                LogUtils.e("TimeOutRunnable finally：", targetData);
             }
             handler.removeCallbacks(this);
         }
