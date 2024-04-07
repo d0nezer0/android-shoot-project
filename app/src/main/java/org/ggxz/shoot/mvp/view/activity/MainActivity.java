@@ -1108,10 +1108,18 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
             try {
                 targetView(targetData.get(targetData.size() - 1));
             } catch (Exception e){
-                targetView(targetData.get(targetData.size()));
                 LogUtils.e("TimeOutRunnable 出错：", e.getMessage());
                 LogUtils.e("targetData：", targetData);
                 LogUtils.e("targetData size：", targetData.size());
+                try {
+                    targetView(targetData.get(targetData.size()));
+                } catch (Exception e2){
+                    LogUtils.e("TimeOutRunnable 出错：", e2.getMessage());
+                    LogUtils.e("targetData：", targetData);
+                    LogUtils.e("targetData size：", targetData.size());
+                    LogUtils.e("targetView(null) ", "targetView(null)");
+                    targetView(null);
+                }
             }
             handler.removeCallbacks(this);
         }
