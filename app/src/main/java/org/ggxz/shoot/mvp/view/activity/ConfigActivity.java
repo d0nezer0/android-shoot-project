@@ -404,7 +404,9 @@ public class ConfigActivity extends AppCompatActivity {
 
     }
 
-    private void generateConfigData(String numEdit, Integer shootType, String userName, String bootNum, String shootNum) {
+    private void generateConfigData(
+            String numEdit, Integer shootType, String userName, String bootNum, String shootNum
+    ) {
         ConfigDataModel configDataModel = new ConfigDataModel();
         configDataModel.setGroup(numEdit);
         //单人模式
@@ -416,11 +418,19 @@ public class ConfigActivity extends AppCompatActivity {
             configDataModel.setTotalBout(bootNum);
             //系统模式
         } else if (shootType == 2) {
+            configDataModel.setShootType(shootType);
+            configDataModel.setName(userName);
+            configDataModel.setCreateTime(new Date().getTime());
+            configDataModel.setShootNum(shootNum);
+            configDataModel.setTotalBout(bootNum);
             //自由模式
         } else if (shootType == 3) {
-
+            configDataModel.setShootType(shootType);
+            configDataModel.setCreateTime(new Date().getTime());
         }
         long id = DbDownUtil.getInstance().insertConfigDataModel(configDataModel);
+        LogUtils.i("generateConfigData",
+        "插入完成 shootType = " + shootType + ", configDataModel = " + configDataModel);
 
     }
 
@@ -533,6 +543,8 @@ public class ConfigActivity extends AppCompatActivity {
                     ToastUtils.showToast("ip不能为空");
                     return;
                 }
+                generateConfigData(numEdit, shootType, null, null, null);//参数写入库
+            } else if (shootType == 3) {
                 generateConfigData(numEdit, shootType, null, null, null);//参数写入库
             }
 
