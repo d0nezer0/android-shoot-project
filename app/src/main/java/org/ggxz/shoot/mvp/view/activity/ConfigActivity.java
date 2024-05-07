@@ -156,7 +156,11 @@ public class ConfigActivity extends AppCompatActivity {
             numEt.setText(configDataModelList.get(0).getGroup());
             userNameEt.setText(configDataModelList.get(0).getName());
             bootNumEt.setText(configDataModelList.get(0).getTotalBout());
-            spinner.setSelection(getIndex(spinnerArray,Integer.parseInt(configDataModelList.get(0).getShootNum())),true);
+            try {
+                spinner.setSelection(getIndex(spinnerArray,Integer.parseInt(configDataModelList.get(0).getShootNum())),true);
+            } catch (Exception e) {
+                LogUtils.e("init configDataModelList error, configDataModelList = " + configDataModelList, e.getMessage());
+            }
         }else {
             spinner.setSelection(1, true);
         }
@@ -557,7 +561,11 @@ public class ConfigActivity extends AppCompatActivity {
 
 
             LogUtils.i("TAG", sendData);
-            serialHelper.sendHex(sendData);
+            try {
+                serialHelper.sendHex(sendData);
+            } catch (Exception e) {
+                LogUtils.e("serialHelper.sendHex, sendData = ", sendData);
+            }
 
             //todo 本地测试数据
 //            ComBean bean = new ComBean("", ByteUtil.HexToByteArr(sendData), 8);
