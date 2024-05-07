@@ -327,6 +327,7 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
                                 model.setUserStatus(0);
                                 model.setDeleteStatus(false);
                                 model.setSingleShootId(curFaxuId);
+                                LogUtils.i("1", "计算环数完成， 环数 = " + model.getRing());
                                 if (lastTime == 0) {//当前发序的第一个点
                                     lastTime = time;
                                 }
@@ -341,15 +342,20 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
                                         model.setStatus(Color.RED);//正常轨迹
                                 }
                                 DbDownUtil.getInstance().saveEntry(model);
+                                LogUtils.i("2 saveEntry", "存 DB， model = " + model.toString());
 
                                 targetView(model);
+                                LogUtils.i("3 targetView", "model = " + model.toString());
                                 //hint 画折线
                                 chartData.add(new Entry(index.get(), Math.round(model.getRing() * 10F) / 10F));
                                 setChartData(chartData);
+                                LogUtils.i("4 setChartData", "model = " + model.toString());
                                 index.incrementAndGet();
-                                LogUtils.i(TAG, "走到这一定是 坐标数据 Re-> success-点");
+                                LogUtils.i("5 setChartData", "走到这一定是 坐标数据 Re-> success-点， index = " + index);
                             } else {
                                 Arrays.fill(res, (byte) 0);
+                                LogUtils.e("Arrays.fill(res, (byte) 0);", "异常情况！！！");
+                                LogUtils.e(TAG, "准备设置为脱靶");
                             }
                             state = 0;
                             break;
@@ -361,8 +367,7 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
 
     //todo 结束当前发序
     private void finishCurBout() {
-
-
+        LogUtils.e("finishCurBout 结束当前发序", "TODO");
     }
 
     @Override
