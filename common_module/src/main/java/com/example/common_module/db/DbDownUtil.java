@@ -4,6 +4,7 @@ package com.example.common_module.db;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.blankj.utilcode.utils.LogUtils;
 import com.example.common_module.App;
 import com.example.common_module.db.mode.ConfigDataModel;
 import com.example.common_module.db.mode.ConfigDataModelDao;
@@ -96,7 +97,12 @@ public class DbDownUtil {
         DaoMaster daoMaster = new DaoMaster(getWritableDatabase());
         DaoSession daoSession = daoMaster.newSession();
         EntryModelDao downInfoDao = daoSession.getEntryModelDao();
-        downInfoDao.update(model);
+        try {
+            downInfoDao.update(model);
+        } catch (Exception e) {
+            LogUtils.e("updateEntry downInfoDao.update exception", e.getMessage());
+            LogUtils.e("model = " + model.toString());
+        }
     }
 
     private void deleteEntry(EntryModel model) {

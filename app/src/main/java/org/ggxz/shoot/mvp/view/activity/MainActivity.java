@@ -628,7 +628,7 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
         return null;
     }
 
-    private void targetView(EntryModel model) {
+    public void targetView(EntryModel model) {
 
         /*填充局内容 之前是进来就创建局信息 现在是第一个激光 开始去检查当前局是否存在*/
         if (curBoutMode == null) {
@@ -1116,19 +1116,28 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
             shootCount = 4;
             try {
                 targetView(targetData.get(targetData.size() - 1));
+                if (targetData.size() < 5) {
+                    LogUtils.i("targetData size < 5, size = ", targetData.size());
+                    LogUtils.i("targetData：", targetData.toString());
+                }
             } catch (Exception e){
-                LogUtils.e("TimeOutRunnable 出错：", e.getMessage());
-                LogUtils.e("targetData：", targetData);
-                LogUtils.e("targetData size：", targetData.size());
+                LogUtils.e("e TimeOutRunnable 出错：", e.getMessage());
+                LogUtils.e("e targetData：", targetData.toString());
+                LogUtils.e("e targetData size：", targetData.size());
                 try {
+                    LogUtils.e("e entryModel String: ", targetData.toString());
+                    LogUtils.e("e targetData size：", targetData.size());
+                    LogUtils.e("e entryModel String: ", targetData.get(targetData.size()).toString());
                     targetView(targetData.get(targetData.size()));
                 } catch (Exception e2){
-                    LogUtils.e("TimeOutRunnable 出错：", e2.getMessage());
-                    LogUtils.e("targetData：", targetData);
-                    LogUtils.e("targetData size：", targetData.size());
-                    LogUtils.e("targetView(null) ", "targetView(null)");
+                    LogUtils.e("e2 TimeOutRunnable 出错：", e2.getMessage());
+                    LogUtils.e("e2 targetData：", targetData.toString());
+                    LogUtils.e("e2 targetData size：", targetData.size());
+                    LogUtils.e("e2 targetView(null) ", "targetView(null)");
                     // TODO 分析原因， 写入真实射击信息；
-                    // targetView(new EntryModel());
+                    EntryModel entryModel = new EntryModel();
+                    entryModel.setRing(6.0f);
+                    targetView(entryModel);
                 }
             }
             handler.removeCallbacks(this);
