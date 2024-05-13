@@ -222,8 +222,11 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
                         isInitTargetSurface = true;
                     }
 
+//                    if (comBean.bRec.length == )
+
                     //state 表示当前 res[11]中已经存储到的字节有集合 note 这里的问题在于：读到新Head 后面A5不会再读 直到获取完整数据 或 检验失败清空之前存储的数据
-                    //  A5 A5 0B 7E 01 01 01 FF 9C 01 9A 67  / A5 0B 7E 03 A5 A5 0B 7E 01 01 01 FF 9C 01 9A 67 A5 0B 7E 01 01 01 FF 9C 01 9A 67-> A5 0B 7E 03 01 01 FF 9C 01 9A 67 正确吗？
+                    //  A5 A5 0B 7E 01 01 01 FF 9C 01 9A 67
+                    //  A5 0B 7E 03 A5 A5 0B 7E 01 01 01 FF 9C 01 9A 67 A5 0B 7E 01 01 01 FF 9C 01 9A 67-> A5 0B 7E 03 01 01 FF 9C 01 9A 67 正确吗？
                     for (int i = 0; i < comBean.bRec.length; i++) {
                         byte b = comBean.bRec[i];
 
@@ -382,6 +385,7 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
                                 break;
                         }
                     }
+                    state = 0;
                 }
             } catch (Exception e) {
                 LogUtils.e("MultipleActivity- handleMessage error", "error = " + e.getMessage());

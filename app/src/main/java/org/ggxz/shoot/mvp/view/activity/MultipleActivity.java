@@ -311,6 +311,7 @@ public class MultipleActivity extends BaseMvpActivity<MultiplePresenterImpl> imp
                                 break;
                         }
                     }
+                    state = 0;
                 }
             } catch (Exception e) {
                 LogUtils.e("MultipleActivity- handleMessage error", "error = " + e.getMessage());
