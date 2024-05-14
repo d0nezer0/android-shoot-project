@@ -220,9 +220,10 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
                         lastHeartTime = t.substring(3,8);  //MM:ss
                         if (!isInitTargetSurface) ToastUtils.showToast("靶面连接成功！");
                         isInitTargetSurface = true;
+                        // 除了靶面信息， 应该是心跳， 忽略。
+                        return;
                     }
 
-//                    if (comBean.bRec.length == )
 
                     //state 表示当前 res[11]中已经存储到的字节有集合 note 这里的问题在于：读到新Head 后面A5不会再读 直到获取完整数据 或 检验失败清空之前存储的数据
                     //  A5 A5 0B 7E 01 01 01 FF 9C 01 9A 67
