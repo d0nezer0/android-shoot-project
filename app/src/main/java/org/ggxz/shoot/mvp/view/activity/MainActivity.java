@@ -209,160 +209,169 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            if (msg.what == PORT_TYPE) {//串口通信相关
-                comBean = (ComBean) msg.obj;
-                String t = comBean.sRecTime;
-                String rxText = ByteUtil.ByteArrToHex(comBean.bRec);
-                String text = "Rx-> " + t + ": " + rxText + "\r" + "\n";
-                if (rxText.contains("A504")){
-                    lastHeartTime = t.substring(3,8);  //MM:ss
-                    if (!isInitTargetSurface) ToastUtils.showToast("靶面连接成功！");
-                    isInitTargetSurface = true;
-                }
-                LogUtils.i(TAG, text);
+            try {
+                if (msg.what == PORT_TYPE) {//串口通信相关
+                    comBean = (ComBean) msg.obj;
+                    String t = comBean.sRecTime;
+                    String rxText = ByteUtil.ByteArrToHex(comBean.bRec);
+                    String text = "handleMessage Rx-> " + t + ": " + rxText + "\r" + "\n";
+                    LogUtils.i(TAG, text);
+                    if (rxText.contains("A504")){
+                        lastHeartTime = t.substring(3,8);  //MM:ss
+                        if (!isInitTargetSurface) ToastUtils.showToast("靶面连接成功！");
+                        isInitTargetSurface = true;
+                        // 除了靶面信息， 应该是心跳， 忽略。
+                        return;
+                    }
 
-                //state 表示当前 res[11]中已经存储到的字节有集合 note 这里的问题在于：读到新Head 后面A5不会再读 直到获取完整数据 或 检验失败清空之前存储的数据
-                //  A5 A5 0B 7E 01 01 01 FF 9C 01 9A 67  / A5 0B 7E 03 A5 A5 0B 7E 01 01 01 FF 9C 01 9A 67 A5 0B 7E 01 01 01 FF 9C 01 9A 67-> A5 0B 7E 03 01 01 FF 9C 01 9A 67 正确吗？
-                for (int i = 0; i < comBean.bRec.length; i++) {
-                    byte b = comBean.bRec[i];
 
-                    switch (state) {
-                        case 0:
-                            if (b == (byte) 0xA5) {//帧头
-                                state = 1;
-                                res[0] = b;
-                            }
-                            break;
-                        case 1:
-                            if ((b == (byte) 0x0B) || (b == (byte) 0x06)) {//0B xy坐标数据 06 开抢数据
+                    //state 表示当前 res[11]中已经存储到的字节有集合 note 这里的问题在于：读到新Head 后面A5不会再读 直到获取完整数据 或 检验失败清空之前存储的数据
+                    //  A5 A5 0B 7E 01 01 01 FF 9C 01 9A 67
+                    //  A5 0B 7E 03 A5 A5 0B 7E 01 01 01 FF 9C 01 9A 67 A5 0B 7E 01 01 01 FF 9C 01 9A 67-> A5 0B 7E 03 01 01 FF 9C 01 9A 67 正确吗？
+                    for (int i = 0; i < comBean.bRec.length; i++) {
+                        byte b = comBean.bRec[i];
+
+                        switch (state) {
+                            case 0:
+                                if (b == (byte) 0xA5) {//帧头
+                                    state = 1;
+                                    res[0] = b;
+                                }
+                                break;
+                            case 1:
+                                if ((b == (byte) 0x0B) || (b == (byte) 0x06)) {//0B xy坐标数据 06 开抢数据
 //                                isXyFlag = true;
-                                state = 2;
-                                res[1] = b;
-                            } else {
+                                    state = 2;
+                                    res[1] = b;
+                                } else {
 //                                isXyFlag = false;
-                                state = 0;
-                            }
-                            break;
-                        case 2:
-                            if (b == (byte) 0x7E || b == (byte) 0xFE) {//胸环靶
-                                state = 3;
-                                res[2] = b;
-                            } else if (b == (byte) 0x01) {//92式手枪
-                                isGun92 = true;
+                                    state = 0;
+                                }
+                                break;
+                            case 2:
+                                if (b == (byte) 0x7E || b == (byte) 0xFE) {//胸环靶
+                                    state = 3;
+                                    res[2] = b;
+                                } else if (b == (byte) 0x01) {//92式手枪
+                                    isGun92 = true;
                                 /*state = 3;
                                 res[2] = b;*/
-                                state = 0;
-                            } else {
-                                isGun92 = false;
-                                state = 0;
-                            }
-                            break;
-                        case 3://ID 靶/枪 此时出现A5 怎么办？
-                            state = 4;
-                            res[3] = b;
-                            break;
-                        case 4://cmd
-                            state = 5;
-                            res[4] = b;
-                            break;
-                        case 5://
-                            state = 6;
-                            res[5] = b;
-                            /*if (isXyFlag) {//坐标
+                                    state = 0;
+                                } else {
+                                    isGun92 = false;
+                                    state = 0;
+                                }
+                                break;
+                            case 3://ID 靶/枪 此时出现A5 怎么办？
+                                state = 4;
+                                res[3] = b;
+                                break;
+                            case 4://cmd
+                                state = 5;
+                                res[4] = b;
+                                break;
+                            case 5://
                                 state = 6;
                                 res[5] = b;
-                            } else {//开抢 如果是开抢 此时就应该要校验了
-                                state = 0;//重置初始状态 校验成功失败 都要重置 (难道要遍历re 从里面找有效Head 然后再嵌套边 swatch case？)
-                                byte sum = 0;
-                                for (int j = 0; j < 5; j++) {
-                                    sum += res[j];
-                                }
-                                if (b == sum) {//校验成功
-                                    long time = new Date().getTime();
-                                    lastTime = time;
-                                    EntryModel model = mPresenter.makeData(res);
+                                /*if (isXyFlag) {//坐标
+                                    state = 6;
+                                    res[5] = b;
+                                } else {//开抢 如果是开抢 此时就应该要校验了
+                                    state = 0;//重置初始状态 校验成功失败 都要重置 (难道要遍历re 从里面找有效Head 然后再嵌套边 swatch case？)
+                                    byte sum = 0;
+                                    for (int j = 0; j < 5; j++) {
+                                        sum += res[j];
+                                    }
+                                    if (b == sum) {//校验成功
+                                        long time = new Date().getTime();
+                                        lastTime = time;
+                                        EntryModel model = mPresenter.makeData(res);
 
+                                        model.setTime(time);
+                                        model.setUserId(spUtils.getLong(Constant.USER_ID));
+                                        model.setUserStatus(0);
+                                        model.setDeleteStatus(false);
+                                        model.setSingleShootId(curFaxuId);
+                                        DbDownUtil.getInstance().saveEntry(model);
+                                        targetView(model);
+                                        LogUtils.e(TAG, "Re-> success-开抢");
+                                    } else {
+                                        //校验失败 那么我该删除前面的数据嘛？
+                                        Arrays.fill(res, (byte) 0);// 清空缓存数据 or 不用清空 state重置数据会覆盖掉
+                                    }
+                                }*/
+                                break;
+                            //break 不能却掉 否则无法正确更新state以及保证res数据的顺序
+                            case 6:
+                                state = 7;
+                                res[6] = b;
+                                break;
+                            case 7:
+                                state = 8;
+                                res[7] = b;
+                                break;
+                            case 8:
+                                state = 9;
+                                res[8] = b;
+                                break;
+                            case 9:
+                                state = 10;
+                                res[9] = b;
+                                break;
+                            case 10:// 走到这一定是 坐标数据
+                                byte sum = 0;
+                                for (byte re : res) {
+                                    sum += re;
+                                }
+                                if (b == sum) {
+                                    long time = new Date().getTime();
+//                              创建model 赋值res数据       EntryModel model = new EntryModel(); 存入数据库
+                                    EntryModel model = mPresenter.makeData(res);
                                     model.setTime(time);
                                     model.setUserId(spUtils.getLong(Constant.USER_ID));
                                     model.setUserStatus(0);
                                     model.setDeleteStatus(false);
                                     model.setSingleShootId(curFaxuId);
-                                    DbDownUtil.getInstance().saveEntry(model);
-                                    targetView(model);
-                                    LogUtils.e(TAG, "Re-> success-开抢");
-                                } else {
-                                    //校验失败 那么我该删除前面的数据嘛？
-                                    Arrays.fill(res, (byte) 0);// 清空缓存数据 or 不用清空 state重置数据会覆盖掉
-                                }
-                            }*/
-                            break;
-                        //break 不能却掉 否则无法正确更新state以及保证res数据的顺序
-                        case 6:
-                            state = 7;
-                            res[6] = b;
-                            break;
-                        case 7:
-                            state = 8;
-                            res[7] = b;
-                            break;
-                        case 8:
-                            state = 9;
-                            res[8] = b;
-                            break;
-                        case 9:
-                            state = 10;
-                            res[9] = b;
-                            break;
-                        case 10:// 走到这一定是 坐标数据
-                            byte sum = 0;
-                            for (byte re : res) {
-                                sum += re;
-                            }
-                            if (b == sum) {
-                                long time = new Date().getTime();
-//                              创建model 赋值res数据       EntryModel model = new EntryModel(); 存入数据库
-                                EntryModel model = mPresenter.makeData(res);
-                                model.setTime(time);
-                                model.setUserId(spUtils.getLong(Constant.USER_ID));
-                                model.setUserStatus(0);
-                                model.setDeleteStatus(false);
-                                model.setSingleShootId(curFaxuId);
-                                if (lastTime == 0) {//当前发序的第一个点
-                                    lastTime = time;
-                                }
-                                if (index.get() <= 5)
+                                    if (lastTime == 0) {//当前发序的第一个点
+                                        lastTime = time;
+                                    }
+                                    if (index.get() <= 5)
 //                                    model.setStatus(Color.GREEN);//发序开始
-                                    model.setStatus(Color.RED);//发序开始
-                                else {
-                                    if (shootCount >= 0 && shootCount <= 5)
-                                        model.setStatus(Color.BLUE);//开抢后
+                                        model.setStatus(Color.RED);//发序开始
+                                    else {
+                                        if (shootCount >= 0 && shootCount <= 5)
+                                            model.setStatus(Color.BLUE);//开抢后
 //                                        model.setStatus(Color.RED);//开抢后
-                                    else
-                                        model.setStatus(Color.RED);//正常轨迹
-                                }
-                                DbDownUtil.getInstance().saveEntry(model);
+                                        else
+                                            model.setStatus(Color.RED);//正常轨迹
+                                    }
+                                    DbDownUtil.getInstance().saveEntry(model);
 
-                                targetView(model);
-                                //hint 画折线
-                                chartData.add(new Entry(index.get(), Math.round(model.getRing() * 10F) / 10F));
-                                setChartData(chartData);
-                                index.incrementAndGet();
-                                LogUtils.i(TAG, "走到这一定是 坐标数据 Re-> success-点");
-                            } else {
-                                Arrays.fill(res, (byte) 0);
-                            }
-                            state = 0;
-                            break;
+                                    targetView(model);
+                                    //hint 画折线
+                                    chartData.add(new Entry(index.get(), Math.round(model.getRing() * 10F) / 10F));
+                                    setChartData(chartData);
+                                    index.incrementAndGet();
+                                } else {
+                                    Arrays.fill(res, (byte) 0);
+                                    LogUtils.e("Arrays.fill(res, (byte) 0);", "异常情况！！！");
+                                    LogUtils.e(TAG, "准备设置为脱靶");
+                                }
+                                state = 0;
+                                break;
+                        }
                     }
+                    state = 0;
                 }
+            } catch (Exception e) {
+                LogUtils.e("MainActivity handleMessage error", "error = " + e.getMessage());
             }
         }
     };
 
     //todo 结束当前发序
     private void finishCurBout() {
-
-
+        LogUtils.e("finishCurBout 结束当前发序", "TODO");
     }
 
     @Override
@@ -628,7 +637,7 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
         return null;
     }
 
-    private void targetView(EntryModel model) {
+    public void targetView(EntryModel model) {
 
         /*填充局内容 之前是进来就创建局信息 现在是第一个激光 开始去检查当前局是否存在*/
         if (curBoutMode == null) {
@@ -835,6 +844,15 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
                 collimationProgressBar.setProgress(collimation < 0 ? 0 : collimation);
                 collimationCount.setText(String.valueOf(collimation < 0 ? 0 : collimation));
                 curFaxu.setCollimation(collimation < 0 ? 0 : collimation);
+//            } else {
+//                // TODO 无点的时候 处理 置为脱靶；
+//                int collimation = 0;
+//                EntryModel entryModel = new EntryModel();
+//                DbDownUtil.getInstance().updateEntry(entryModel);
+//                DbDownUtil.getInstance().updateEntry(model);
+//                collimationProgressBar.setProgress(0);
+//                collimationCount.setText(String.valueOf(0));
+//                curFaxu.setCollimation(collimation);
             }
 
             curFaxu.setDirection(model.getRing() != 0 ? mPresenter.getEightWay(model.getX(), model.getY()) : "脱靶");
@@ -959,10 +977,10 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
                 lastTime[0] = now;
                 if (paramComBean.bRec.length == 11)
                     LogUtils.i("paramComBean.bRec.length, Time ->", interval + "");
-//                String t = paramComBean.sRecTime;
-//                String rxText = ByteUtil.ByteArrToHex(paramComBean.bRec);
-//                String text = "Rx-> " + t + ": " + rxText + "\r" + "\n";
-//                LogUtils.e(TAG, text);
+                    String t = paramComBean.sRecTime;
+                    String rxText = ByteUtil.ByteArrToHex(paramComBean.bRec);
+                    String text = "onDataReceived Rx-> " + t + ": " + rxText + "\r" + "\n";
+                    LogUtils.i("onDataReceived", text);
                 Message message = handler.obtainMessage();
                 message.obj = paramComBean;
                 message.what = PORT_TYPE;
@@ -1107,11 +1125,29 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
             shootCount = 4;
             try {
                 targetView(targetData.get(targetData.size() - 1));
+                if (targetData.size() < 5) {
+                    LogUtils.i("targetData size < 5, size = ", targetData.size());
+                    LogUtils.i("targetData：", targetData.toString());
+                }
             } catch (Exception e){
-                targetView(targetData.get(targetData.size()));
-                LogUtils.e("TimeOutRunnable 出错：", e.getMessage());
-                LogUtils.e("targetData：", targetData);
-                LogUtils.e("targetData size：", targetData.size());
+                LogUtils.e("e TimeOutRunnable 出错：", e.getMessage());
+                LogUtils.e("e targetData：", targetData.toString());
+                LogUtils.e("e targetData size：", targetData.size());
+                try {
+                    LogUtils.e("e entryModel String: ", targetData.toString());
+                    LogUtils.e("e targetData size：", targetData.size());
+                    LogUtils.e("e entryModel String: ", targetData.get(targetData.size()).toString());
+                    targetView(targetData.get(targetData.size()));
+                } catch (Exception e2){
+                    LogUtils.e("e2 TimeOutRunnable 出错：", e2.getMessage());
+                    LogUtils.e("e2 targetData：", targetData.toString());
+                    LogUtils.e("e2 targetData size：", targetData.size());
+                    LogUtils.e("e2 targetView(null) ", "targetView(null)");
+                    // TODO 分析原因， 写入真实射击信息；
+                    EntryModel entryModel = new EntryModel();
+                    entryModel.setRing(6.0f);
+                    targetView(entryModel);
+                }
             }
             handler.removeCallbacks(this);
         }

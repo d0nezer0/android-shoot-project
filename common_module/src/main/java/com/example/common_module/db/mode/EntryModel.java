@@ -110,6 +110,38 @@ public class EntryModel implements Parcelable {
         this.status = status;
     }
 
+    /*
+    Long id, int head, int len, int type, int deviceID, int cmd,
+                      long time, float x, float y, int gunId, float ring, boolean checkVerify,
+                      long singleShootId, long userId, int userStatus, boolean deleteStatus,
+                      int gunInAndMiss, boolean miss, int status
+     */
+    @Override
+    public String toString() {
+        return "EntryModel{" +
+                "id=" + id +
+                ", head=" + head +
+                ", len=" + len +
+                ", type=" + type +
+                ", deviceID=" + deviceID +
+                ", cmd=" + cmd +
+                ", time=" + time +
+                ", x=" + x +
+                ", y=" + y +
+                ", gunId=" + gunId +
+                ", ring=" + ring +
+                ", checkVerify=" + checkVerify +
+                ", singleShootId=" + singleShootId +
+                ", userId=" + userId +
+                ", userStatus=" + userStatus +
+                ", deleteStatus=" + deleteStatus +
+                ", gunInAndMiss=" + gunInAndMiss +
+                ", miss=" + miss +
+                ", status=" + status +
+                '}';
+    }
+
+
     @Generated(hash = 735698284)
     public EntryModel() {
     }

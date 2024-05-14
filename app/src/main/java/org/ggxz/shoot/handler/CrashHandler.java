@@ -26,15 +26,15 @@ import java.util.Date;
 public class CrashHandler implements UncaughtExceptionHandler {
     private static final String TAG = "CrashHandler";
     public static final boolean DEBUG = true;
-    /**
-     * 文件名
-     */
-    public static final String FILE_NAME = "crash";
+
     /**
      * 异常日志 存储位置为根目录下的 Crash文件夹
      */
     private static final String PATH = "/storage/emulated/0/";// 日志文件在sdcard中的路径;
     /**
+     * 文件名
+     */
+    public static final String FILE_NAME = "crash";    /**
      * 文件名后缀
      */
     private static final String FILE_NAME_SUFFIX = ".txt";

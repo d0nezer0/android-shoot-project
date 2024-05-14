@@ -156,7 +156,11 @@ public class ConfigActivity extends AppCompatActivity {
             numEt.setText(configDataModelList.get(0).getGroup());
             userNameEt.setText(configDataModelList.get(0).getName());
             bootNumEt.setText(configDataModelList.get(0).getTotalBout());
-            spinner.setSelection(getIndex(spinnerArray,Integer.parseInt(configDataModelList.get(0).getShootNum())),true);
+            try {
+                spinner.setSelection(getIndex(spinnerArray,Integer.parseInt(configDataModelList.get(0).getShootNum())),true);
+            } catch (Exception e) {
+                LogUtils.e("init configDataModelList error, configDataModelList = " + configDataModelList, e.getMessage());
+            }
         }else {
             spinner.setSelection(1, true);
         }
@@ -400,23 +404,32 @@ public class ConfigActivity extends AppCompatActivity {
 
     }
 
-    private void generateConfigData(String numEdit, Integer shootType, String userName, String bootNum, String shootNum) {
+    private void generateConfigData(
+            String numEdit, Integer shootType, String userName, String bootNum, String shootNum
+    ) {
         ConfigDataModel configDataModel = new ConfigDataModel();
         configDataModel.setGroup(numEdit);
+        configDataModel.setShootType(shootType);
         //单人模式
         if (shootType == 1) {
-            configDataModel.setShootType(shootType);
             configDataModel.setName(userName);
             configDataModel.setCreateTime(new Date().getTime());
             configDataModel.setShootNum(shootNum);
             configDataModel.setTotalBout(bootNum);
-            //系统模式
+            //系统模式， 从服务端获取配置；
         } else if (shootType == 2) {
+//            configDataModel.setShootType(shootType);
+//            configDataModel.setName(userName);
+//            configDataModel.setCreateTime(new Date().getTime());
+//            configDataModel.setShootNum(shootNum);
+//            configDataModel.setTotalBout(bootNum);
             //自由模式
         } else if (shootType == 3) {
-
+            configDataModel.setCreateTime(new Date().getTime());
         }
         long id = DbDownUtil.getInstance().insertConfigDataModel(configDataModel);
+        LogUtils.i("generateConfigData",
+        "插入完成 shootType = " + shootType + ", configDataModel = " + configDataModel);
 
     }
 
@@ -530,6 +543,8 @@ public class ConfigActivity extends AppCompatActivity {
                     return;
                 }
                 generateConfigData(numEdit, shootType, null, null, null);//参数写入库
+            } else if (shootType == 3) {
+                generateConfigData(numEdit, shootType, null, null, null);//参数写入库
             }
 
             if (!ipEdit.isEmpty())
@@ -557,7 +572,11 @@ public class ConfigActivity extends AppCompatActivity {
 
 
             LogUtils.i("TAG", sendData);
-            serialHelper.sendHex(sendData);
+            try {
+                serialHelper.sendHex(sendData);
+            } catch (Exception e) {
+                LogUtils.e("serialHelper.sendHex, sendData = ", sendData);
+            }
 
             //todo 本地测试数据
 //            ComBean bean = new ComBean("", ByteUtil.HexToByteArr(sendData), 8);
