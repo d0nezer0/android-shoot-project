@@ -772,6 +772,7 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
                         tvTotalRing.setText(df.format(totalRing));
                         finishCurBout();
                         print(boutMode);
+                        LogUtils.i("boutMode = ", boutMode.toString());
                     } else {//显示结束按钮 回到初始页面
                         handler.removeCallbacksAndMessages(null);
                         //射击结束
@@ -840,20 +841,21 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
                     collimation = isMiss ? Math.round(100F - difference * 100F) : 0;
                     count++;
                 }
-                DbDownUtil.getInstance().updateEntry(model);
                 collimationProgressBar.setProgress(collimation < 0 ? 0 : collimation);
                 collimationCount.setText(String.valueOf(collimation < 0 ? 0 : collimation));
                 curFaxu.setCollimation(collimation < 0 ? 0 : collimation);
-//            } else {
-//                // TODO 无点的时候 处理 置为脱靶；
-//                int collimation = 0;
-//                EntryModel entryModel = new EntryModel();
-//                DbDownUtil.getInstance().updateEntry(entryModel);
-//                DbDownUtil.getInstance().updateEntry(model);
-//                collimationProgressBar.setProgress(0);
-//                collimationCount.setText(String.valueOf(0));
-//                curFaxu.setCollimation(collimation);
+            } else {
+                // TODO 无点的时候 处理 置为脱靶；
+                int collimation = 0;
+                EntryModel entryModel = new EntryModel();
+                DbDownUtil.getInstance().updateEntry(entryModel);
+                DbDownUtil.getInstance().updateEntry(model);
+                collimationProgressBar.setProgress(0);
+                collimationCount.setText(String.valueOf(0));
+                curFaxu.setCollimation(collimation);
             }
+            // else 没处理导致丢点。
+            DbDownUtil.getInstance().updateEntry(model);
 
             curFaxu.setDirection(model.getRing() != 0 ? mPresenter.getEightWay(model.getX(), model.getY()) : "脱靶");
             if (audioPlayerHelper != null)
@@ -1145,7 +1147,7 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
                     LogUtils.e("e2 targetView(null) ", "targetView(null)");
                     // TODO 分析原因， 写入真实射击信息；
                     EntryModel entryModel = new EntryModel();
-                    entryModel.setRing(6.0f);
+                    entryModel.setRing(0.0f);
                     targetView(entryModel);
                 }
             }

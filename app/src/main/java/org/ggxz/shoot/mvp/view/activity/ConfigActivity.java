@@ -159,7 +159,11 @@ public class ConfigActivity extends AppCompatActivity {
             try {
                 spinner.setSelection(getIndex(spinnerArray,Integer.parseInt(configDataModelList.get(0).getShootNum())),true);
             } catch (Exception e) {
-                LogUtils.e("init configDataModelList error, configDataModelList = " + configDataModelList, e.getMessage());
+                LogUtils.e(String.format("configDataMode.size() = %s", configDataModelList.size()), "分析错误内容");
+                for (int i=0; i < configDataModelList.size(); i++) {
+                    LogUtils.e(String.format("configDataMode %s", i), configDataModelList.get(i).toString());
+                }
+                LogUtils.e(String.format("init configDataModelList error, configDataModelList = %s", configDataModelList), e.getMessage());
             }
         }else {
             spinner.setSelection(1, true);
