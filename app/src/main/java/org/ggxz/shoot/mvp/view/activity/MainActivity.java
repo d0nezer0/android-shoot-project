@@ -36,6 +36,7 @@ import com.example.common_module.db.mode.ShootDataModel;
 import com.example.common_module.db.mode.SingleShootDataModel;
 import com.example.common_module.db.mode.UserModel;
 import com.example.common_module.db.mode.UserShootReportData;
+import com.example.common_module.utils.AssetFileReader;
 import com.example.common_module.utils.PopWindowUtil;
 import com.example.common_module.utils.SPUtils;
 import com.example.common_module.utils.ToastUtils;
@@ -1103,6 +1104,14 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
             audioPlayerHelper.release();
     }
 
+    @Override
+    public void onBackPressed() {
+        // 当用户点击返回键时，重新启动固定页面
+        Intent intent = new Intent(this, ConfigActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish(); // 结束当前活动
+    }
     class TimeOutRunnable implements Runnable {
 
         public TimeOutRunnable() {
