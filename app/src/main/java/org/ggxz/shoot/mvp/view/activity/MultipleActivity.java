@@ -2,6 +2,7 @@ package org.ggxz.shoot.mvp.view.activity;
 
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Handler;
 import android.os.Looper;
@@ -108,6 +109,14 @@ public class MultipleActivity extends BaseMvpActivity<MultiplePresenterImpl> imp
 
     }
 
+    @Override
+    public void onBackPressed() {
+        // 当用户点击返回键时，重新启动固定页面
+        Intent intent = new Intent(this, ConfigActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish(); // 结束当前活动
+    }
     @Override
     protected MultiplePresenterImpl initInjector() {
         return new MultiplePresenterImpl();
