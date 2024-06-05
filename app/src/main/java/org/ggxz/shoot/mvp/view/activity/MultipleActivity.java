@@ -8,8 +8,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.SystemClock;
-import android.util.Log;
-import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +16,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,6 +23,10 @@ import com.example.common_module.base.mvp.BaseMvpActivity;
 import com.example.common_module.common.Constant;
 import com.example.common_module.db.EnterInfo;
 import com.example.common_module.db.mode.EntryModel;
+import com.example.common_module.utils.AssetFileReader;
+
+import org.ggxz.shoot.utils.ResourceMonitor;
+
 import com.example.common_module.utils.ToastUtils;
 import com.example.common_module.utils.player.AudioPlayerHelper;
 
@@ -34,6 +35,7 @@ import org.ggxz.shoot.adapter.decoration.StickHeaderDecoration;
 import org.ggxz.shoot.mvp.presenter.impl.MultiplePresenterImpl;
 import org.ggxz.shoot.mvp.view.activity_view.MultipleView;
 import org.ggxz.shoot.utils.LogUtils;
+import org.ggxz.shoot.utils.SettingUtil;
 import org.ggxz.shoot.widget.TargetPointViewMultiple;
 
 import java.io.IOException;
@@ -41,10 +43,10 @@ import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import butterknife.BindView;
 import tp.xmaihh.serialport.SerialHelper;
@@ -52,11 +54,20 @@ import tp.xmaihh.serialport.bean.ComBean;
 import tp.xmaihh.serialport.stick.AbsStickPackageHelper;
 import tp.xmaihh.serialport.utils.ByteUtil;
 
+/**
+ * 自由模式主体
+ */
 public class MultipleActivity extends BaseMvpActivity<MultiplePresenterImpl> implements MultipleView {
     @BindView(R.id.targetView)
-    TargetPointViewMultiple targetView;
+    TargetPointViewMultiple targetView_rxbm;
     @BindView(R.id.recyclerLayout)
     LinearLayout recyclerLayout;
+
+    /**
+     * 胸环靶
+     */
+    @BindView(R.id.shootNum)
+    TextView shootNum;
 
     private SerialHelper serialHelper;
     private static final int PORT_TYPE = 0x05;
@@ -64,6 +75,7 @@ public class MultipleActivity extends BaseMvpActivity<MultiplePresenterImpl> imp
     private byte[] res = new byte[11];//数据拼接
     private boolean isGun92 = true;
     private long shootNumber = 0L;  //发序
+
 
 
     private Map<Integer, List<EntryModel>> map = new HashMap<>();//key 枪号 value 没个枪 存储的开抢的数据
@@ -95,14 +107,50 @@ public class MultipleActivity extends BaseMvpActivity<MultiplePresenterImpl> imp
 
             }
         }
+//        // 测试数据；
+//        List<String> fileLines = new ArrayList<>();
+//        AtomicInteger s = new AtomicInteger(0);
+//        if (SettingUtil.openTestData) {
+//            //todo 本地测试数据 读取 assets文件
+//            fileLines = AssetFileReader.readAssetFile(getApplicationContext(), "file.txt");
+//        }
+//        List<String> finalFileLines = fileLines;
+//        shootNum.setOnClickListener(v -> {
+//            if (SettingUtil.openTestData) {
+//                testData(finalFileLines, s);
+//            }
+//        });
 
         //初始化人型靶面
-        targetView.setRingCount(10); // 设置环数为10
-        targetView.setBackgroundColor(Color.TRANSPARENT); // 设置背景色为灰色
+        targetView_rxbm.setRingCount(10); // 设置环数为10
+        targetView_rxbm.setBackgroundColor(Color.TRANSPARENT); // 设置背景色为灰色
 
-        targetView.setXAxisRange(-10f, 10f);
-        targetView.setYAxisRange(-10f, 10f);
-        targetView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+        targetView_rxbm.setXAxisRange(-10f, 10f);
+        targetView_rxbm.setYAxisRange(-10f, 10f);
+        targetView_rxbm.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+
+//        ResourceMonitor.printMemoryUsage(this, "MultipleActivity");
+    }
+
+    /**
+     * 获取本地测试数据方法，需要的时候打开
+     *
+     * @param fileLines 本地file.txt
+     * @param s         计数器
+     */
+    private void testData(List<String> fileLines, AtomicInteger s) {
+        if (s.get() < fileLines.size()) {
+            byte[] bytes = ByteUtil.HexToByteArr(fileLines.get(s.get()).trim().replace(" ", ""));
+            ComBean bean = new ComBean("11", bytes, bytes.length);
+            Message message = handler.obtainMessage();
+            message.obj = bean;
+            message.what = PORT_TYPE;
+            handler.sendMessage(message);
+            s.set(s.get() + 1);
+        } else {
+            ToastUtils.showToast("测试数据已跑完");
+            s.set(0);
+        }
     }
 
     @Override
@@ -118,6 +166,7 @@ public class MultipleActivity extends BaseMvpActivity<MultiplePresenterImpl> imp
         startActivity(intent);
         finish(); // 结束当前活动
     }
+
     @Override
     protected MultiplePresenterImpl initInjector() {
         return new MultiplePresenterImpl();
@@ -188,10 +237,6 @@ public class MultipleActivity extends BaseMvpActivity<MultiplePresenterImpl> imp
                     String rxText = ByteUtil.ByteArrToHex(comBean.bRec);
                     String text = "MultipleActivity Rx-> " + t + ": " + rxText + "\r" + "\n";
                     LogUtils.i(TAG, text);
-                    if (rxText.contains("A504")){
-                        // 除了靶面信息， 应该是心跳， 忽略。
-                        return;
-                    }
 
                     //state 表示当前 res[11]中已经存储到的字节有集合 note 这里的问题在于：读到新Head 后面A5不会再读 直到获取完整数据 或 检验失败清空之前存储的数据
                     //  A5 A5 0B 7E 01 01 01 FF 9C 01 9A 67  / A5 0B 7E 03 A5 A5 0B 7E 01 01 01 FF 9C 01 9A 67 A5 0B 7E 01 01 01 FF 9C 01 9A 67-> A5 0B 7E 03 01 01 FF 9C 01 9A 67 正确吗？
@@ -282,8 +327,8 @@ public class MultipleActivity extends BaseMvpActivity<MultiplePresenterImpl> imp
                                     if (list == null) {
                                         list = new ArrayList<>();
                                     }
-                                    model.setUserId(list.size()+1); //把list大小作为发序放入userId当中，应为entrymodle没有发序属性，借用
-                                    list.add(0,model); //向前插入，显示时最新一发始终排在第一位
+                                    model.setUserId(list.size() + 1); //把list大小作为发序放入userId当中，应为entrymodle没有发序属性，借用
+                                    list.add(0, model); //向前插入，显示时最新一发始终排在第一位
                                     map.put(gunId, list);
                                     Adapter adapter = views.get(gunId);
                                     if (adapter == null) {
@@ -297,7 +342,8 @@ public class MultipleActivity extends BaseMvpActivity<MultiplePresenterImpl> imp
                                     }
 
                                     views.put(gunId, adapter);
-                                    targetView.setValues(list);
+                                    //先注释掉人形靶面的绘制 hangg 2024年5月30日
+                                    targetView_rxbm.setValues(list);
 
                                 } else {
                                     Arrays.fill(res, (byte) 0);
@@ -340,7 +386,7 @@ public class MultipleActivity extends BaseMvpActivity<MultiplePresenterImpl> imp
             ViewHolder holder = new ViewHolder(view);
             holder.title_name.setOnClickListener(v -> {
                 if (!data.isEmpty()) {
-                    targetView.setValues(data);
+                    targetView_rxbm.setValues(data);
                     int id = data.get(0).getDeviceID();
                     for (int key : views.keySet()) {
                         if (key == id) {
@@ -360,7 +406,7 @@ public class MultipleActivity extends BaseMvpActivity<MultiplePresenterImpl> imp
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             EntryModel model = data.get(position);
-           // model.setUserId(position+1);  //用userid来保存发序
+            // model.setUserId(position+1);  //用userid来保存发序
             if (position == 0) {
                 holder.title_name.setVisibility(View.VISIBLE);
                 holder.title_line.setVisibility(View.VISIBLE);
