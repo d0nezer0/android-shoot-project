@@ -17,7 +17,6 @@ import android.telephony.SignalStrength;
 import android.telephony.TelephonyManager;
 import android.text.InputFilter;
 import android.text.Spanned;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -32,6 +31,9 @@ import com.example.common_module.common.Constant;
 import com.example.common_module.db.DbDownUtil;
 import com.example.common_module.db.mode.ConfigDataModel;
 import com.example.common_module.db.mode.UserModel;
+
+import org.ggxz.shoot.utils.ResourceMonitor;
+
 import com.example.common_module.utils.SPUtils;
 import com.example.common_module.utils.ToastUtils;
 import com.example.net_module.Common;
@@ -45,6 +47,7 @@ import com.printsdk.PrintSerializable;
 import org.ggxz.shoot.R;
 import org.ggxz.shoot.handler.CrashHandler;
 import org.ggxz.shoot.utils.LogUtils;
+import org.ggxz.shoot.utils.SettingUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -56,6 +59,7 @@ import tp.xmaihh.serialport.bean.ComBean;
 import tp.xmaihh.serialport.utils.ByteUtil;
 
 /**
+ * 配置页主体
  * 本地启动的时候需要注释下面的一些初始化方法。
  */
 public class ConfigActivity extends AppCompatActivity {
@@ -94,8 +98,11 @@ public class ConfigActivity extends AppCompatActivity {
     public static PrintSerializable mPrinter;
     public static String EXTRA_SERIAL_PORT = "9600";
     public static String EXTRA_SERIAL_NAME = "/dev/ttyS2";
-    public static boolean isGunInit=false;
-    public static boolean isInitSerialPort=false;
+    public static boolean isGunInit = false;
+    public static boolean isInitSerialPort = false;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,7 +111,6 @@ public class ConfigActivity extends AppCompatActivity {
         setContentView(R.layout.activity_config);
         CrashHandler.getInstance().init(this);
     }
-
 
 
     /**
@@ -138,10 +144,11 @@ public class ConfigActivity extends AppCompatActivity {
 //            }
 //        }
 //    }
+
     /**
      * 从数据库读取上一次配置
      */
-    private void initConfigData(){
+    private void initConfigData() {
         numEt = findViewById(R.id.numEt); //组号
         userNameEt = findViewById(R.id.userNameEt); //用户名
         bootNumEt = findViewById(R.id.bootNumEt); //局数
@@ -152,19 +159,20 @@ public class ConfigActivity extends AppCompatActivity {
 
         List<ConfigDataModel> configDataModelList = new ArrayList<>();
         configDataModelList = DbDownUtil.getInstance().findAllConfigData();
-        if (configDataModelList != null && configDataModelList.size()>0){
+        if (configDataModelList != null && configDataModelList.size() > 0) {
             numEt.setText(configDataModelList.get(0).getGroup());
             userNameEt.setText(configDataModelList.get(0).getName());
             bootNumEt.setText(configDataModelList.get(0).getTotalBout());
             try {
-                spinner.setSelection(getIndex(spinnerArray,Integer.parseInt(configDataModelList.get(0).getShootNum())),true);
+                spinner.setSelection(getIndex(spinnerArray, Integer.parseInt(configDataModelList.get(0).getShootNum())), true);
             } catch (Exception e) {
                 LogUtils.e("init configDataModelList error, configDataModelList = " + configDataModelList, e.getMessage());
             }
-        }else {
+        } else {
             spinner.setSelection(1, true);
         }
     }
+
     private void initPermission() {
         //手动申请权限,视频音频权限为同一个
         if (ContextCompat.checkSelfPermission(ConfigActivity.this, Manifest.permission.
@@ -188,21 +196,26 @@ public class ConfigActivity extends AppCompatActivity {
         };
 
         if (!serialHelper.isOpen()) {
-            try {
-                serialHelper.open();
-                isInitSerialPort=true;
-                Toast.makeText(this, "串口打开成功", Toast.LENGTH_SHORT).show();
-            } catch (IOException e) {
-                isInitSerialPort=false;
-                e.printStackTrace();
-                Toast.makeText(this, "串口打开异常", Toast.LENGTH_SHORT).show();
+            if (!SettingUtil.openTestData) {
+                try {
+                    serialHelper.open();
+                    isInitSerialPort = true;
+                    Toast.makeText(this, "串口打开成功", Toast.LENGTH_SHORT).show();
+                } catch (IOException e) {
+                    isInitSerialPort = false;
+                    e.printStackTrace();
+                    Toast.makeText(this, "串口打开异常", Toast.LENGTH_SHORT).show();
 
+                }
+            } else {
+                isInitSerialPort = true;
+                Toast.makeText(this, "串口打开成功", Toast.LENGTH_SHORT).show();
             }
         }
 
     }
 
-    private void initPrinter(){
+    private void initPrinter() {
         mPrinter = new PrintSerializable();
         mPrinter.open(EXTRA_SERIAL_NAME, EXTRA_SERIAL_PORT);
         mHandler.obtainMessage(mPrinter.getState()).sendToTarget();
@@ -239,6 +252,7 @@ public class ConfigActivity extends AppCompatActivity {
     系统上的几种射击方式选择；
      */
     private void dealMsg(Message msg) {
+        ResourceMonitor.printMemoryUsage(this, "ConfigActivity");
         ComBean comBean = (ComBean) msg.obj;
         String rxText = ByteUtil.ByteArrToHex(comBean.bRec);
         String type = rxText.substring(4, 6);
@@ -247,7 +261,7 @@ public class ConfigActivity extends AppCompatActivity {
         String text = "Rx-> " + t + ": " + a + "\r" + "\n";
         LogUtils.i("TAG", text);
         if (type.equalsIgnoreCase("7F")) {
-            isGunInit=true;
+            isGunInit = true;
             ToastUtils.showToast("枪配网成功");
             if (shootType == 2) {
                 ToastUtils.showToast("系统射击");
@@ -314,8 +328,8 @@ public class ConfigActivity extends AppCompatActivity {
             }
 
 
-        }else{
-            isGunInit=false;
+        } else {
+            isGunInit = false;
         }
     }
 
@@ -430,13 +444,17 @@ public class ConfigActivity extends AppCompatActivity {
         }
         long id = DbDownUtil.getInstance().insertConfigDataModel(configDataModel);
         LogUtils.i("generateConfigData",
-        "插入完成 shootType = " + shootType + ", configDataModel = " + configDataModel);
+                "插入完成 shootType = " + shootType + ", configDataModel = " + configDataModel);
 
     }
 
 
     @Override
     protected void onResume() {
+
+//        AudioPlayerHelper audioPlayerHelper=new AudioPlayerHelper(this);
+//        audioPlayerHelper.play("8.7","右上",true);
+
         LogUtils.i("init ", "onResume");
         // 保留最近 30天日志；
         LogUtils.delFile();
@@ -445,7 +463,6 @@ public class ConfigActivity extends AppCompatActivity {
         initSerial();
         initConfigData();
         initPrinter();
-
 
 
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -511,6 +528,7 @@ public class ConfigActivity extends AppCompatActivity {
                 ll_single.setVisibility(View.VISIBLE);
             }
         });
+        //开始射击按钮事件
         start.setOnClickListener(v -> {
             numEdit = this.num.getText().toString().trim();
 
@@ -579,104 +597,110 @@ public class ConfigActivity extends AppCompatActivity {
                 LogUtils.e("serialHelper.sendHex, sendData = ", sendData);
             }
 
-            //todo 本地测试数据
-//            ComBean bean = new ComBean("", ByteUtil.HexToByteArr(sendData), 8);
-//            Message message = handler.obtainMessage();
-//            message.obj = bean;
-//            handler.sendMessage(message);
+            if (SettingUtil.openTestData) {
+                //todo 本地测试数据
+                testData();
+            }
 
-//            InitModeData single_rounds = new InitModeData();
-//            List<InitMode> list = new ArrayList<>();
-//
-//            InitMode mode1 = new InitMode();
-//            mode1.bout_num = 1;
-//            mode1.shoot_num = 1;
-//            mode1.bout_id = 1001;
-//            mode1.user_id = 1011;
-//            mode1.user_name = "张三";
-//            mode1.bullet_count = 10;
-//
-//            list.add(mode1);
-//
-//            InitMode mode2 = new InitMode();
-//            mode2.bout_num = 2;
-//            mode2.shoot_num = 2;
-//            mode2.bout_id = 1002;
-//            mode2.user_id = 1011;
-//            mode2.user_name = "张三";
-//            mode2.bullet_count = 10;
-//
-//            list.add(mode2);
-//            single_rounds.single_rounds = list;
-//
-//            UserModel userModel = DbDownUtil.getInstance().findUser(single_rounds.single_rounds.get(0).user_id);
-//            if (userModel == null) {
-//                userModel = new UserModel();
-//                userModel.setUserId(single_rounds.single_rounds.get(0).user_id);
-//                userModel.setCreateTime(new Date().getTime());
-//            }
-//
-//            userModel.setTotalBout(single_rounds.single_rounds.size());
-//            userModel.setName(single_rounds.single_rounds.get(0).user_name);
-//            DbDownUtil.getInstance().insertUser(userModel);
-//
-//            utils.put(Constant.HOST, ipEdit);
-//            utils.put(Constant.PORT, portEdit);
-//            utils.put(Constant.DEVICE_NUM, numEdit);
-//            utils.put(Constant.CUR_BOUT, 1);
-//            utils.put(Constant.CUR_FAXU, 1);
-//            utils.put(Constant.TOTAL_BOUT, single_rounds.single_rounds.size());
-//            utils.put(Constant.IS_FINISH, false);
-//            utils.put(Constant.INIT_MODE_DATA, single_rounds.single_rounds);
-//            utils.put(Constant.USER_NAME, single_rounds.single_rounds.get(0).user_name);
-//            utils.put(Constant.USER_ID, single_rounds.single_rounds.get(0).user_id);
-//            utils.put(Constant.BULLET_COUNT, single_rounds.single_rounds.get(0).bullet_count);
-//            utils.put(Constant.IS_NEED_WAY,true);
-//            startActivity(new Intent(ConfigActivity.this, MainActivity.class));
-////            startActivity(new Intent(ConfigActivity.this, MultipleActivity.class));
-//
-//            finish();
+        });
+    }
 
-//            InitHelper.init(new NetCallBack<InitModeData>() {
-//                @Override
-//                public void onResponseData(InitModeData data) {
-//
-//                    if (data.single_rounds.size() == 0)
-//                        return;
-//
-//                    UserModel userModel = DbDownUtil.getInstance().findUser(data.single_rounds.get(0).user_id);
-//                    if (userModel == null) {
-//                        userModel = new UserModel();
-//                        userModel.setUserId(data.single_rounds.get(0).user_id);
-//                        userModel.setCreateTime(new Date().getTime());
-//                    }
-//
-//                    userModel.setTotalBout(data.single_rounds.size());
-//                    userModel.setName(data.single_rounds.get(0).user_name);
-//                    DbDownUtil.getInstance().insertUser(userModel);
-//
-//                    utils.put(Constant.HOST, ipEdit);
-//                    utils.put(Constant.PORT, portEdit);
-//                    utils.put(Constant.DEVICE_NUM, numEdit);
-//                    utils.put(Constant.CUR_BOUT, 1);
-//                    utils.put(Constant.CUR_FAXU, 1);
-//                    utils.put(Constant.TOTAL_BOUT, data.single_rounds.size());
-//                    utils.put(Constant.IS_FINISH, false);
-//                    utils.put(Constant.INIT_MODE_DATA, data.single_rounds);
-//                    utils.put(Constant.USER_NAME, data.single_rounds.get(0).user_name);
-//                    utils.put(Constant.USER_ID, data.single_rounds.get(0).user_id);
-//                    utils.put(Constant.BULLET_COUNT, data.single_rounds.get(0).bullet_count);
-//                    startActivity(new Intent(ConfigActivity.this, MainActivity.class));
-//                    finish();
-//
-//                }
-//
-//                @Override
-//                public void onError(String msg) {
-//                    ToastUtils.showToast(msg);
-//                }
-//            });
+    private void testData() {
+        ComBean bean = new ComBean("", ByteUtil.HexToByteArr(sendData), 8);
+        Message message = handler.obtainMessage();
+        message.obj = bean;
+        handler.sendMessage(message);
 
+        InitModeData single_rounds = new InitModeData();
+        List<InitMode> list = new ArrayList<>();
+
+        InitMode mode1 = new InitMode();
+        mode1.bout_num = 1;
+        mode1.shoot_num = 1;
+        mode1.bout_id = 1001;
+        mode1.user_id = 1011;
+        mode1.user_name = "张三";
+        mode1.bullet_count = 10;
+
+        list.add(mode1);
+
+        InitMode mode2 = new InitMode();
+        mode2.bout_num = 2;
+        mode2.shoot_num = 2;
+        mode2.bout_id = 1002;
+        mode2.user_id = 1011;
+        mode2.user_name = "张三";
+        mode2.bullet_count = 10;
+
+        list.add(mode2);
+        single_rounds.single_rounds = list;
+
+        UserModel userModel = DbDownUtil.getInstance().findUser(single_rounds.single_rounds.get(0).user_id);
+        if (userModel == null) {
+            userModel = new UserModel();
+            userModel.setUserId(single_rounds.single_rounds.get(0).user_id);
+            userModel.setCreateTime(new Date().getTime());
+        }
+
+        userModel.setTotalBout(single_rounds.single_rounds.size());
+        userModel.setName(single_rounds.single_rounds.get(0).user_name);
+        DbDownUtil.getInstance().insertUser(userModel);
+
+        utils.put(Constant.HOST, ipEdit);
+        utils.put(Constant.PORT, "portEdit");
+        utils.put(Constant.DEVICE_NUM, numEdit);
+        utils.put(Constant.CUR_BOUT, 1);
+        utils.put(Constant.CUR_FAXU, 1);
+        utils.put(Constant.TOTAL_BOUT, single_rounds.single_rounds.size());
+        utils.put(Constant.IS_FINISH, false);
+        utils.put(Constant.INIT_MODE_DATA, single_rounds.single_rounds);
+        utils.put(Constant.USER_NAME, single_rounds.single_rounds.get(0).user_name);
+        utils.put(Constant.USER_ID, single_rounds.single_rounds.get(0).user_id);
+        utils.put(Constant.BULLET_COUNT, single_rounds.single_rounds.get(0).bullet_count);
+        utils.put(Constant.IS_NEED_WAY, true);
+        startActivity(new Intent(ConfigActivity.this, MainActivity.class));
+//            startActivity(new Intent(ConfigActivity.this, MultipleActivity.class));
+
+        finish();
+
+        InitHelper.init(new NetCallBack<InitModeData>() {
+            @Override
+            public void onResponseData(InitModeData data) {
+
+                if (data.single_rounds.size() == 0)
+                    return;
+
+                UserModel userModel = DbDownUtil.getInstance().findUser(data.single_rounds.get(0).user_id);
+                if (userModel == null) {
+                    userModel = new UserModel();
+                    userModel.setUserId(data.single_rounds.get(0).user_id);
+                    userModel.setCreateTime(new Date().getTime());
+                }
+
+                userModel.setTotalBout(data.single_rounds.size());
+                userModel.setName(data.single_rounds.get(0).user_name);
+                DbDownUtil.getInstance().insertUser(userModel);
+
+                utils.put(Constant.HOST, ipEdit);
+                utils.put(Constant.PORT, "portEdit");
+                utils.put(Constant.DEVICE_NUM, numEdit);
+                utils.put(Constant.CUR_BOUT, 1);
+                utils.put(Constant.CUR_FAXU, 1);
+                utils.put(Constant.TOTAL_BOUT, data.single_rounds.size());
+                utils.put(Constant.IS_FINISH, false);
+                utils.put(Constant.INIT_MODE_DATA, data.single_rounds);
+                utils.put(Constant.USER_NAME, data.single_rounds.get(0).user_name);
+                utils.put(Constant.USER_ID, data.single_rounds.get(0).user_id);
+                utils.put(Constant.BULLET_COUNT, data.single_rounds.get(0).bullet_count);
+                startActivity(new Intent(ConfigActivity.this, MainActivity.class));
+                finish();
+
+            }
+
+            @Override
+            public void onError(String msg) {
+                ToastUtils.showToast(msg);
+            }
         });
     }
 
@@ -768,10 +792,10 @@ public class ConfigActivity extends AppCompatActivity {
 
     /**
      * 获取数组下标
-    */
-    public static int getIndex(Integer[] array,int value){
-        for(int i = 0;i<array.length;i++){
-            if(array[i]==value){
+     */
+    public static int getIndex(Integer[] array, int value) {
+        for (int i = 0; i < array.length; i++) {
+            if (array[i] == value) {
                 return i;
             }
         }
@@ -796,6 +820,7 @@ public class ConfigActivity extends AppCompatActivity {
         }
         return result;
     }
+
     /**
      * 获取信号强度
      */

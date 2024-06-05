@@ -21,40 +21,94 @@ public class EntryModel implements Parcelable {
     @Id(autoincrement = true)
     private Long id = null;
     //帧头 目前固定为[A5]认为是有效byte数组开头 字段为转化十进制数据A5=165
+    /**
+     * 帧头 目前固定为[A5]认为是有效byte数组开头 字段为转化十进制数据A5=165
+     */
     private int head;
     //全部数据的字节长度 06->6个byte为开枪数据->没有坐标 0A->10个byte为瞄准数据->有坐标
+    /**
+     *全部数据的字节长度 06->6个byte为开枪数据->没有坐标 0A->10个byte为瞄准数据->有坐标
+     */
     private int len;
     //根据硬件来确定，目前测试数据是7E=126 代表胸环靶
+    /**
+     *根据硬件来确定，目前测试数据是7E=126 代表胸环靶
+     */
     private int type;
     //设备编号 第几把枪/靶id 0-255
+    /**
+     * 设备编号 第几把枪/靶id 0-255
+     */
     private int deviceID;
     //命令 01->发送坐标
+    /**
+     *命令 01->发送坐标
+     */
     private int cmd;
     //这个不是时间戳 而是-> 距离0点的毫秒数  一天有24小时==1440分钟==86400000豪秒
+    /**
+     *这个不是时间戳 而是-> 距离0点的毫秒数  一天有24小时==1440分钟==86400000豪秒
+     */
     private long time;
     //x坐标 原始double
+    /**
+     *x坐标 原始double
+     */
     private float x;
     //y坐标 原始double
+    /**
+     *y坐标 原始double
+     */
     private float y;
 
     //只有7E，胸环靶 才有此字段
+    /**
+     *只有7E，胸环靶 才有此字段
+     */
     private int gunId;
     //环数 有x,y 勾股定理计算所得 采取四舍五入
+    /**
+     * 环数 有x,y 勾股定理计算所得 采取四舍五入
+     */
     private float ring;
     //校验 A5+0A+7E+03+01+FF+83+00+64)%FF=17
+    /**
+     *校验 A5+0A+7E+03+01+FF+83+00+64)%FF=17
+     */
     private boolean checkVerify;
     //单发序ID
+    /**
+     *单发序ID
+     */
     private long singleShootId;
     //用户ID
+    /**
+     *用户ID
+     */
     private long userId;
 
     //参考 #UserModel.userStatus
+    /**
+     *参考 #UserModel.userStatus
+     */
     private int userStatus;
+    /**
+     *note 删除状态 false 默认不删除  true删除，与历史记录查询时、排名比较时有关联
+     */
     private boolean deleteStatus;//note 删除状态 false 默认不删除  true删除，与历史记录查询时、排名比较时有关联
+    /**
+     *判断脱靶原始数据
+     */
     private int gunInAndMiss;//判断脱靶原始数据
+    /**
+     *是否脱靶  1 脱靶 0上靶
+     */
     private boolean miss;//是否脱靶  1 脱靶 0上靶
 
     //对应TargetPointView#mLineColors
+    /**
+     *对应TargetPointView#mLineColors
+     */
     private int status;
 
 

@@ -3,8 +3,10 @@ package com.example.common_module.utils.player;
 import android.app.Application;
 import android.content.Context;
 import android.media.MediaPlayer;
+import android.media.PlaybackParams;
 
 
+import com.blankj.utilcode.utils.LogUtils;
 import com.blankj.utilcode.utils.StringUtils;
 import com.example.common_module.common.Constant;
 import com.example.common_module.utils.SPUtils;
@@ -27,6 +29,11 @@ public class AudioPlayerHelper {
         initializeMediaPlayer();
     }
 
+    public AudioPlayerHelper()
+    {
+
+    }
+
     private void initializeMediaPlayer() {
         mediaPlayer = new MediaPlayer();
         mediaPlayer.setOnCompletionListener(mp -> {
@@ -41,9 +48,16 @@ public class AudioPlayerHelper {
         this.onCompletionListener = listener;
     }
 
+    /**
+     * 播放音频处理
+     * @param ringName 环数
+     * @param wayName 方向
+     * @param isGun92 是否92式手枪
+     */
     public void play(String ringName, String wayName, boolean isGun92) {
         this.audioFiles = convertFileName(ringName, wayName, isGun92);
         currentTrackIndex = 0;
+
         if (mediaPlayer != null && !isReleased) {
             if (mediaPlayer.isPlaying())
                 stop();
@@ -118,6 +132,11 @@ public class AudioPlayerHelper {
                         playNextTrack();
                     });
                     mediaPlayer.start();
+//                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+//                        PlaybackParams playbackParams=mediaPlayer.getPlaybackParams();
+//                        playbackParams.setSpeed(2.0f);
+//                        mediaPlayer.setPlaybackParams(playbackParams);
+//                    }
                     currentTrackIndex = trackIndex;
                 }
             }
@@ -170,9 +189,9 @@ public class AudioPlayerHelper {
         } else if (wayName.equals("脱靶")) {
             way = "tuoba";
         }
-        if (SPUtils.getInstance((Application) context.getApplicationContext()).getBoolean(Constant.IS_NEED_WAY)) {
-            files[1] = "raw_" + way;
-            files[2] = "raw_" + ringName.replace(".", "_");
+        if (SPUtils.getInstance((Application) context.getApplicationContext()).getBoolean(Constant.IS_NEED_WAY)) {//单人模式时IS_NEED_WAY为true
+            files[2] = "raw_" + way;
+            files[1] = "raw_" + ringName.replace(".", "_");
             return files;
         } else {
             files[1] = "raw_" + ringName.replace(".", "_");

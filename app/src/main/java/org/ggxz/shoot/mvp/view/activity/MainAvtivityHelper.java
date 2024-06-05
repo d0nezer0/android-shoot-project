@@ -22,6 +22,10 @@ public class MainAvtivityHelper {
     public MainAvtivityHelper() {
     }
 
+    /**
+     * 初始化曲线图
+     * @param chart
+     */
     public void configLineChart(LineChart chart) {
         /*=====chart=====*/
         chart.setBackgroundColor(Color.TRANSPARENT);//背景透明

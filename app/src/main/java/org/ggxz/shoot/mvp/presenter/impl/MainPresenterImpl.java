@@ -47,7 +47,11 @@ public class MainPresenterImpl extends BasePresenterImpl<MainView> implements Ma
 
     }
 
-
+    /**
+     * 通过勾股定理计算环数
+     * @param group
+     * @return
+     */
     public EntryModel makeData(byte[] group) {
         EntryModel model = new EntryModel();
         for (int i = 0; i < group.length; i++) {
@@ -70,7 +74,7 @@ public class MainPresenterImpl extends BasePresenterImpl<MainView> implements Ma
                     break;
                 case 5:
                     model.setGunId(b);
-                    model.setGunInAndMiss(b);
+                    model.setGunInAndMiss(b);//判断是否开枪信号数据
                     break;
                 case 9://5-8 4个byte才有
 

@@ -1,8 +1,13 @@
 package org.ggxz.shoot;
 
+import org.ggxz.shoot.mvp.view.activity.MainActivity;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+
+import android.content.Context;
+
+import com.example.common_module.utils.player.AudioPlayerHelper;
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -12,6 +17,7 @@ import static org.junit.Assert.*;
 public class ExampleUnitTest {
     @Test
     public void addition_isCorrect() {
-        assertEquals(4, 2 + 2);
+        AudioPlayerHelper audioPlayerHelper=new AudioPlayerHelper();
+        audioPlayerHelper.play("8.7","右上",false);
     }
 }
