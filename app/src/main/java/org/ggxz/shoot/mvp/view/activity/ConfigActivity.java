@@ -77,7 +77,7 @@ public class ConfigActivity extends AppCompatActivity {
     LinearLayout ll_free;
     LinearLayout ll_gunNum;
 
-    TextView start_free;
+//    TextView start_free;
     TextView start_system;
     TextView start_single;
     SPUtils utils;
@@ -465,7 +465,7 @@ public class ConfigActivity extends AppCompatActivity {
 
 
         start = findViewById(R.id.start);
-        start_free = findViewById(R.id.start_free);
+//        start_free = findViewById(R.id.start_free);
         start_system = findViewById(R.id.start_system);
         start_single = findViewById(R.id.start_single);
 
@@ -495,15 +495,15 @@ public class ConfigActivity extends AppCompatActivity {
             }
         });
 
-        start_free.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                shootType = 3;
-                ll_gunNum.setVisibility(View.VISIBLE);
-                ll_system.setVisibility(View.GONE);
-                ll_single.setVisibility(View.GONE);
-            }
-        });
+//        start_free.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                shootType = 3;
+//                ll_gunNum.setVisibility(View.VISIBLE);
+//                ll_system.setVisibility(View.GONE);
+//                ll_single.setVisibility(View.GONE);
+//            }
+//        });
 
         start_single.setOnClickListener(new View.OnClickListener() {
             @Override
