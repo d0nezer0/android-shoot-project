@@ -87,10 +87,15 @@ public class DbDownUtil {
 
 
     public void saveEntry(EntryModel model) {
-        DaoMaster daoMaster = new DaoMaster(getWritableDatabase());
-        DaoSession daoSession = daoMaster.newSession();
-        EntryModelDao downInfoDao = daoSession.getEntryModelDao();
-        downInfoDao.insert(model);
+        try {
+            DaoMaster daoMaster = new DaoMaster(getWritableDatabase());
+            DaoSession daoSession = daoMaster.newSession();
+            EntryModelDao downInfoDao = daoSession.getEntryModelDao();
+            downInfoDao.insert(model);
+        } catch (Exception e) {
+            LogUtils.e("saveEntry error, e = ", e.getMessage());
+            LogUtils.e("model = ", model.toString());
+        }
     }
 
     public void updateEntry(EntryModel model) {
@@ -136,24 +141,42 @@ public class DbDownUtil {
     }
 
     public long insert(SingleShootDataModel singleShootDataModel) {
-        DaoMaster daoMaster = new DaoMaster(getWritableDatabase());
-        DaoSession daoSession = daoMaster.newSession();
-        SingleShootDataModelDao dao = daoSession.getSingleShootDataModelDao();
-        return dao.insertOrReplace(singleShootDataModel);
+        try {
+            DaoMaster daoMaster = new DaoMaster(getWritableDatabase());
+            DaoSession daoSession = daoMaster.newSession();
+            SingleShootDataModelDao dao = daoSession.getSingleShootDataModelDao();
+            return dao.insertOrReplace(singleShootDataModel);
+        } catch (Exception e) {
+            LogUtils.e("long insert exception", e.getMessage());
+            LogUtils.e("singleShootDataModel = " + singleShootDataModel.toString());
+            return 0L;
+        }
     }
 
     public long insert(ShootDataModel shootDataModel) {
-        DaoMaster daoMaster = new DaoMaster(getWritableDatabase());
-        DaoSession daoSession = daoMaster.newSession();
-        ShootDataModelDao dao = daoSession.getShootDataModelDao();
-        return dao.insertOrReplace(shootDataModel);
+        try {
+            DaoMaster daoMaster = new DaoMaster(getWritableDatabase());
+            DaoSession daoSession = daoMaster.newSession();
+            ShootDataModelDao dao = daoSession.getShootDataModelDao();
+            return dao.insertOrReplace(shootDataModel);
+        } catch (Exception e) {
+            LogUtils.e("long insert exception", e.getMessage());
+            LogUtils.e("shootDataModel = " + shootDataModel.toString());
+            return 0L;
+        }
     }
 
     public long insertUser(UserModel userModel) {
-        DaoMaster daoMaster = new DaoMaster(getWritableDatabase());
-        DaoSession daoSession = daoMaster.newSession();
-        UserModelDao dao = daoSession.getUserModelDao();
-        return dao.insertOrReplace(userModel);
+        try {
+            DaoMaster daoMaster = new DaoMaster(getWritableDatabase());
+            DaoSession daoSession = daoMaster.newSession();
+            UserModelDao dao = daoSession.getUserModelDao();
+            return dao.insertOrReplace(userModel);
+        } catch (Exception e) {
+            LogUtils.e("insertUser exception", e.getMessage());
+            LogUtils.e("userModel = " + userModel.toString());
+            return 0L;
+        }
     }
 
     public UserModel findUser(long userId) {
