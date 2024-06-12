@@ -864,6 +864,9 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
                             serialHelper.close();
                             serialHelper = null;
                         }
+                        // 每一局结束， gc；
+                        Runtime.getRuntime().gc();
+                        LogUtils.i("主动 gc ", "2......射击结束");
                         return;
                     }
                 } else {//下一个发序
