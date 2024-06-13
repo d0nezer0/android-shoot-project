@@ -750,7 +750,15 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
         if (shootCount > 0 && shootCount <= 5) {
 //            shootCount = Integer.MIN_VALUE; 兼容点不够的情况
             model.setStatus(Color.BLUE);
-            DbDownUtil.getInstance().updateEntry(model);
+
+            // 异步更新表
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    DbDownUtil.getInstance().updateEntry(model);
+                }
+            }).start();
+
             // 前循环 shootCount等于5保证了一定能向前找到5个数据
             // note 前循环其实从开枪后开始计算的 所以这个前循环其实是从开枪开始向后找5个数据
             List<Entry> rifleList = new ArrayList<>();
@@ -921,7 +929,14 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
                         break;
                     EntryModel entryModel = targetData.get(j);
                     entryModel.setStatus(Color.YELLOW);
-                    DbDownUtil.getInstance().updateEntry(entryModel);
+                    // 异步更新表
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            DbDownUtil.getInstance().updateEntry(entryModel);
+                        }
+                    }).start();
+
                     float difference = mPresenter.getMaxDistance(new Entry(model.getX(), model.getY()), new Entry(entryModel.getX(), entryModel.getY()));
                     collimation = isMiss ? Math.round(100F - difference * 100F) : 0;
                     count++;
@@ -933,14 +948,29 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
                 // TODO 无点的时候 处理 置为脱靶；
                 int collimation = 0;
                 EntryModel entryModel = new EntryModel();
-                DbDownUtil.getInstance().updateEntry(entryModel);
-                DbDownUtil.getInstance().updateEntry(model);
+
+                // 异步更新表
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        DbDownUtil.getInstance().updateEntry(entryModel);
+                        DbDownUtil.getInstance().updateEntry(model);
+                    }
+                }).start();
+
                 collimationProgressBar.setProgress(0);
                 collimationCount.setText(String.valueOf(0));
                 curFaxu.setCollimation(collimation);
             }
-            // else 没处理导致丢点。
-            DbDownUtil.getInstance().updateEntry(model);
+
+            // 异步更新表
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    // else 没处理导致丢点。
+                    DbDownUtil.getInstance().updateEntry(model);
+                }
+            }).start();
 
             curFaxu.setDirection(model.getRing() != 0 ? mPresenter.getEightWay(model.getX(), model.getY()) : "脱靶");
             if (audioPlayerHelper != null) {
@@ -1250,6 +1280,10 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
                 }
             }
             handler.removeCallbacks(this);
+
+            // 主动 gc；
+            Runtime.getRuntime().gc();
+            LogUtils.i("主动 gc ", "2......射击结束");
         }
     }
 
