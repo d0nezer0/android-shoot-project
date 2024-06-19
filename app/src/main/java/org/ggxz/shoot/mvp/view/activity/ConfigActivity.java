@@ -456,6 +456,8 @@ public class ConfigActivity extends AppCompatActivity {
 //        audioPlayerHelper.play("8.7","右上",true);
 
         LogUtils.i("init ", "onResume");
+        LogUtils.i("InitHelper", "设备 id = " + android.os.Build.SERIAL);
+        LogUtils.i("InitHelper2", "设备 id = " + android.os.Build.ID);
         // 保留最近 30天日志；
         LogUtils.delFile();
         super.onResume();
