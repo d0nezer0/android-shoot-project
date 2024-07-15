@@ -5,6 +5,7 @@
       <map>
         <entry key="../../../../../layout/custom_preview.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_config.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_details.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_history.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.1" />
       </map>

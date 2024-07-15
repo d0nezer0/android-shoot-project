@@ -477,7 +477,7 @@ public class ConfigActivity extends AppCompatActivity {
 
         LogUtils.i("init ", "onResume");
         LogUtils.i("InitHelper", "设备 id = " + android.os.Build.SERIAL);
-        LogUtils.i("InitHelper2", "设备 id = " + android.os.Build.ID);
+        LogUtils.i("InitHelper2", "备用 id = " + android.os.Build.ID);
         // 保留最近 30天日志；
         LogUtils.delFile();
         super.onResume();
