@@ -154,13 +154,33 @@ public class AudioPlayerHelper {
         void onTrackComplete(int trackIndex);
     }
 
+    /**
+     * 这里的日志不打印是什么原因？ 是声音异步？？？
+     * @return
+     */
     public String[] convertFileName(String ringName, String wayName, boolean isGun92) {
-        if (ringName.length() == 1)
+
+        if (ringName.length() == 1 || "10".equals(ringName)) {
             ringName = ringName + "_0";
-        if (ringName.length() > 3)
+        } else if ("10.10".equals(ringName) || "11".equals(ringName)) {
+            ringName = "10_10";
+        }else if (ringName.length() > 3) {
             ringName = ringName.substring(0, 4);
-        if (!ringName.contains(".") && !ringName.contains("_"))
+        } else {
+//            ringName = "0.0";
+            LogUtils.e("why why why", ringName);
+        }
+
+        if (!ringName.contains(".") && !ringName.contains("_")) {
             throw new IllegalArgumentException("环数必须包含小数点: error ringName" + ringName);
+        }
+
+//        if (ringName.length() == 1)
+//            ringName = ringName + "_0";
+//        if (ringName.length() > 3)
+//            ringName = ringName.substring(0, 4);
+//        if (!ringName.contains(".") && !ringName.contains("_"))
+//            throw new IllegalArgumentException("环数必须包含小数点: error ringName" + ringName);
         String[] files = new String[3];
         if (isGun92)
             files[0] = "raw_boom";
@@ -194,6 +214,17 @@ public class AudioPlayerHelper {
             files[1] = "raw_" + ringName.replace(".", "_");
             return files;
         } else {
+            // 只有环数的时候， 脱靶不报。
+            try {
+                float ring = Float.parseFloat(ringName.replace("_", "."));
+                if (ring < 4.8) {
+                    ringName = "tuoba";
+                }
+            } catch (Exception e) {
+                ringName = "tuoba";
+                LogUtils.e("环数异常, 环数 = ", ringName);
+                throw new IllegalArgumentException("环数异常: error ringName" + ringName);
+            }
             files[1] = "raw_" + ringName.replace(".", "_");
             return Arrays.copyOf(files, 2);
         }
@@ -201,15 +232,15 @@ public class AudioPlayerHelper {
     }
 
     public String convertFileNameRing(String ringName) {
+        // 整数后面加 .0 比如 6.0环 10.0环；
+        LogUtils.e("convertFileNameRing", ringName);
         if (ringName.length() == 1 || ringName.equals("10"))
-            ringName = ringName + "_0";
-        if (ringName.equals("10.10"))
-            return "raw_" + ringName.replace(".", "_");
-        ringName = df.format(Float.parseFloat(ringName));
-        if (!ringName.contains(".") && !ringName.contains("_")) {
-            return "raw_tuoba";
+            ringName = ringName + ".0";
+        if (!ringName.contains(".") || ringName.equals("0.0")) {
+            ringName = "tuoba";
         }
-        return "raw_" + ringName.replace(".", "_");
+        ringName = ringName.replace(".", "_");
+        return "raw_" + ringName;
     }
 }
 

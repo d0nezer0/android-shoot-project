@@ -98,32 +98,28 @@ public class MultipleActivity extends BaseMvpActivity<MultiplePresenterImpl> imp
         //  开启串口  没有 sttys3 crash
         initSerialConfig();
         if (!serialHelper.isOpen()) {
-            if (!SettingUtil.openTestData) {
-                try {
-                    serialHelper.open();
-                    Toast.makeText(this, "串口打开成功", Toast.LENGTH_SHORT).show();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Toast.makeText(this, "串口打开异常", Toast.LENGTH_SHORT).show();
-
-                }
-            } else {
+            try {
+                serialHelper.open();
                 Toast.makeText(this, "串口打开成功", Toast.LENGTH_SHORT).show();
-            }
-        }
+            } catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(this, "串口打开异常", Toast.LENGTH_SHORT).show();
 
-        List<String> fileLines = new ArrayList<>();
-        AtomicInteger s = new AtomicInteger(0);
-        if (SettingUtil.openTestData) {
-            //todo 本地测试数据 读取 assets文件
-            fileLines = AssetFileReader.readAssetFile(getApplicationContext(), "file.txt");
-        }
-        List<String> finalFileLines = fileLines;
-        shootNum.setOnClickListener(v -> {
-            if (SettingUtil.openTestData) {
-                testData(finalFileLines, s);
             }
-        });
+        }
+//        // 测试数据；
+//        List<String> fileLines = new ArrayList<>();
+//        AtomicInteger s = new AtomicInteger(0);
+//        if (SettingUtil.openTestData) {
+//            //todo 本地测试数据 读取 assets文件
+//            fileLines = AssetFileReader.readAssetFile(getApplicationContext(), "file.txt");
+//        }
+//        List<String> finalFileLines = fileLines;
+//        shootNum.setOnClickListener(v -> {
+//            if (SettingUtil.openTestData) {
+//                testData(finalFileLines, s);
+//            }
+//        });
 
         //初始化人型靶面
         targetView_rxbm.setRingCount(10); // 设置环数为10
@@ -133,7 +129,7 @@ public class MultipleActivity extends BaseMvpActivity<MultiplePresenterImpl> imp
         targetView_rxbm.setYAxisRange(-10f, 10f);
         targetView_rxbm.setLayerType(View.LAYER_TYPE_HARDWARE, null);
 
-        ResourceMonitor.printMemoryUsage(this, "MultipleActivity");
+//        ResourceMonitor.printMemoryUsage(this, "MultipleActivity");
     }
 
     /**
@@ -252,7 +248,6 @@ public class MultipleActivity extends BaseMvpActivity<MultiplePresenterImpl> imp
                                     state = 1;
                                     res[0] = b;
                                 }
-                                LogUtils.i("MultipleActivity", "state1");
                                 break;
                             case 1:
                                 if ((b == (byte) 0x0B) || b == (byte) 0x06) {//0B xy坐标数据 06 开抢数据
@@ -261,27 +256,21 @@ public class MultipleActivity extends BaseMvpActivity<MultiplePresenterImpl> imp
                                 } else {
                                     state = 0;
                                 }
-                                LogUtils.i("MultipleActivity", "state2, state = " + state);
                                 break;
                             case 2:
                                 if (b == (byte) 0x7E) {//胸环靶
                                     state = 3;
                                     res[2] = b;
-                                    LogUtils.i("MultipleActivity", "state2-1");
                                 } else if (b == (byte) 0x01) {//92式手枪
                                     isGun92 = true;
 //                                state = 3;
                                     res[2] = b;
                                     state = 0;
-                                    LogUtils.i("MultipleActivity", "state2-2");
                                 } else {
                                     isGun92 = false;
                                     state = 0;
-                                    LogUtils.i("MultipleActivity", "state2-3");
 
                                 }
-                                LogUtils.i("MultipleActivity", "state3, state = " + state);
-                                LogUtils.i("MultipleActivity", "state3, finished");
                                 break;
                             case 3://ID 靶/枪 此时出现A5 怎么办？
                                 state = 4;
@@ -290,39 +279,32 @@ public class MultipleActivity extends BaseMvpActivity<MultiplePresenterImpl> imp
 //                                state = 0;
 //                                groupWithGunType.put((int) b, res[2] == 0x01);
 //                            }
-                                LogUtils.i("MultipleActivity", "state4, finished");
                                 break;
                             case 4://cmd
                                 state = 5;
                                 res[4] = b;
-                                LogUtils.i("MultipleActivity", "state5, finished");
                                 break;
                             case 5://
                                 state = 6;
                                 res[5] = b;
-                                LogUtils.i("MultipleActivity", "state6, finished");
 
                                 break;
                             //break 不能却掉 否则无法正确更新state以及保证res数据的顺序
                             case 6:
                                 state = 7;
                                 res[6] = b;
-                                LogUtils.i("MultipleActivity", "state7, finished");
                                 break;
                             case 7:
                                 state = 8;
                                 res[7] = b;
-                                LogUtils.i("MultipleActivity", "state8, finished");
                                 break;
                             case 8:
                                 state = 9;
                                 res[8] = b;
-                                LogUtils.i("MultipleActivity", "state9, finished");
                                 break;
                             case 9:
                                 state = 10;
                                 res[9] = b;
-                                LogUtils.i("MultipleActivity", "state10, finished");
                                 break;
                             case 10://走到这一定是 坐标数据
 
@@ -332,7 +314,6 @@ public class MultipleActivity extends BaseMvpActivity<MultiplePresenterImpl> imp
                                 }
                                 if (b == sum) {
 //                              创建model 赋值res数据       EntryModel model = new EntryModel(); 存入数据库
-                                    LogUtils.i("MultipleActivity", "state10-1");
                                     EntryModel model = mPresenter.makeData(res);
                                     if (model.getCmdType() != EnterInfo.CMD_TYPE.SHOOT)
                                         return;
@@ -363,15 +344,12 @@ public class MultipleActivity extends BaseMvpActivity<MultiplePresenterImpl> imp
                                     views.put(gunId, adapter);
                                     //先注释掉人形靶面的绘制 hangg 2024年5月30日
                                     targetView_rxbm.setValues(list);
-                                    LogUtils.i("MultipleActivity", "state10-1 finished");
 
-                                    LogUtils.i(TAG, "MultipleActivity Re-> success-点");
                                 } else {
                                     Arrays.fill(res, (byte) 0);
                                     LogUtils.i("MultipleActivity", "state10-2 finished");
                                 }
                                 state = 0;
-                                LogUtils.i("MultipleActivity", "all finished");
                                 break;
                         }
                     }

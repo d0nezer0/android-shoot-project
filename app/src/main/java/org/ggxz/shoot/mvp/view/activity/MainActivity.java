@@ -35,7 +35,7 @@ import com.example.common_module.db.mode.UserShootReportData;
 import com.example.common_module.utils.AssetFileReader;
 import com.example.common_module.utils.PopWindowUtil;
 
-import org.ggxz.shoot.utils.ResourceMonitor;
+//import org.ggxz.shoot.utils.ResourceMonitor;
 
 import com.example.common_module.utils.SPUtils;
 import com.example.common_module.utils.ToastUtils;
@@ -231,8 +231,8 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
                     String rxText = ByteUtil.ByteArrToHex(comBean.bRec);
                     String text = "handleMessage Rx-> " + t + ": " + rxText + "\r" + "\n";
                     LogUtils.i(TAG, text);
-                    LogUtilsT.i("", rxText);
-                    xinhaoText = rxText;
+//                    LogUtilsT.i("", rxText);
+//                    xinhaoText = rxText;
                     if (rxText.contains("A504")) {
                         lastHeartTime = t.substring(3, 8);  //MM:ss
                         if (!isInitTargetSurface) ToastUtils.showToast("靶面连接成功！");
@@ -253,52 +253,40 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
                                 if (b == (byte) 0xA5) {//帧头
                                     state = 1;
                                     res[0] = b;
-                                    LogUtils.i(TAG, "state1");
                                 }
-                                LogUtils.i(TAG, "state1 finished");
                                 break;
                             case 1:
                                 if ((b == (byte) 0x0B) || (b == (byte) 0x06)) {//0B xy坐标数据 06 开抢数据
 //                                isXyFlag = true;
                                     state = 2;
                                     res[1] = b;
-                                    LogUtils.i(TAG, "state2");
                                 } else {
 //                                isXyFlag = false;
                                     state = 0;
-                                    LogUtils.i(TAG, "state2-2, state=0");
                                 }
-                                LogUtils.i(TAG, "state2 finished");
                                 break;
                             case 2:
                                 if (b == (byte) 0x7E || b == (byte) 0xFE) {//胸环靶
                                     state = 3;
                                     res[2] = b;
-                                    LogUtils.i(TAG, "state3-1");
                                 } else if (b == (byte) 0x01) {//92式手枪
                                     isGun92 = true;
                                 /*state = 3;
                                 res[2] = b;*/
                                     state = 0;
-                                    LogUtils.i(TAG, "state3-2");
                                 } else {
                                     isGun92 = false;
                                     state = 0;
-                                    LogUtils.i(TAG, "state3-3");
-                                    LogUtilsT.i(TAG, "state3-3");
-                                    System.out.println("------------------------------------------------------------------------------------------state3-3 " + rxText);
+//                                    LogUtilsT.i(TAG, "state3-3");
                                 }
-                                LogUtils.i(TAG, "state3 finished");
                                 break;
                             case 3://ID 靶/枪 此时出现A5 怎么办？
                                 state = 4;
                                 res[3] = b;
-                                LogUtils.i(TAG, "state4 finished");
                                 break;
                             case 4://cmd
                                 state = 5;
                                 res[4] = b;
-                                LogUtils.i(TAG, "state5 finished");
                                 break;
                             case 5://
                                 state = 6;
@@ -330,28 +318,23 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
                                         Arrays.fill(res, (byte) 0);// 清空缓存数据 or 不用清空 state重置数据会覆盖掉
                                     }
                                 }*/
-                                LogUtils.i(TAG, "state6 finished");
                                 break;
                             //break 不能却掉 否则无法正确更新state以及保证res数据的顺序
                             case 6:
                                 state = 7;
                                 res[6] = b;
-                                LogUtils.i(TAG, "state7 finished");
                                 break;
                             case 7:
                                 state = 8;
                                 res[7] = b;
-                                LogUtils.i(TAG, "state8 finished");
                                 break;
                             case 8:
                                 state = 9;
                                 res[8] = b;
-                                LogUtils.i(TAG, "state9 finished");
                                 break;
                             case 9:
                                 state = 10;
                                 res[9] = b;
-                                LogUtils.i(TAG, "state10 finished");
                                 break;
                             case 10:// 走到这一定是 坐标数据
                                 byte sum = 0;
@@ -359,7 +342,6 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
                                     sum += re;
                                 }
                                 if (b == sum) {
-                                    LogUtils.i(TAG, "state10-1");
                                     long time = new Date().getTime();
 //                              创建model 赋值res数据       EntryModel model = new EntryModel(); 存入数据库
                                     EntryModel model = mPresenter.makeData(res);
@@ -368,7 +350,6 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
                                     model.setUserStatus(0);
                                     model.setDeleteStatus(false);
                                     model.setSingleShootId(curFaxuId);
-                                    LogUtils.i("1", "计算环数完成， 环数 = " + model.getRing());
                                     if (lastTime == 0) {//当前发序的第一个点
                                         lastTime = time;
                                     }
@@ -383,12 +364,8 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
                                             model.setStatus(Color.RED);//正常轨迹
                                     }
                                     DbDownUtil.getInstance().saveEntry(model);
-                                    LogUtils.i("2 saveEntry", "存 DB， model = " + model.toString());
 
                                     targetView(model);
-                                    System.out.println("3 targetView");
-                                    LogUtils.i("3 targetView", "model = " + model.toString());
-                                    System.out.println("------------------------------------------------------------------------------------------3 targetView " + model.getRing() + "_" + rxText);
                                     //hint 画折线
                                     chartData.add(new Entry(index.get(), Math.round(model.getRing() * 10F) / 10F));
                                     new Thread() {
@@ -411,30 +388,23 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
                                         }
                                     }.start();
                                     //setChartData(chartData);//曲线图构建模拟数据，先把这里去掉，看看是否能够提升效率 hangg 2024年5月28日
-                                    LogUtils.i("4 setChartData", "model = " + model.toString());
                                     index.incrementAndGet();
-                                    LogUtils.i("5 setChartData", "走到这一定是 坐标数据 Re-> success-点， index = " + index);
-                                    LogUtils.i(TAG, "state10-1 结束");
                                 } else {
                                     Arrays.fill(res, (byte) 0);
                                     LogUtils.e("Arrays.fill(res, (byte) 0);", "异常情况！！！");
                                     LogUtils.e(TAG, "准备设置为脱靶");
-                                    LogUtils.i(TAG, "state10-2 结束");
                                 }
                                 state = 0;
-                                LogUtils.i(TAG, "state all 结束");
                                 break;
                         }
                     }
                     state = 0;
                 }
             } catch (Exception e) {
-                LogUtils.e("MultipleActivity- handleMessage error", "error = " + e.getMessage());
+                LogUtils.e("MainActivity handleMessage error", "error = " + e.getMessage());
             }
-
         }
     };
-
 
     //todo 结束当前发序
     private void finishCurBout() {
@@ -454,17 +424,13 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
         //  开启串口  没有 sttys3 crash
         initSerialConfig();
         if (!serialHelper.isOpen()) {
-            if (!SettingUtil.openTestData) {
-                try {
-                    serialHelper.open();
-                    Toast.makeText(this, "串口打开成功", Toast.LENGTH_SHORT).show();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Toast.makeText(this, "串口打开异常", Toast.LENGTH_SHORT).show();
-
-                }
-            } else {
+            try {
+                serialHelper.open();
                 Toast.makeText(this, "串口打开成功", Toast.LENGTH_SHORT).show();
+            } catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(this, "串口打开异常", Toast.LENGTH_SHORT).show();
+
             }
         }
         helper = new MainAvtivityHelper();
@@ -499,14 +465,14 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
             }
         });
 
-        //todo 本地测试数据 读取 assets文件
-        List<String> fileLines = AssetFileReader.readAssetFile(getApplicationContext(), "file.txt");
-        AtomicInteger s = new AtomicInteger(0);
-        shootNum.setOnClickListener(v -> {
-            if (SettingUtil.openTestData) {
-                testData(fileLines, s);
-            }
-        });
+//        //todo 本地测试数据 读取 assets文件
+//        List<String> fileLines = AssetFileReader.readAssetFile(getApplicationContext(), "file.txt");
+//        AtomicInteger s = new AtomicInteger(0);
+//        shootNum.setOnClickListener(v -> {
+//            if (SettingUtil.openTestData) {
+//                testData(fileLines, s);
+//            }
+//        });
         topTitleBtn.setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, TopActivity.class);
             startActivity(intent);
@@ -756,33 +722,43 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
 
         shootCount++;
         targetData.add(model);
-        new Thread() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                // 通过psot（）发送，需传入1个Runnable对象
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        //先注释掉人形靶面的绘制 hangg 2024年5月30日
-                        targetView_rxbm.setValues(targetData);
-                    }
-
-                });
-            }
-        }.start();
-        //先注释掉人形靶面的绘制 hangg 2024年5月30日
-        //targetView_rxbm.setValues(targetData);
+        targetView_rxbm.setValues(targetData);
+        // 二胖想法待验证；
+//        new Thread() {
+//            @Override
+//            public void run() {
+//                try {
+//                    Thread.sleep(1000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//                // 通过psot（）发送，需传入1个Runnable对象
+//                handler.post(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        //先注释掉人形靶面的绘制 hangg 2024年5月30日
+//                        targetView_rxbm.setValues(targetData);
+//                    }
+//
+//                });
+//            }
+//        }.start();
+//        //先注释掉人形靶面的绘制 hangg 2024年5月30日
+//        //targetView_rxbm.setValues(targetData);
 
         //note 2.据枪逻辑
         if (shootCount > 0 && shootCount <= 5) {
 //            shootCount = Integer.MIN_VALUE; 兼容点不够的情况
             model.setStatus(Color.BLUE);
-            DbDownUtil.getInstance().updateEntry(model);
+
+            // 异步更新表
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    DbDownUtil.getInstance().updateEntry(model);
+                }
+            }).start();
+
             // 前循环 shootCount等于5保证了一定能向前找到5个数据
             // note 前循环其实从开枪后开始计算的 所以这个前循环其实是从开枪开始向后找5个数据
             List<Entry> rifleList = new ArrayList<>();
@@ -883,18 +859,22 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
                         totalRing = 0.0F;
                         tvTotalRing.setText(df.format(totalRing));
                         finishCurBout();
-                        print(boutMode);
+                        LogUtils.i("boutMode = ", boutMode.toString());
                     } else {//显示结束按钮 回到初始页面
                         handler.removeCallbacksAndMessages(null);
                         //射击结束
                         jumpConfigTv.setVisibility(View.VISIBLE);
                         ToastUtils.showToast("射击结束");
-                        print(boutMode);
+                        LogUtils.i("boutMode = ", boutMode.toString());
+                        LogUtils.i("boutMode = ", "1......射击结束");
                         initData();
                         if (serialHelper != null) {
                             serialHelper.close();
                             serialHelper = null;
                         }
+                        // 每一局结束， gc；
+                        Runtime.getRuntime().gc();
+                        LogUtils.i("主动 gc ", "2......射击结束");
                         return;
                     }
                 } else {//下一个发序
@@ -913,7 +893,7 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
                 targetData.clear();
                 chartData.clear();
                 //构建曲线图数据
-                //setChartData(chartData);
+                setChartData(chartData);
 //                if (lastModel != null && tempModel != null && lastModel.getCmdType() == EnterInfo.CMD_TYPE.SHOOT) {//note 连续2次开抢 就自己构建一个数据 在发送一遍
 //                    shootCount = 4;
 //                    targetView(tempModel);//这里存在问题 就是 上一个数据构建利用 的是当前的model 当是 同时在坐标点 并且 连续开抢 如果存在中级 则小于50ms 影响不打
@@ -949,33 +929,53 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
                         break;
                     EntryModel entryModel = targetData.get(j);
                     entryModel.setStatus(Color.YELLOW);
-                    DbDownUtil.getInstance().updateEntry(entryModel);
+                    // 异步更新表
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            DbDownUtil.getInstance().updateEntry(entryModel);
+                        }
+                    }).start();
+
                     float difference = mPresenter.getMaxDistance(new Entry(model.getX(), model.getY()), new Entry(entryModel.getX(), entryModel.getY()));
                     collimation = isMiss ? Math.round(100F - difference * 100F) : 0;
                     count++;
                 }
-                DbDownUtil.getInstance().updateEntry(model);
                 collimationProgressBar.setProgress(collimation < 0 ? 0 : collimation);
                 collimationCount.setText(String.valueOf(collimation < 0 ? 0 : collimation));
                 curFaxu.setCollimation(collimation < 0 ? 0 : collimation);
-//            } else {
-//                // TODO 无点的时候 处理 置为脱靶；
-//                int collimation = 0;
-//                EntryModel entryModel = new EntryModel();
-//                DbDownUtil.getInstance().updateEntry(entryModel);
-//                DbDownUtil.getInstance().updateEntry(model);
-//                collimationProgressBar.setProgress(0);
-//                collimationCount.setText(String.valueOf(0));
-//                curFaxu.setCollimation(collimation);
+            } else {
+                // TODO 无点的时候 处理 置为脱靶；
+                int collimation = 0;
+                EntryModel entryModel = new EntryModel();
+
+                // 异步更新表
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        DbDownUtil.getInstance().updateEntry(entryModel);
+                        DbDownUtil.getInstance().updateEntry(model);
+                    }
+                }).start();
+
+                collimationProgressBar.setProgress(0);
+                collimationCount.setText(String.valueOf(0));
+                curFaxu.setCollimation(collimation);
             }
+
+            // 异步更新表
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    // else 没处理导致丢点。
+                    DbDownUtil.getInstance().updateEntry(model);
+                }
+            }).start();
 
             curFaxu.setDirection(model.getRing() != 0 ? mPresenter.getEightWay(model.getX(), model.getY()) : "脱靶");
             if (audioPlayerHelper != null) {
                 audioPlayerHelper.play(String.valueOf(curRing), curFaxu.getDirection(), isGun92);
-                //audioPlayerHelper.play("9.0", "右上", false);
                 LogUtils.i("audioPlayerHelper 报靶 ->", String.valueOf(curRing) + " " + curFaxu.getDirection() + " " + String.valueOf(isGun92));
-                LogUtilsT.i("audioPlayerHelper 报靶 ->", String.valueOf(curRing) + " " + curFaxu.getDirection() + " " + String.valueOf(isGun92));
-                System.out.println("----------------------真正的信号坐标数据-------------------------" + xinhaoText);
             }
             curFaxu.setUserName(spUtils.getString(Constant.USER_NAME));
             curFaxu.setUserId(spUtils.getLong(Constant.USER_ID));
@@ -1074,7 +1074,7 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
         }
 
         chart.invalidate();
-        ResourceMonitor.printMemoryUsage(this, "MainActivity");
+//        ResourceMonitor.printMemoryUsage(this, "MainActivity");
     }
 
     @Override
@@ -1280,6 +1280,10 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
                 }
             }
             handler.removeCallbacks(this);
+
+            // 主动 gc；
+            Runtime.getRuntime().gc();
+            LogUtils.i("主动 gc ", "2......射击结束");
         }
     }
 
