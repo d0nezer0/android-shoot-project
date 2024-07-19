@@ -97,7 +97,7 @@ public class ConfigActivity extends AppCompatActivity {
     //打印机
     public static PrintSerializable mPrinter;
     public static String EXTRA_SERIAL_PORT = "9600";
-    public static String EXTRA_SERIAL_NAME = "/dev/ttyS2";
+    public static String EXTRA_SERIAL_NAME = "/dev/ttyS4";
     public static boolean isGunInit = false;
     public static boolean isInitSerialPort = false;
 
@@ -252,7 +252,7 @@ public class ConfigActivity extends AppCompatActivity {
     系统上的几种射击方式选择；
      */
     private void dealMsg(Message msg) {
-        ResourceMonitor.printMemoryUsage(this, "ConfigActivity");
+       // ResourceMonitor.printMemoryUsage(this, "ConfigActivity");
         ComBean comBean = (ComBean) msg.obj;
         String rxText = ByteUtil.ByteArrToHex(comBean.bRec);
         String type = rxText.substring(4, 6);

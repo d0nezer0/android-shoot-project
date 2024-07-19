@@ -57,7 +57,6 @@ import org.ggxz.shoot.bean.MainBean;
 import org.ggxz.shoot.mvp.presenter.impl.MainPresenterImpl;
 import org.ggxz.shoot.mvp.view.activity_view.MainView;
 import org.ggxz.shoot.utils.LogUtils;
-import org.ggxz.shoot.utils.LogUtilsT;
 import org.ggxz.shoot.utils.RestartAPPTool;
 import org.ggxz.shoot.utils.SettingUtil;
 import org.ggxz.shoot.widget.TargetPointView;
@@ -231,7 +230,6 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
                     String rxText = ByteUtil.ByteArrToHex(comBean.bRec);
                     String text = "handleMessage Rx-> " + t + ": " + rxText + "\r" + "\n";
                     LogUtils.i(TAG, text);
-                    LogUtilsT.i("", rxText);
                     xinhaoText = rxText;
                     if (rxText.contains("A504")) {
                         lastHeartTime = t.substring(3, 8);  //MM:ss
@@ -285,7 +283,6 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
                                     isGun92 = false;
                                     state = 0;
                                     LogUtils.i(TAG, "state3-3");
-                                    LogUtilsT.i(TAG, "state3-3");
                                     System.out.println("------------------------------------------------------------------------------------------state3-3 " + rxText);
                                 }
                                 LogUtils.i(TAG, "state3 finished");
@@ -730,6 +727,8 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
     }
 
     public void targetView(EntryModel model) {
+        LogUtils.i(TAG,"** the targetview function input param model : ring is "+model.getRing()
+                +" x="+model.getX()+" y="+model.getY());
 
         /*填充局内容 之前是进来就创建局信息 现在是第一个激光 开始去检查当前局是否存在*/
         if (curBoutMode == null) {
@@ -974,7 +973,6 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
                 audioPlayerHelper.play(String.valueOf(curRing), curFaxu.getDirection(), isGun92);
                 //audioPlayerHelper.play("9.0", "右上", false);
                 LogUtils.i("audioPlayerHelper 报靶 ->", String.valueOf(curRing) + " " + curFaxu.getDirection() + " " + String.valueOf(isGun92));
-                LogUtilsT.i("audioPlayerHelper 报靶 ->", String.valueOf(curRing) + " " + curFaxu.getDirection() + " " + String.valueOf(isGun92));
                 System.out.println("----------------------真正的信号坐标数据-------------------------" + xinhaoText);
             }
             curFaxu.setUserName(spUtils.getString(Constant.USER_NAME));
@@ -1074,7 +1072,7 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
         }
 
         chart.invalidate();
-        ResourceMonitor.printMemoryUsage(this, "MainActivity");
+        //ResourceMonitor.printMemoryUsage(this, "MainActivity");
     }
 
     @Override
@@ -1224,11 +1222,13 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
 
     @Override
     public void onBackPressed() {
-        // 当用户点击返回键时，重新启动固定页面
-        Intent intent = new Intent(this, ConfigActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-        finish(); // 结束当前活动
+//        // 当用户点击返回键时，重新启动固定页面
+//        Intent intent = new Intent(this, ConfigActivity.class);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//        startActivity(intent);
+//        finish(); // 结束当前活动
+
+        RestartAPPTool.restartAPP(getApplicationContext(), 100);
     }
 
     class TimeOutRunnable implements Runnable {
@@ -1285,6 +1285,8 @@ public class MainActivity extends BaseMvpActivity<MainPresenterImpl> implements 
 
     //打印每局,每局中每发的数
     public void print(ShootDataModel model) {
+        //targetView_rxbm.saveViewBitmapToFile("/storage/emulated/0/test.png");
+        //ToastUtils.showToast("图片以保存");
         if (!spUtils.getBoolean("auto_print", false)) return;
         if (mPrinter.getState() != PrintSerializable.CONN_SUCCESS) {
             ToastUtils.showToast("打印机状态有问题，请重新初始化");

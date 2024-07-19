@@ -29,12 +29,14 @@ import org.ggxz.shoot.utils.ResourceMonitor;
 
 import com.example.common_module.utils.ToastUtils;
 import com.example.common_module.utils.player.AudioPlayerHelper;
+import com.github.mikephil.charting.charts.LineChart;
 
 import org.ggxz.shoot.R;
 import org.ggxz.shoot.adapter.decoration.StickHeaderDecoration;
 import org.ggxz.shoot.mvp.presenter.impl.MultiplePresenterImpl;
 import org.ggxz.shoot.mvp.view.activity_view.MultipleView;
 import org.ggxz.shoot.utils.LogUtils;
+import org.ggxz.shoot.utils.RestartAPPTool;
 import org.ggxz.shoot.utils.SettingUtil;
 import org.ggxz.shoot.widget.TargetPointViewMultiple;
 
@@ -62,6 +64,8 @@ public class MultipleActivity extends BaseMvpActivity<MultiplePresenterImpl> imp
     TargetPointViewMultiple targetView_rxbm;
     @BindView(R.id.recyclerLayout)
     LinearLayout recyclerLayout;
+    @BindView(R.id.exit)
+    TextView exit;
 
     /**
      * 胸环靶
@@ -74,7 +78,6 @@ public class MultipleActivity extends BaseMvpActivity<MultiplePresenterImpl> imp
     private int state;
     private byte[] res = new byte[11];//数据拼接
     private boolean isGun92 = true;
-    private long shootNumber = 0L;  //发序
 
 
 
@@ -133,7 +136,15 @@ public class MultipleActivity extends BaseMvpActivity<MultiplePresenterImpl> imp
         targetView_rxbm.setYAxisRange(-10f, 10f);
         targetView_rxbm.setLayerType(View.LAYER_TYPE_HARDWARE, null);
 
-        ResourceMonitor.printMemoryUsage(this, "MultipleActivity");
+       // ResourceMonitor.printMemoryUsage(this, "MultipleActivity");
+
+        exit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                RestartAPPTool.restartAPP(getApplicationContext(), 100);
+            }
+        });
+
     }
 
     /**
@@ -165,10 +176,11 @@ public class MultipleActivity extends BaseMvpActivity<MultiplePresenterImpl> imp
     @Override
     public void onBackPressed() {
         // 当用户点击返回键时，重新启动固定页面
-        Intent intent = new Intent(this, ConfigActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-        finish(); // 结束当前活动
+        //Intent intent = new Intent(this, ConfigActivity.class);
+        //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+       // startActivity(intent);
+       // finish(); // 结束当前活动
+        RestartAPPTool.restartAPP(getApplicationContext(), 100);
     }
 
     @Override
@@ -243,7 +255,7 @@ public class MultipleActivity extends BaseMvpActivity<MultiplePresenterImpl> imp
                     LogUtils.i(TAG, text);
 
                     //state 表示当前 res[11]中已经存储到的字节有集合 note 这里的问题在于：读到新Head 后面A5不会再读 直到获取完整数据 或 检验失败清空之前存储的数据
-                    //  A5 A5 0B 7E 01 01 01 FF 9C 01 9A 67  / A5 0B 7E 03 A5 A5 0B 7E 01 01 01 FF 9C 01 9A 67 A5 0B 7E 01 01 01 FF 9C 01 9A 67-> A5 0B 7E 03 01 01 FF 9C 01 9A 67 正确吗？
+                    //   A5 0B 7E 01 01 01 FF 9C 01 9A 67  / A5 0B 7E 03 A5 A5 0B 7E 01 01 01 FF 9C 01 9A 67 A5 0B 7E 01 01 01 FF 9C 01 9A 67-> A5 0B 7E 03 01 01 FF 9C 01 9A 67 正确吗？
                     for (int i = 0; i < comBean.bRec.length; i++) {
                         byte b = comBean.bRec[i];
                         switch (state) {
@@ -267,17 +279,17 @@ public class MultipleActivity extends BaseMvpActivity<MultiplePresenterImpl> imp
                                 if (b == (byte) 0x7E) {//胸环靶
                                     state = 3;
                                     res[2] = b;
-                                    LogUtils.i("MultipleActivity", "state2-1");
+                                    LogUtils.i("MultipleActivity", "state3-1");
                                 } else if (b == (byte) 0x01) {//92式手枪
                                     isGun92 = true;
 //                                state = 3;
-                                    res[2] = b;
+                                   // res[2] = b;
                                     state = 0;
-                                    LogUtils.i("MultipleActivity", "state2-2");
+                                    LogUtils.i("MultipleActivity", "state3-2");
                                 } else {
                                     isGun92 = false;
                                     state = 0;
-                                    LogUtils.i("MultipleActivity", "state2-3");
+                                    LogUtils.i("MultipleActivity", "state3-3");
 
                                 }
                                 LogUtils.i("MultipleActivity", "state3, state = " + state);
@@ -325,22 +337,31 @@ public class MultipleActivity extends BaseMvpActivity<MultiplePresenterImpl> imp
                                 LogUtils.i("MultipleActivity", "state10, finished");
                                 break;
                             case 10://走到这一定是 坐标数据
-
+                                LogUtils.i(TAG,"**the res array is :"+Arrays.toString(res));
                                 byte sum = 0;
                                 for (byte re : res) {
                                     sum += re;
                                 }
-                                if (b == sum) {
-//                              创建model 赋值res数据       EntryModel model = new EntryModel(); 存入数据库
+                                if (b == sum) {  //校验位：(A5+0B+7E+01+01+41+FF+9C+01+9A)%FF = E3
+                                //创建model 赋值res数据       EntryModel model = new EntryModel(); 存入数据库
                                     LogUtils.i("MultipleActivity", "state10-1");
                                     EntryModel model = mPresenter.makeData(res);
-                                    if (model.getCmdType() != EnterInfo.CMD_TYPE.SHOOT)
+                                    LogUtils.i(TAG,"**the shoot model is :"+model.toString()
+                                            +" **the cmdType is  :"+model.getCmdType().name());
+
+                                    if (model.getCmdType() != EnterInfo.CMD_TYPE.SHOOT){
+                                        LogUtils.i(TAG,"**It's AIM  , the cmdType is  :"+model.getCmdType().name());
+                                        state = 0;
                                         return;
+                                    }
+
 
                                     groupWithGunType.put(model.getDeviceID(), isGun92);
 
-                                    if (playerHelper != null)
+                                    if (playerHelper != null) {
+                                        LogUtils.i(TAG,"** start to play ring file  :"+model.getRing());
                                         playerHelper.play(String.valueOf(model.getRing()), isGun92);
+                                    }
                                     int gunId = model.getGunId();
                                     List<EntryModel> list = map.get(gunId);
                                     if (list == null) {

@@ -416,7 +416,7 @@ public class EntryModel implements Parcelable {
     }
 
     public EnterInfo.CMD_TYPE getCmdType() {
-        if ((gunInAndMiss & 0x80) == 0x80)
+        if ((gunInAndMiss & 0x80) == 0x80)  // 0X80 --> 1000 0000
             return EnterInfo.CMD_TYPE.SHOOT;
         else if ((gunInAndMiss & 0x80) == 0)
             return EnterInfo.CMD_TYPE.AIM;

@@ -1,5 +1,7 @@
 package com.example.common_module.utils.player;
 
+import static android.content.ContentValues.TAG;
+
 import android.app.Application;
 import android.content.Context;
 import android.media.MediaPlayer;
@@ -155,12 +157,29 @@ public class AudioPlayerHelper {
     }
 
     public String[] convertFileName(String ringName, String wayName, boolean isGun92) {
-        if (ringName.length() == 1)
+        /*if (ringName.length() == 1)
             ringName = ringName + "_0";
         if (ringName.length() > 3)
             ringName = ringName.substring(0, 4);
         if (!ringName.contains(".") && !ringName.contains("_"))
-            throw new IllegalArgumentException("环数必须包含小数点: error ringName" + ringName);
+            throw new IllegalArgumentException("环数必须包含小数点: error ringName" + ringName);*/
+
+        try{
+            ringName = df.format(Float.parseFloat(ringName));
+        }catch (Exception e){
+            ringName = "raw_tuoba";
+        }
+        if(ringName.equals("11")){
+            ringName = "raw_10_10";
+        }else if (ringName.equals("0")) {
+            ringName = "raw_tuoba";
+        }else if (ringName.length() == 1 || ringName.equals("10")) {
+            ringName = "raw_" + ringName + "_0";
+        }else {
+        ringName = "raw_" + ringName.replace(".", "_");
+        }
+
+
         String[] files = new String[3];
         if (isGun92)
             files[0] = "raw_boom";
@@ -190,24 +209,33 @@ public class AudioPlayerHelper {
             way = "tuoba";
         }
         if (SPUtils.getInstance((Application) context.getApplicationContext()).getBoolean(Constant.IS_NEED_WAY)) {//单人模式时IS_NEED_WAY为true
-            files[2] = "raw_" + way;
-            files[1] = "raw_" + ringName.replace(".", "_");
+            //files[1] = "raw_" + ringName.replace(".", "_");
+            files[1] = ringName;
+            if (way.equals("tuoba") || ringName.equals("raw_10_10")){
+                files[2] = "raw_ull"; //此处改成一个不存在的文件名，0环已经报过脱靶了，不用再报了。 如果是10。10环播报"正中靶心"，方向也不用播报了。
+            }else {
+                files[2] = "raw_" + way;
+            }
             return files;
         } else {
-            files[1] = "raw_" + ringName.replace(".", "_");
+            //files[1] = "raw_" + ringName.replace(".", "_");
+            files[1] = ringName;
             return Arrays.copyOf(files, 2);
         }
 
     }
 
-    public String convertFileNameRing(String ringName) {
-        if (ringName.length() == 1 || ringName.equals("10"))
-            ringName = ringName + "_0";
-        if (ringName.equals("10.10"))
-            return "raw_" + ringName.replace(".", "_");
-        ringName = df.format(Float.parseFloat(ringName));
-        if (!ringName.contains(".") && !ringName.contains("_")) {
+    public  String convertFileNameRing(String ringName) {
+        try{
+            ringName = df.format(Float.parseFloat(ringName));
+        }catch (Exception e){
             return "raw_tuoba";
+        }
+        if (ringName.equals("0")) {
+            return "raw_tuoba";
+        }
+        if (ringName.length() == 1 || ringName.equals("10")) {
+            return "raw_" + ringName + "_0";
         }
         return "raw_" + ringName.replace(".", "_");
     }

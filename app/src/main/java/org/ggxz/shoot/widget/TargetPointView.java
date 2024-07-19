@@ -26,6 +26,8 @@ import com.example.common_module.db.mode.EntryModel;
 import org.ggxz.shoot.R;
 import org.ggxz.shoot.utils.LogUtils;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -335,6 +337,30 @@ public class TargetPointView extends View {
         Matrix matrix = new Matrix();
         matrix.postScale(scaleWidth, scaleHeight);
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+    }
+
+    public void saveViewBitmapToFile(String filename) {
+        // 创建一个和View相同大小的空Bitmap
+        Bitmap bitmap = Bitmap.createBitmap(this.getWidth(), this.getHeight(), Bitmap.Config.ARGB_8888);
+        // 使用Canvas将View的内容绘制到Bitmap中
+        Canvas canvas = new Canvas(bitmap);
+        this.draw(canvas);
+        // 使用FileOutputStream将Bitmap保存到文件中
+        FileOutputStream out = null;
+        try {
+            out = new FileOutputStream(filename);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out); // PNG格式，100%质量
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (out != null) {
+                    out.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }

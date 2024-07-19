@@ -4,6 +4,11 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../../layout/custom_preview.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_config.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_multiple.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/item_multiple_shoot_data.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/item_shoot_data.xml" value="0.1" />
       </map>
     </option>
   </component>
