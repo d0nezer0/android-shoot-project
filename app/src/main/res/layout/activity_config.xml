@@ -93,12 +93,12 @@
                    android:textSize="@dimen/res_text_size_22sp" />
 
                <TextView
-                   android:id="@+id/start_free"
+                  android:id="@+id/start_free"
                    android:layout_width="180dp"
                    android:layout_height="45dp"
                    android:layout_marginStart="@dimen/size_48dp"
                    android:background="@drawable/button_round_4"
-                   android:drawablePadding="6dp"
+                  android:drawablePadding="6dp"
                    android:gravity="center"
                    android:paddingStart="12dp"
                    android:paddingEnd="12dp"

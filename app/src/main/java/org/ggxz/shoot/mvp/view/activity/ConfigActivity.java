@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.telecom.Call;
 import android.telephony.PhoneStateListener;
 import android.telephony.SignalStrength;
 import android.telephony.TelephonyManager;
@@ -41,6 +42,8 @@ import com.example.net_module.callback.NetCallBack;
 import com.example.net_module.helper.InitHelper;
 import com.example.net_module.mode.InitMode;
 import com.example.net_module.mode.InitModeData;
+import com.example.net_module.net.Network;
+import com.example.net_module.net.RemoteService;
 import com.google.gson.Gson;
 import com.printsdk.PrintSerializable;
 
@@ -265,15 +268,28 @@ public class ConfigActivity extends AppCompatActivity {
             ToastUtils.showToast("枪配网成功");
             if (shootType == 2) {
                 ToastUtils.showToast("系统射击");
+                // LogUtils.i("TAG", "系统射击 配置中......");
                 InitHelper.init(new NetCallBack<InitModeData>() {
                     @Override
                     public void onResponseData(InitModeData data) {
-                        LogUtils.i("TAG", new Gson().toJson(data.toString()));
+                        // LogUtils.i("onResponseData", "开始配置......");
+                        // LogUtils.i("TAG", new Gson().toJson(data.toString()));
 
-                        if (data.single_rounds.size() == 0)
+                        if (data.single_rounds.size() == 0) {
+                            ToastUtils.showToast("需要总控配置才可以开始射击");
                             return;
+                        }
+
                         ToastUtils.showToast("接口请求成功");
-                        UserModel userModel = DbDownUtil.getInstance().findUser(data.single_rounds.get(0).user_id);
+                        UserModel userModel = null;
+                        try {
+                            userModel = DbDownUtil.getInstance().findUser(data.single_rounds.get(0).user_id);
+                            LogUtils.i("userMode = ", userModel.toString());
+                        } catch (Exception e) {
+                            ToastUtils.showToast("userModel error = " + e.getMessage());
+                            LogUtils.e("userModel error = ", e.getMessage());
+                        }
+
                         if (userModel == null) {
                             userModel = new UserModel();
                             userModel.setUserId(data.single_rounds.get(0).user_id);
@@ -282,7 +298,11 @@ public class ConfigActivity extends AppCompatActivity {
 
                         userModel.setTotalBout(data.single_rounds.size());
                         userModel.setName(data.single_rounds.get(0).user_name);
-                        DbDownUtil.getInstance().insertUser(userModel);
+                        try {
+                            DbDownUtil.getInstance().insertUser(userModel);
+                        } catch (Exception e) {
+                            LogUtils.e("DbDownUtil.getInstance().insertUser(userModel)", e.getMessage());
+                        }
 
                         utils.put(Constant.HOST, ipEdit);
                         utils.put(Constant.PORT, 9999);
@@ -404,7 +424,7 @@ public class ConfigActivity extends AppCompatActivity {
         DbDownUtil.getInstance().insertUser(userModel);
 
         utils.put(Constant.HOST, ipEdit);
-        utils.put(Constant.PORT, "http://127.0.0.1:9999/api/");
+        utils.put(Constant.PORT, 9999);
         utils.put(Constant.DEVICE_NUM, numEdit);
         utils.put(Constant.CUR_BOUT, 1);
         utils.put(Constant.CUR_FAXU, 1);
@@ -456,6 +476,8 @@ public class ConfigActivity extends AppCompatActivity {
 //        audioPlayerHelper.play("8.7","右上",true);
 
         LogUtils.i("init ", "onResume");
+        LogUtils.i("InitHelper", "设备 id = " + android.os.Build.SERIAL);
+        LogUtils.i("InitHelper2", "备用 id = " + android.os.Build.ID);
         // 保留最近 30天日志；
         LogUtils.delFile();
         super.onResume();
@@ -597,10 +619,10 @@ public class ConfigActivity extends AppCompatActivity {
                 LogUtils.e("serialHelper.sendHex, sendData = ", sendData);
             }
 
-            if (SettingUtil.openTestData) {
-                //todo 本地测试数据
-                testData();
-            }
+//            if (SettingUtil.openTestData) {
+//                //todo 本地测试数据
+//                testData();
+//            }
 
         });
     }
@@ -647,7 +669,7 @@ public class ConfigActivity extends AppCompatActivity {
         DbDownUtil.getInstance().insertUser(userModel);
 
         utils.put(Constant.HOST, ipEdit);
-        utils.put(Constant.PORT, "portEdit");
+        utils.put(Constant.PORT, 9999);
         utils.put(Constant.DEVICE_NUM, numEdit);
         utils.put(Constant.CUR_BOUT, 1);
         utils.put(Constant.CUR_FAXU, 1);
@@ -682,7 +704,7 @@ public class ConfigActivity extends AppCompatActivity {
                 DbDownUtil.getInstance().insertUser(userModel);
 
                 utils.put(Constant.HOST, ipEdit);
-                utils.put(Constant.PORT, "portEdit");
+                utils.put(Constant.PORT, 9999);
                 utils.put(Constant.DEVICE_NUM, numEdit);
                 utils.put(Constant.CUR_BOUT, 1);
                 utils.put(Constant.CUR_FAXU, 1);

@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.blankj.utilcode.utils.LogUtils;
 import com.example.common_module.db.mode.SingleShootDataModel;
+import com.example.common_module.utils.ToastUtils;
 import com.example.net_module.callback.NetCallBack;
 import com.example.net_module.mode.InitModeData;
 import com.example.net_module.mode.TopUser;
@@ -23,14 +24,19 @@ public class InitHelper {
         System.out.println(android.os.Build.SERIAL);
         LogUtils.i("InitHelper", "设备 id = " + android.os.Build.SERIAL);
         Call<InitModeData> call = service.init(android.os.Build.SERIAL);
+        ToastUtils.showToast("初始化！！！");
+        LogUtils.i("InitHelper", "call = " + call.toString());
         call.enqueue(new Callback<InitModeData>() {
             @Override
             public void onResponse(Call<InitModeData> call, Response<InitModeData> response) {
+                // LogUtils.i("remote init ", response.body().toString());
                 callBack.onResponseData(response.body());
             }
 
             @Override
             public void onFailure(Call<InitModeData> call, Throwable t) {
+                ToastUtils.showToast("remote init error " + t.getMessage());
+                // LogUtils.e("remote init error ", t.getMessage());
                 callBack.onError(t.getMessage());
 
             }
