@@ -247,6 +247,18 @@ public class UserModel implements  Parcelable {
         myDao.update(this);
     }
 
+    public String toString() {
+        return "id = " + id +
+                ", name = " + name +
+                ", userId = " + userId +
+                ", createTime = " + createTime +
+                ", lastLoginTime = " + lastLoginTime +
+                ", lastUserNum = " + lastUserNum +
+                ", totalBout = " + totalBout +
+                ", curBout = " + curBout +
+                ", userStatus = " + userStatus;
+    }
+
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 359156521)
     public void __setDaoSession(DaoSession daoSession) {

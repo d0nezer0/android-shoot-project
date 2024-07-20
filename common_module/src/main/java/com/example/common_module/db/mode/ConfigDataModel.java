@@ -127,4 +127,15 @@ public class ConfigDataModel implements Parcelable {
     public void setShootType(int shootType) {
         this.shootType = shootType;
     }
+
+    public String toString() {
+        return "id = " + id +
+                ", group = " + group +
+                ", name = " + name +
+                ", createTime = " + createTime +
+                ", userId = " + userId +
+                ", totalBout = " + totalBout +
+                ", shootNum = " + shootNum +
+                ", shootType = " + shootType;
+    }
 }

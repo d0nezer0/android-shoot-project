@@ -162,13 +162,19 @@ public class ConfigActivity extends AppCompatActivity {
 
         List<ConfigDataModel> configDataModelList = new ArrayList<>();
         configDataModelList = DbDownUtil.getInstance().findAllConfigData();
+        for (ConfigDataModel configDataModel:configDataModelList) {
+            LogUtils.i("configDataModel = ", configDataModel.toString());
+        }
         if (configDataModelList != null && configDataModelList.size() > 0) {
+            LogUtils.i("configDataModelList[0] = ", configDataModelList.get(0).toString());
             numEt.setText(configDataModelList.get(0).getGroup());
             userNameEt.setText(configDataModelList.get(0).getName());
             bootNumEt.setText(configDataModelList.get(0).getTotalBout());
             try {
                 spinner.setSelection(getIndex(spinnerArray, Integer.parseInt(configDataModelList.get(0).getShootNum())), true);
             } catch (Exception e) {
+                spinner.setSelection(getIndex(spinnerArray, 10), true);
+                ToastUtils.showToast("默认 10 发， 配置错误: " + e.getMessage());
                 LogUtils.e("init configDataModelList error, configDataModelList = " + configDataModelList, e.getMessage());
             }
         } else {
@@ -272,7 +278,8 @@ public class ConfigActivity extends AppCompatActivity {
                 InitHelper.init(new NetCallBack<InitModeData>() {
                     @Override
                     public void onResponseData(InitModeData data) {
-                        // LogUtils.i("onResponseData", "开始配置......");
+                        ToastUtils.showToast("开始配置");
+                        ToastUtils.showToast("data = " + data);
                         // LogUtils.i("TAG", new Gson().toJson(data.toString()));
 
                         if (data.single_rounds.size() == 0) {
@@ -283,8 +290,10 @@ public class ConfigActivity extends AppCompatActivity {
                         ToastUtils.showToast("接口请求成功");
                         UserModel userModel = null;
                         try {
+                            ToastUtils.showToast("data.single_rounds.get(0) = " + data.single_rounds.get(0).toString());
+                            ToastUtils.showToast("data.single_rounds.get(0).user_id = " + data.single_rounds.get(0).user_id);
                             userModel = DbDownUtil.getInstance().findUser(data.single_rounds.get(0).user_id);
-                            LogUtils.i("userMode = ", userModel.toString());
+                            ToastUtils.showToast("userMode = " + userModel.toString());
                         } catch (Exception e) {
                             ToastUtils.showToast("userModel error = " + e.getMessage());
                             LogUtils.e("userModel error = ", e.getMessage());
@@ -318,6 +327,7 @@ public class ConfigActivity extends AppCompatActivity {
                         utils.put(Constant.IS_NEED_WAY, false);
 
                         //todo 模拟 自由和单枪  记得还原
+                        // 0 自由训练， 1 统一训练；
                         if (data.mode == 1) {
                             startActivity(new Intent(ConfigActivity.this, MainActivity.class));
                         } else {
@@ -447,23 +457,26 @@ public class ConfigActivity extends AppCompatActivity {
         if (shootType == 1) {
             configDataModel.setShootType(shootType);
             configDataModel.setName(userName);
-            configDataModel.setCreateTime(new Date().getTime());
             configDataModel.setShootNum(shootNum);
             configDataModel.setTotalBout(bootNum);
             //系统模式
         } else if (shootType == 2) {
             configDataModel.setShootType(shootType);
-            configDataModel.setName(userName);
-            configDataModel.setCreateTime(new Date().getTime());
-            configDataModel.setShootNum(shootNum);
-            configDataModel.setTotalBout(bootNum);
+            if (null!=utils) {
+                configDataModel.setName(utils.getString(Constant.USER_NAME));
+                configDataModel.setShootNum(utils.getString(Constant.BULLET_COUNT));
+                configDataModel.setTotalBout(utils.getString(Constant.TOTAL_BOUT));
+            }
+
             //自由模式
         } else if (shootType == 3) {
             configDataModel.setShootType(shootType);
-            configDataModel.setCreateTime(new Date().getTime());
         }
+        configDataModel.setCreateTime(new Date().getTime());
         long id = DbDownUtil.getInstance().insertConfigDataModel(configDataModel);
-        LogUtils.i("generateConfigData",
+        ToastUtils.showToast("配置结束！！！");
+        LogUtils.i("112233", "配置结束！！！");
+        LogUtils.i("generateConfigData 部分参数为 null 正常。",
                 "插入完成 shootType = " + shootType + ", configDataModel = " + configDataModel);
 
     }
@@ -480,10 +493,15 @@ public class ConfigActivity extends AppCompatActivity {
         LogUtils.i("InitHelper2", "备用 id = " + android.os.Build.ID);
         // 保留最近 30天日志；
         LogUtils.delFile();
+        LogUtils.i("InitHelper2", "super.onResume()");
         super.onResume();
+        LogUtils.i("InitHelper2", "initPermission()");
         initPermission();
+        LogUtils.i("InitHelper2", "initSerial()");
         initSerial();
+        LogUtils.i("InitHelper2", "initConfigData");
         initConfigData();
+        LogUtils.i("InitHelper2", "initPrinter()");
         initPrinter();
 
 
